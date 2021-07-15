@@ -35,8 +35,6 @@ urlに指定するポート番号は、デフォルト52782になっています
 
 ## アプリケーションの実行方法
 
-IRISの管理ポータルを開きます
-
 ブラウザで以下のurlを指定します。
 
 http://localhost:52782/csp/user/TRU.web.TRUApp.cls?$NAMESPACE=USER&IRISUsername=_system&IRISPassword=SYS
