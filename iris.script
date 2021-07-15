@@ -1,0 +1,30 @@
+
+zn "%SYS"
+Do ##class(Security.Users).UnExpireUserPasswords("*")
+Do ##class(Config.NLS.Locales).Install("jpuw")
+Do ##class(%EnsembleMgr).EnableNamespace("USER")
+set sec = ##class("Security.Applications").%OpenId("/csp/user")
+set sec.DeepSeeEnabled = 1
+set status = sec.%Save()
+
+zn "USER"
+set io = ##class(%SYS.NLS.Device).SetIO("UTF8")
+
+do $System.OBJ.LoadDir("/opt/irisapp/src","ck",,1)
+set status = $SYSTEM.CSP.LoadPageDir("/csp/user")
+
+set status = ##class(Ens.Director).StartProduction("TRU.Production.Main")
+
+do ##class(TRU.Misc).InitializeDemoData()
+
+set status = ##class(EnsLib.Workflow.UserDefinition).CreateUser("_SYSTEM")
+
+set status = ##class(EnsLib.Workflow.RoleDefinition).CreateRole("Sales Management")
+set status = ##class(EnsLib.Workflow.RoleDefinition).AddUserToRole("Sales Management","_SYSTEM")
+
+set status = ##class(EnsLib.Workflow.RoleDefinition).CreateRole("Discount Approval")
+set status = ##class(EnsLib.Workflow.RoleDefinition).AddUserToRole("Discount Approval","_SYSTEM")
+
+set status = ##class(Ens.Director).SetAutoStart("TRU.Production.Main")
+
+halt
