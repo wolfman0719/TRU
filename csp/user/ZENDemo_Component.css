@@ -1,0 +1,35 @@
+/* @class="ZENDemo.Component.demoTitle" */
+.demoTitle {
+	color: black;
+	background: #c5d6d6;
+	background-image: url(images/titlegradient.png);
+	background-repeat: repeat-y;
+	background-position: right;
+	width: 100%;
+	padding: 0px;
+	border-bottom: 1px solid darkblue;
+	font-size: 1.4em;
+	font-family: verdana;
+	text-align: center;
+}
+/* @class="ZENDemo.Component.sidebar" */
+.demoSidebar {
+	color: black;
+	width: 200px;
+	height: 500px;
+	padding: 10px;
+	font-size: 0.8em;
+	font-family: verdana;
+	overflow: auto;
+}
+
+.demoSidebar ul {
+	margin-left: 8px;
+	padding-left: 8px;
+}
+
+.demoSidebar ul li {
+	padding-bottom: 3px;
+}
+
+/* EOF */

@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>Things-R-Us Product Portal</title>
+
+<!-- main page for Product Portal -->
+
+<style>
+
+body {
+	font-family: Arial;
+	font-size: 1.6em;
+	width: 100%;
+	filter:
+		progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF');
+}
+
+div.title {
+	padding: 2px;
+	font-size: 2.0em;
+	width: 100%;
+	text-align: center;
+}
+
+span.titleText {
+	font-size: 1.6em;
+	color: white;
+	width: 100%;
+	filter:
+		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
+}
+
+div.description {
+	font-size: 1.6em;
+	color: red;
+	text-align: center;
+}
+
+div.copy {
+	font-size: 0.6em;
+	color: blue;
+}
+
+div.imageDiv {
+}
+
+table.formTable {
+	border: 1px black solid;
+	font-family: Arial;
+	background-color: #ffffcc;
+}
+
+input {
+	font-family: Arial;
+	color: blue;
+}
+
+select {
+	font-family: Arial;
+	color: blue;
+	font-size: 1.2em;
+
+}
+
+</style>
+
+<script language="javascript">
+function selectProduct(select)
+{
+	var btnOrder = self.document.getElementById('btnOrder');
+	var img = self.document.getElementById('image');
+	var imgdiv = self.document.getElementById('imageDiv');
+	var idx = select.selectedIndex;
+	var descdiv = self.document.getElementById('description');
+	var price = self.document.getElementById('price');
+	
+	if (idx < 0) {
+		imgdiv.style.display = 'none';
+		btnOrder.disabled = true;
+	}
+	else {
+		btnOrder.disabled = false;
+		imgdiv.style.display = '';
+		var ovalue = select.options[select.selectedIndex].value;
+		var splitv = ovalue.split("^");
+		img.src = 'images/' + splitv[3];
+		descdiv.innerText = splitv[2];
+		price.value = '$' + splitv[1];
+	}
+}
+</script>
+
+</head>
+
+<body>
+<TABLE BORDER="0" BGCOLOR=blue WIDTH="100%" HEIGHT="10%" CELLPADDING="0" CELLSPACING="0">
+<tr><td>
+<div class="title"><span class="titleText">Welcome to Things-R-Us<super>&trade;</super></span></div>
+</td></tr>
+</table>
+<form action="ThingsRUsSubmit.csp">
+
+<table>
+<tr><td valign="top">
+
+<!-- form table -->
+<table class="formTable" >
+<tr>
+<td>&nbsp;</td>
+<td>
+Enter your name, address, and desired quality product below.<br>
+Press <b>Order Now</b> when you are ready.<br>
+</td>
+</tr>
+
+<tr>
+<td>Name</td>
+<td><input type="text" name="Name" size="25"></td>
+</tr>
+
+<tr>
+<td>City</td>
+<td><input type="text" name="City" size="25"></td>
+</tr>
+
+<tr><td>Product</td>
+<td>
+<select name="Code" onchange="selectProduct(this);" size="5">
+<script language="cache" runat="server">
+	Set tRS = ##class(%ResultSet).%New("TRU.Product:Enumerate")
+	Set tSC = tRS.Execute()
+	While (tRS.Next()) {
+		&html<<option value="#($G(tRS.Data("Code"))_"^"_$G(tRS.Data("UnitPrice"))_"^"_$G(tRS.Data("Description"))_"^"_$G(tRS.Data("ImageFile")))#" 
+				>#($G(tRS.Data("Name")))#</option>>
+	}
+</script>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>Price</td>
+<td><input type="text" id="price" name="Price" readonly size="8" value=""></td>
+</tr>
+
+<tr>
+<td>Quantity</td>
+<td><input type="text" name="Quantity" size="5" value="1"></td>
+</tr>
+
+<tr><td>Ship By</td>
+<td>
+&nbsp;<input type="radio" name="ShipBy" checked value="ground">Truck&nbsp;
+&nbsp;<input type="radio" name="ShipBy" value="air">Parachute
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type="submit" id="btnOrder" disabled value="Order Now!"></td>
+</tr>
+
+</table>
+<!-- form table -->
+</td>
+<td width="25">&nbsp;</td>
+<td valign="top" width="400">
+<div style="display:none;" id="imageDiv" class="imageDiv">
+<img src="images" id="image" border="3" height="270">
+<br>
+</div>
+</td>
+</tr>
+</div>
+</table>
+<br>
+<div id="description" class="description" width="100%"></div>
+<br>
+<hr>
+<div class="copy" align="center">
+Copyright &copy; 2004&mdash;Things-R-Us Industries&mdash;Use all products at your own risk
+</div>
+
+</form>
+</body>
+</html>

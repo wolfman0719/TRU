@@ -1,0 +1,168 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Ensemble EHR Demo Utilities Page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link href="EHRstyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body> 
+
+<script language="javascript">
+<!--
+function DoReset()
+{
+	TakeAction('R');
+}
+function DoPopulate()
+{
+	TakeAction('P');
+}
+function DoSlowPopulate()
+{
+	TakeAction('S');
+}
+function TakeAction(act)
+{
+	var cnt = document.getElementById("count").value;
+	#call(..doWork(act,cnt))#;
+}
+-->
+</script>
+
+<script language="cache"
+		method="doWork"
+		arguments="a:%String,c:%String"
+		returntype="">
+	if a = "R" {
+		job ReBuild^EHRPopulate(c)
+	} elseif a = "P" {
+		job Build^EHRPopulate(c)
+	} elseif a = "S" {
+		job SlowBuild^EHRPopulate(c)
+	}
+</script>
+
+<script language="cache" runat="server">
+	set st = ##class(Ens.Director).GetProductionStatus(.prod,.stat)
+	if (prod="EHR.DemoProduction") && (stat = 1) {
+		set ProductionRunning = 1
+	} else {
+		set ProductionRunning = 0
+	}
+</script>
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5">
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<a href="EHRSearch.csp" target="_DemoWin"><img width="140" src="pimages/intersystems.gif" alt="InterSystems EHR Demo Home" border="0"></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+</table>
+
+<csp:if condition='ProductionRunning'>
+
+<form action="#(%request.PageName)#" method="post">
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="10">&nbsp;</td>
+		<td>
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="10">
+						<img src="images/bkg_tbllefttop.gif" width="11" height="23">
+					</td>
+					<td colspan="4" background="images/bkg_tblheader.gif" class="type4B">
+						<i>v</i>EHR DEMO Utilities
+					</td>
+					<td width="10">
+						<img src="images/bkg_tblrighttop.gif" width="11" height="23">
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td height="20" valign="bottom" class="type3B">
+						Patient Count
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input name="count" type="text" id="count" value="30">
+					</td>
+					<td>
+						<input name="p1" type="button" class="btnStandard" id="pop1" value="RESET" OnClick='DoReset();'/>
+					</td>
+					<td>
+						<input name="p2" type="button" class="btnStandard" id="pop2" value="FAST ADD" OnClick='DoPopulate();'/>
+					</td>
+					<td>
+						<input name="p3" type="button" class="btnStandard" id="pop3" value="SLOW ADD" OnClick='DoSlowPopulate();'/>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="7">
+					</td>
+				</tr>
+			</table>
+			<br>
+			<br>
+		</td>
+	</tr>
+</table>
+</form>
+
+<br>
+<br>
+<br>
+
+<csp:else>
+
+<div align="center">
+
+<br>
+<br>
+<br>
+	<b>Production NOT Running</b><br>
+	<a href="UtilEnsHome.csp" target="_mgrWin">Ensemble Management Portal</a>
+<br>
+<br>
+<br>
+</div>
+</csp:if>
+
+<table width="780"  border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="2" bgcolor="#C8D5ED"></td>
+	</tr>
+	<tr>
+		<td class="footer" align="right">&copy; 2005, Ensemble EHR Demo. All rights reserved</td>
+	</tr>
+</table>
+
+</body>
+</html>

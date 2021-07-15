@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Ensemble EHR Demo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link href="EHRstyle.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<script language="cache" runat="server">
+	set st = ##class(Ens.Director).GetProductionStatus(.prod,.stat)
+	if (prod="EHR.DemoProduction") && (stat = 1) {
+		set ProductionRunning = 1
+		set MasterID=$g(%request.Data("ID",1))
+		if MasterID'=""	{
+			set sc=##class(Ens.Director).CreateBusinessService("EHR.PatientSummaryByAppService",.service)
+			if $$$ISERR(sc) set %response="EHRsearchResults.csp" quit
+			set sc=service.ProcessInput(##class(Ens.StringContainer).%New(MasterID),.PatInfo)
+			set Meds=PatInfo.AmbulatoryInfo.MedicationInfo.Medications
+			set Labs=PatInfo.LabInfo.LabOrders
+			set Vitals=PatInfo.AmbulatoryInfo.VitalSignInfo.VitalSigns
+		}
+	} else {
+		set ProductionRunning = 0
+	}
+</script>
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5">
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<a href="EHRSearch.csp"><img width="140" src="pimages/intersystems.gif" alt="InterSystems EHR Demo Home" border="0"></a>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+</table>
+
+<csp:if condition='ProductionRunning'>
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr bgcolor="#c6d3ea">
+		<td>
+			<table width="100%" border="0" cellpadding="10" cellspacing="0">
+				<tr>
+					<td align="center" font="arial" size="10" >
+						<a href="#"></a>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="32" align="center" background="images/bkg_navbg.gif">
+			<table border="0" cellspacing="0" cellpadding="0">
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="20">&nbsp;</td>
+	</tr>
+</table>
+
+<form action="EHRsearch.csp" method="post">
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="10">&nbsp;</td>
+		<td>
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="10">
+						<img src="images/bkg_tbllefttop.gif" width="11" height="23">
+					</td>
+					<td colspan="3" background="images/bkg_tblheader.gif" class="type4B">
+						Patient Quick Search
+					</td>
+					<td width="10">
+						<img src="images/bkg_tblrighttop.gif" width="11" height="23">
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td height="20" valign="bottom" class="type3B">
+						Last Name
+					</td>
+					<td valign="bottom" class="type3B">
+						First Name
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input name="lastName" type="text" id="lastName">
+					</td>
+					<td>
+						<input name="firstName" type="text" id="firstName">
+					</td>
+					<td>
+						<input name="search" type="submit" class="btnStandard" id="search" value="SEARCH"/>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="6">
+					</td>
+				</tr>
+			</table>
+			<br>
+<CSP:QUERY NAME="query" CLASSNAME="EHR.MasterPatientIndex" QUERYNAME="ByMasterIDDetail" P1=#(MasterID)#>
+<CSP:WHILE CONDITION="query.Next()">
+			<!--   Patient Name     -->
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="10"><img src="images/bkg_tbllefttop.gif" width="11" height="23"></td>
+					<td background="images/bkg_tblheader.gif" class="type4B">#(query.Get("PatientName"))#</td>
+					<td width="10"><img src="images/bkg_tblrighttop.gif" width="11" height="23"></td>
+				</tr>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="3"></td>
+				</tr>
+			</table>
+			<br>
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+				<tr>
+					<td valign="top" align="left">
+						<!--  Demographics   -->
+						<table width="370" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+							<tr>
+								<td width="10">
+									<img src="images/bkg_tbllefttop.gif" width="11" height="23">
+								</td>
+								<td background="images/bkg_tblheader.gif" class="type4B">
+									Demographics
+								</td>
+								<td width="10">
+									<img src="images/bkg_tblrighttop.gif" width="11" height="23">
+								</td>
+							</tr>
+							<tr align="left" valign="middle" bgcolor="#E3E8F1">
+								<td height="20" class="type4B">&nbsp;</td>
+								<td class="type4B">&nbsp;</td>
+								<td class="type4B">&nbsp;</td>
+							</tr>
+							<tr valign="middle" bgcolor="#C8D5ED">
+								<td height="20">&nbsp;</td>
+								<td class="type3B">#(query.Get("PatientName"))#</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr valign="middle" bgcolor="#C8D5ED">
+								<td height="20">&nbsp;</td>
+								<td class="type3B">#(query.Get("City")_","_query.Get("State")_"  "_query.Get("ZIP"))#</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr valign="middle" bgcolor="#C8D5ED">
+								<td height="20">&nbsp;</td>
+								<td class="type3B">#(query.Get("Phone"))#</td>
+								<td>&nbsp;</td>
+							</tr>
+		
+							<tr bgcolor="#85AAEE">
+								<td height="2" colspan="3"></td>
+							</tr>
+							<tr class="bgWhite">
+								<td height="20" colspan="3" align="right"></td>
+							</tr>
+						</table>
+					</td>
+					<td valign="top" align="right">
+			            <!-- Vital Signs  -->
+						<table width="370" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+							<tr align="left">
+								<td width="10"><img src="images/bkg_tbllefttop.gif" width="11" height="23"></td>
+								<td colspan="3" background="images/bkg_tblheader.gif" class="type4B">Vital Signs</td>
+								<td width="10"><img src="images/bkg_tblrighttop.gif" width="11" height="23"></td>
+							</tr>
+							<tr align="left" valign="middle" bgcolor="#E3E8F1">
+								<td height="20">&nbsp;</td>
+								<td class="type4B">Date</td>
+								<td class="type4B">Type</td>
+								<td class="type4B">Result</td>
+								<td class="type4B">&nbsp;</td>
+							</tr>
+							<csp:LOOP COUNTER="vital" FROM="1" TO="#(Vitals.Count())#">
+								<tr align="left" valign="middle" bgcolor="#C8D5ED">
+									<td height="20">&nbsp;</td>
+									<td class="type3B">#(Vitals.GetAt(vital).ServiceDate)#</td>
+									<td class="type3B">#(Vitals.GetAt(vital).Type)#</td>
+									<td class="type3B">#(Vitals.GetAt(vital).Result)#</td>
+									<td class="type3B">&nbsp;</td>
+								</tr>
+							</CSP:LOOP>
+							<tr bgcolor="#85AAEE">
+								<td height="2" colspan="5"></td>
+							</tr>
+							<tr class="bgWhite">
+								<td height="20" colspan="5" align="right"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+</CSP:WHILE>
+			<br>
+			<!--   Medications    -->
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="11"><img src="images/bkg_tbllefttop.gif" width="11" height="23"></td>
+					<td colspan="4" background="images/bkg_tblheader.gif" class="type4B">Medications</td>
+					<td width="11"><img src="images/bkg_tblrighttop.gif" width="11" height="23"></td>
+				</tr>
+				<tr valign="middle" bgcolor="#E3E8F1">
+					<td height="20">&nbsp;</td>
+					<td class="type3B">Start Date</td>
+					<td class="type3B">End Date</td>
+					<td class="type3B">Drug</td>
+					<td class="type3B">Refills</td>
+					<td class="type3B">&nbsp;</td>
+				</tr>
+				<csp:LOOP COUNTER="med" FROM="1" TO="#(Meds.Count())#">
+					<tr valign="middle" bgcolor="#C8D5ED">
+						<td height="20">&nbsp;</td>
+						<td class="type3B">#(Meds.GetAt(med).StartDate)#</td>
+						<td class="type3B">#(Meds.GetAt(med).EndDate)#</td>
+						<td class="type3B">#(Meds.GetAt(med).MedString)#</td>
+						<td class="type3B">#(Meds.GetAt(med).Refills)#</td>
+						<td class="type3B">&nbsp;</td>
+					</tr>
+				</csp:LOOP>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="6"></td>
+				</tr>
+				<tr class="bgWhite">
+					<td height="20" colspan="6" align="right"></td>
+				</tr>
+			</table>
+			<br>
+			<!-- Lab Info   -->
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="11"><img src="images/bkg_tbllefttop.gif" width="11" height="23"></td>
+					<td colspan="4" background="images/bkg_tblheader.gif" class="type4B">Labs</td>
+					<td width="11"><img src="images/bkg_tblrighttop.gif" width="11" height="23"></td>
+				</tr>
+				<tr valign="middle" bgcolor="#E3E8F1">
+					<td height="20">&nbsp;</td>
+					<td class="type3B">Date</td>
+					<td class="type3B">Battery</td>
+					<td class="type3B">Test Code</td>
+					<td class="type3B">Test Result</td>
+					<td class="type3B">&nbsp;</td>
+				</tr>
+				<csp:LOOP COUNTER="lab" FROM="1" TO="#(Labs.Count())#">
+					<CSP:LOOP counter="test" FROM="1" TO="#(Labs.GetAt(lab).Tests.Count())#">
+						<tr valign="middle" bgcolor="#C8D5ED">
+							<td height="20">&nbsp;</td>
+							<td class="type3B">#($zd(Labs.GetAt(lab).OrderDate))#</td>
+							<td class="type3B">#(Labs.GetAt(lab).BatteryTestCode)#</td>
+							<td class="type3B">#(Labs.GetAt(lab).Tests.GetAt(test).TestCode)#</td>
+							<td class="type3B">#(Labs.GetAt(lab).Tests.GetAt(test).TestResult)#</td>
+							<td class="type3B">&nbsp;</td>
+						</tr>
+					</csp:LOOP >
+				</csp:LOOP>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="6"></td>
+				</tr>
+				<tr class="bgWhite">
+					<td height="20" colspan="6" align="right"></td>
+				</tr>
+			</table>
+		</td> 
+		<td width="10">&nbsp;</td> 
+	</tr> 
+</table> 
+</form>
+
+<br> 
+<br>
+<br>
+
+<csp:else>
+
+<div align="center">
+
+<br>
+<br>
+<br>
+	<b>Production NOT Running</b><br>
+	<a href="UtilEnsHome.csp" target="_mgrWin">Ensemble Management Portal</a>
+<br>
+<br>
+<br>
+</div>
+
+</csp:if>
+
+<table width="780"  border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="2" bgcolor="#C8D5ED"></td>
+	</tr>
+	<tr>
+		<td class="footer" align="right"> &copy; 2005, Ensemble EHR Demo. All rights reserved  </td>
+	</tr>
+</table>
+
+</body>
+</html>

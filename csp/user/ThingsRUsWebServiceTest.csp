@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Things-R-Us Web Service Test Page</title>
+
+<!-- WebService Test Page for Things-R-Us -->
+
+<style>
+
+body {
+	font-family: Comic Sans MS;
+	font-size: 1.6em;
+	width: 100%;
+	filter:
+		progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0FFA0', EndColorStr='#E0E0FF');
+}
+
+div.title {
+	padding: 2px;
+	font-size: 1.6em;
+	border: 1px black solid;
+	width: 100%;
+	filter:
+		progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF')
+		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
+}
+
+span.titleText {
+	color: blue;
+	width: 100%;
+	filter:
+		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
+}
+
+div.description {
+	font-size: 1.6em;
+	color: red;
+}
+
+div.copy {
+	font-size: 0.6em;
+	color: blue;
+}
+
+div.imageDiv {
+}
+
+pre {
+	font-size: 0.6em;
+	border: 1px black solid;
+	color: black;
+	background: white;
+}
+
+
+input {
+	font-family: Comic Sans MS;
+	color: blue;
+}
+
+</style>
+<script language="javascript">
+</script>
+
+</head>
+
+<body>
+<div class="title"><span class="titleText">Things-R-Us WebService Simulator</span></div>
+
+<script language="cache" runat="server">
+	// process the submit for this page
+	Set tSC=$$$OK
+	Do {
+		If ($D(%request.Data("btnSubmit",1))) {
+			// submit
+			Set tCount = +$G(%request.Data("Count",1),1)
+			
+			Write "<pre>",!
+			Do ##class(TRU.WebService).Test(tCount,1)
+			Write "</pre>",!
+		}
+	} While (0)
+
+</script>
+
+<hr>
+<form method="post">
+<table>
+<tr>
+<td>Number of events:</td>
+<td><input type="text" size="6" name="Count" value="#($G(tCount,1))#"></td>
+</tr>
+<tr>
+<td>&nbsp;</td><td><input type="submit" name="btnSubmit" value=" Go! "></td>
+</tr>
+</table>
+</form>
+
+</body>
+</html>

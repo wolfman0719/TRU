@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Ensemble EHR Demo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link href="EHRstyle.css" rel="stylesheet" type="text/css">
+</head>
+
+<body> 
+
+<script language="cache" runat="server">
+	set lname=$g(%request.Data("lastName",1))
+	set fname=$g(%request.Data("firstName",1))
+	set searchName=lname_","_fname
+	if $g(%request.Data("search",1))="SEARCH" {
+		set searchFlag=1
+	} else {
+		set searchFlag=0
+	}
+	set st = ##class(Ens.Director).GetProductionStatus(.prod,.stat)
+	if (prod="EHR.DemoProduction") && (stat = 1) {
+		set ProductionRunning = 1
+	} else {
+		set ProductionRunning = 0
+	}
+</script>
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5">
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img width="140" src="pimages/intersystems.gif">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="5" height="2" bgcolor="#C8D5ED">
+		</td>
+	</tr>
+</table>
+
+<csp:if condition='ProductionRunning'>
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr bgcolor="#c6d3ea">
+		<td>
+			<table width="100%" border="0" cellpadding="10" cellspacing="0">
+				<tr>
+					<td align="center" font="arial" size="10" >
+						<a href="#"></a>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="32" align="center" background="images/bkg_navbg.gif">
+			<table border="0" cellspacing="0" cellpadding="0">
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td height="20">&nbsp;</td>
+	</tr>
+</table>
+
+<form action="EHRsearch.csp" method="post">
+
+<table width="780" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="10">&nbsp;</td>
+		<td>
+			<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+				<tr>
+					<td width="10">
+						<img src="images/bkg_tbllefttop.gif" width="11" height="23">
+					</td>
+					<td colspan="3" background="images/bkg_tblheader.gif" class="type4B">
+						Patient Quick Search
+					</td>
+					<td width="10">
+						<img src="images/bkg_tblrighttop.gif" width="11" height="23">
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td height="20" valign="bottom" class="type3B">
+						Last Name
+					</td>
+					<td valign="bottom" class="type3B">
+						First Name
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input name="lastName" type="text" id="lastName">
+					</td>
+					<td>
+						<input name="firstName" type="text" id="firstName">
+					</td>
+					<td>
+						<input name="search" type="submit" class="btnStandard" id="search" value="SEARCH"/>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr bgcolor="#85AAEE">
+					<td height="2" colspan="6">
+					</td>
+				</tr>
+			</table>
+			<br>
+			<!--  Search Results  -->
+			<CSP:IF condition="searchFlag"  >
+				<table width="760" border="0" cellpadding="0" cellspacing="0" bgcolor="#E3E8F1">
+					<tr>
+						<td width="10"><img src="images/bkg_tbllefttop.gif" width="11" height="23"></td>
+						<td colspan="6" background="images/bkg_tblheader.gif" class="type4B">Search Results</td>
+						<td width="10"><img src="images/bkg_tblrighttop.gif" width="11" height="23"></td>
+					</tr>
+					<tr valign="middle" bgcolor="#C8D5ED">
+						<td>&nbsp;</td>
+						<td height="20" class="type3B">Patient</a></td>
+						<td class="type3B">Age</a></td>
+						<td class="type3B">Phone</td>
+						<td class="type3B">Address</td>
+						<td class="type3B">Date of Birth</td>
+						<td class="type3B">ID</td>
+						<td>&nbsp;</td>
+					</tr>
+					<CSP:QUERY NAME="query" CLASSNAME="EHR.MasterPatientIndex" QUERYNAME="ByNameDetail" P1=#(searchName)#>
+					<CSP:WHILE CONDITION="query.Next()">
+						<tr class="bgWhite">
+							<td height="20">&nbsp;</td>
+							<td height="20"><a href="EHRpatientView.csp?ID=#(query.Get("MasterID"))#">#(query.Get("PatientName"))#</a></td>
+							<td height="20">#($h-$zdh(query.Get("DOB"))\365.25)#</td>
+							<td height="20">#(query.Get("Phone"))#</td>
+							<td height="20">#(query.Get("City")_","_(query.Get("State"))_" "_(query.Get("ZIP")))#</td>
+							<td height="20">#(query.Get("DOB"))#</td>
+							<td height="20"><a href="EHRpatientView.csp?ID=#(query.Get("MasterID"))#">#(query.Get("MasterID"))#</a></td>
+							<td height="20">&nbsp;</td>
+						</tr>
+					</CSP:WHILE>
+					</tr>
+					<tr bgcolor="#85AAEE">
+						<td height="2" colspan="8"></td>
+					</tr>
+				</table>
+			</CSP:IF >
+			<br>
+		</td>
+	</tr>
+</table>
+</form>
+
+<br>
+<br>
+<br>
+
+<csp:else>
+
+<div align="center">
+
+<br>
+<br>
+<br>
+	<b>Production NOT Running</b><br>
+	<a href="UtilEnsHome.csp" target="_mgrWin">Ensemble Management Portal</a>
+<br>
+<br>
+<br>
+</div>
+
+</csp:if>
+
+<table width="780"  border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td height="2" bgcolor="#C8D5ED"></td>
+	</tr>
+	<tr>
+		<td class="footer" align="right"> &copy; 2005, Ensemble EHR Demo. All rights reserved</td>
+	</tr>
+</table>
+
+</body>
+</html>
