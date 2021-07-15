@@ -50,21 +50,23 @@ http://localhost:52782/csp/user/TRU.web.TRUApp.cls?$NAMESPACE=USER&IRISUsername=
 
 ### BAMデモ
 
+```
 >docker exec -ti TRUDemo sh
 
 $ iris session iris
 
 >do ##class(TRU.WebService).Test(1000)
-
+```
 
 ## 環境の削除
 
 新しくデータをを再ロードするまえには、以下を実行してください。
 
+```
 >cd c:\
 >cd temp
 >cd tru
 >docker-compose stop
 >docker-compose rm
 yと答える
-
+```
