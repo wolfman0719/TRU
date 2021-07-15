@@ -1,0 +1,10 @@
+ROUTINE TRU.web.TRUApp.1 [Type=INT,Generated]
+ ;TRU.web.TRUApp.1
+ ;Generated for class TRU.web.TRUApp.  Do NOT edit. 06/13/2021 08:33:29PM
+ ;;44786655;TRU.web.TRUApp
+ ;
+%DrawStyleHTML(pSuper=0,pCSSLevel=2) public {
+ Do ##class(%ZEN.application)$this.%DrawStyleHTML(1,pCSSLevel)
+ Write "<!-- Style: "_($classname())_" -->",! 
+ Write "<style type=""text/css"">",!
+ Write "</style>",! }

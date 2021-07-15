@@ -1,0 +1,1708 @@
+ROUTINE TRU.web.OrdersReport.1 [Type=INT,Generated]
+ ;TRU.web.OrdersReport.1
+ ;Generated for class TRU.web.OrdersReport.  Do NOT edit. 06/19/2021 01:08:03AM
+ ;;76526365;TRU.web.OrdersReport
+ ;
+%ApplyURLParms() public {
+ Set tSC = 1
+ If $IsObject($G(%request)) {
+  Set ..AggregatesIgnoreNLS = $G(%request.Data("$AGGREGATESIGNORENLS",1),..AggregatesIgnoreNLS)
+  If (..AggregatesIgnoreNLS '= "") {
+   Set tSC = ..AggregatesIgnoreNLSIsValid(..AggregatesIgnoreNLS)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $AGGREGATESIGNORENLS")
+  }
+  Set ..ConnectTimeOut = $G(%request.Data("$CONNECTTIMEOUT",1),..ConnectTimeOut)
+  If (..ConnectTimeOut '= "") {
+   Set tSC = ..ConnectTimeOutIsValid(..ConnectTimeOut)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $CONNECTTIMEOUT")
+  }
+  Set ..DefaultFontFaceCopyHTML = $G(%request.Data("$DEFAULTFONTFACECOPYHTML",1),..DefaultFontFaceCopyHTML)
+  If (..DefaultFontFaceCopyHTML '= "") {
+   Set tSC = ..DefaultFontFaceCopyHTMLIsValid(..DefaultFontFaceCopyHTML)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $DEFAULTFONTFACECOPYHTML")
+  }
+  Set ..DefaultFontSizeCopyHTML = $G(%request.Data("$DEFAULTFONTSIZECOPYHTML",1),..DefaultFontSizeCopyHTML)
+  If (..DefaultFontSizeCopyHTML '= "") {
+   Set tSC = ..DefaultFontSizeCopyHTMLIsValid(..DefaultFontSizeCopyHTML)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $DEFAULTFONTSIZECOPYHTML")
+  }
+  Set ..ExcelServer = $G(%request.Data("$EXCELSERVER",1),..ExcelServer)
+  If (..ExcelServer '= "") {
+   Set tSC = ..ExcelServerIsValid(..ExcelServer)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $EXCELSERVER")
+  }
+  Set ..ExcelServerTimeOut = $G(%request.Data("$EXCELSERVERTIMEOUT",1),..ExcelServerTimeOut)
+  If (..ExcelServerTimeOut '= "") {
+   Set tSC = ..ExcelServerTimeOutIsValid(..ExcelServerTimeOut)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $EXCELSERVERTIMEOUT")
+  }
+  Set ..FileLifeTime = $G(%request.Data("$FILELIFETIME",1),..FileLifeTime)
+  If (..FileLifeTime '= "") {
+   Set tSC = ..FileLifeTimeIsValid(..FileLifeTime)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $FILELIFETIME")
+  }
+  Set ..Mode = $G(%request.Data("$MODE",1),..Mode)
+  If (..Mode '= "") {
+   Set tSC = ..ModeIsValid(..Mode)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $MODE")
+  }
+  Set ..NamespaceDeclarations = $G(%request.Data("$NAMESPACEDECLARATIONS",1),..NamespaceDeclarations)
+  If (..NamespaceDeclarations '= "") {
+   Set tSC = ..NamespaceDeclarationsIsValid(..NamespaceDeclarations)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $NAMESPACEDECLARATIONS")
+  }
+  Set ..OldBehaviorLineFeedOnBreak = $G(%request.Data("$OLDBEHAVIORLINEFEED",1),..OldBehaviorLineFeedOnBreak)
+  If (..OldBehaviorLineFeedOnBreak '= "") {
+   Set tSC = ..OldBehaviorLineFeedOnBreakIsValid(..OldBehaviorLineFeedOnBreak)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OLDBEHAVIORLINEFEED")
+  }
+  Set ..OptionCachePath = $G(%request.Data("$OptionCachePath",1),..OptionCachePath)
+  If (..OptionCachePath '= "") {
+   Set tSC = ..OptionCachePathIsValid(..OptionCachePath)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionCachePath")
+  }
+  Set ..OptionConserve = $G(%request.Data("$OptionConserve",1),..OptionConserve)
+  If (..OptionConserve '= "") {
+   Set tSC = ..OptionConserveIsValid(..OptionConserve)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionConserve")
+  }
+  Set ..OptionDPI = $G(%request.Data("$OptionDPI",1),..OptionDPI)
+  If (..OptionDPI '= "") {
+   Set tSC = ..OptionDPIIsValid(..OptionDPI)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionDPI")
+  }
+  Set ..OptionEnableAccessibility = $G(%request.Data("$OptionEnableAccessibility",1),..OptionEnableAccessibility)
+  If (..OptionEnableAccessibility '= "") {
+   Set tSC = ..OptionEnableAccessibilityIsValid(..OptionEnableAccessibility)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionEnableAccessibility")
+  }
+  Set ..OptionFlush = $G(%request.Data("$OptionFlush",1),..OptionFlush)
+  If (..OptionFlush '= "") {
+   Set tSC = ..OptionFlushIsValid(..OptionFlush)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionFlush")
+  }
+  Set ..OptionLang = $G(%request.Data("$OptionLang",1),..OptionLang)
+  If (..OptionLang '= "") {
+   Set tSC = ..OptionLangIsValid(..OptionLang)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionLang")
+  }
+  Set ..OptionNoAccessContent = $G(%request.Data("$OptionNoAccessContent",1),..OptionNoAccessContent)
+  If (..OptionNoAccessContent '= "") {
+   Set tSC = ..OptionNoAccessContentIsValid(..OptionNoAccessContent)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoAccessContent")
+  }
+  Set ..OptionNoAnnotations = $G(%request.Data("$OptionNoAnnotations",1),..OptionNoAnnotations)
+  If (..OptionNoAnnotations '= "") {
+   Set tSC = ..OptionNoAnnotationsIsValid(..OptionNoAnnotations)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoAnnotations")
+  }
+  Set ..OptionNoAssembleDoc = $G(%request.Data("$OptionNoAssembleDoc",1),..OptionNoAssembleDoc)
+  If (..OptionNoAssembleDoc '= "") {
+   Set tSC = ..OptionNoAssembleDocIsValid(..OptionNoAssembleDoc)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoAssembleDoc")
+  }
+  Set ..OptionNoComplexScript = $G(%request.Data("$OptionNoComplexScript",1),..OptionNoComplexScript)
+  If (..OptionNoComplexScript '= "") {
+   Set tSC = ..OptionNoComplexScriptIsValid(..OptionNoComplexScript)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoComplexScript")
+  }
+  Set ..OptionNoCopy = $G(%request.Data("$OptionNoCopy",1),..OptionNoCopy)
+  If (..OptionNoCopy '= "") {
+   Set tSC = ..OptionNoCopyIsValid(..OptionNoCopy)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoCopy")
+  }
+  Set ..OptionNoEdit = $G(%request.Data("$OptionNoEdit",1),..OptionNoEdit)
+  If (..OptionNoEdit '= "") {
+   Set tSC = ..OptionNoEditIsValid(..OptionNoEdit)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoEdit")
+  }
+  Set ..OptionNoFillInForms = $G(%request.Data("$OptionNoFillInForms",1),..OptionNoFillInForms)
+  If (..OptionNoFillInForms '= "") {
+   Set tSC = ..OptionNoFillInFormsIsValid(..OptionNoFillInForms)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoFillInForms")
+  }
+  Set ..OptionNoPrint = $G(%request.Data("$OptionNoPrint",1),..OptionNoPrint)
+  If (..OptionNoPrint '= "") {
+   Set tSC = ..OptionNoPrintIsValid(..OptionNoPrint)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoPrint")
+  }
+  Set ..OptionNoPrintHq = $G(%request.Data("$OptionNoPrintHq",1),..OptionNoPrintHq)
+  If (..OptionNoPrintHq '= "") {
+   Set tSC = ..OptionNoPrintHqIsValid(..OptionNoPrintHq)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionNoPrintHq")
+  }
+  Set ..OptionOwnerPassword = $G(%request.Data("$OptionOwnerPassword",1),..OptionOwnerPassword)
+  If (..OptionOwnerPassword '= "") {
+   Set tSC = ..OptionOwnerPasswordIsValid(..OptionOwnerPassword)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionOwnerPassword")
+  }
+  Set ..OptionPDFProfile = $G(%request.Data("$OptionPDFProfile",1),..OptionPDFProfile)
+  If (..OptionPDFProfile '= "") {
+   Set tSC = ..OptionPDFProfileIsValid(..OptionPDFProfile)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionPDFProfile")
+  }
+  Set ..OptionRelaxed = $G(%request.Data("$OptionRelaxed",1),..OptionRelaxed)
+  If (..OptionRelaxed '= "") {
+   Set tSC = ..OptionRelaxedIsValid(..OptionRelaxed)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionRelaxed")
+  }
+  Set ..OptionUserPassword = $G(%request.Data("$OptionUserPassword",1),..OptionUserPassword)
+  If (..OptionUserPassword '= "") {
+   Set tSC = ..OptionUserPasswordIsValid(..OptionUserPassword)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $OptionUserPassword")
+  }
+  Set ..PDFMergeMemSize = $G(%request.Data("$PDFMERGEMEMSIZE",1),..PDFMergeMemSize)
+  If (..PDFMergeMemSize '= "") {
+   Set tSC = ..PDFMergeMemSizeIsValid(..PDFMergeMemSize)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $PDFMERGEMEMSIZE")
+  }
+  Set ..PS = $G(%request.Data("$PS",1),..PS)
+  If (..PS '= "") {
+   Set tSC = ..PSIsValid(..PS)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $PS")
+  }
+  Set ..PrintServer = $G(%request.Data("$PRINTSERVER",1),..PrintServer)
+  If (..PrintServer '= "") {
+   Set tSC = ..PrintServerIsValid(..PrintServer)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $PRINTSERVER")
+  }
+  Set ..PrintTimeOut = $G(%request.Data("$PRINTTIMEOUT",1),..PrintTimeOut)
+  If (..PrintTimeOut '= "") {
+   Set tSC = ..PrintTimeOutIsValid(..PrintTimeOut)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $PRINTTIMEOUT")
+  }
+  Set ..RenderDirectlyOnTimeout = $G(%request.Data("$RENDERDIRECTLYONTIMEOUT",1),..RenderDirectlyOnTimeout)
+  If (..RenderDirectlyOnTimeout '= "") {
+   Set tSC = ..RenderDirectlyOnTimeoutIsValid(..RenderDirectlyOnTimeout)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $RENDERDIRECTLYONTIMEOUT")
+  }
+  Set ..RenderTimeOut = $G(%request.Data("$RENDERTIMEOUT",1),..RenderTimeOut)
+  If (..RenderTimeOut '= "") {
+   Set tSC = ..RenderTimeOutIsValid(..RenderTimeOut)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $RENDERTIMEOUT")
+  }
+  Set ..SaxMemSize = $G(%request.Data("$SAXMEMSIZE",1),..SaxMemSize)
+  If (..SaxMemSize '= "") {
+   Set tSC = ..SaxMemSizeIsValid(..SaxMemSize)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $SAXMEMSIZE")
+  }
+  Set ..SetProcessWideRunTimeMode = $G(%request.Data("$SETPROCESSWIDERUNTIMEMODE",1),..SetProcessWideRunTimeMode)
+  If (..SetProcessWideRunTimeMode '= "") {
+   Set tSC = ..SetProcessWideRunTimeModeIsValid(..SetProcessWideRunTimeMode)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $SETPROCESSWIDERUNTIMEMODE")
+  }
+  Set ..UseHTML5 = $G(%request.Data("$USEHTML5",1),..UseHTML5)
+  If (..UseHTML5 '= "") {
+   Set tSC = ..UseHTML5IsValid(..UseHTML5)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $USEHTML5")
+  }
+  Set ..UseSemaphore = $G(%request.Data("$USESEMAPHORE",1),..UseSemaphore)
+  If (..UseSemaphore '= "") {
+   Set tSC = ..UseSemaphoreIsValid(..UseSemaphore)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $USESEMAPHORE")
+  }
+  Set ..xmlstylesheetarg = $G(%request.Data("$XMLSTYLESHEETARG",1),..xmlstylesheetarg)
+  If (..xmlstylesheetarg '= "") {
+   Set tSC = ..xmlstylesheetargIsValid(..xmlstylesheetarg)
+   If ('tSC) Quit $$Error^%apiOBJ(5001,"Invalid URL parameter: $XMLSTYLESHEETARG")
+  }
+ Set ..XsltVersion = $G(%request.Data("$XSLTVERSION",1),..XsltVersion)
+ Set ..TimeOut = $G(%request.Data("$TIMEOUT",1),..TimeOut)
+ }
+ Quit tSC }
+%CopyDataFromModel(pData,pTypes,pSeries="") public {
+ // Generated by %ZEN.DataModel.ObjectDataModel
+ Set tSC = 1
+ For sno = $S(pSeries="":1,1:pSeries):1:..%seriesCount {
+ Set pData(sno,"ReportDir") = ..ReportDirLogicalToDisplay(..ReportDir)
+ Set pData(sno,"ConnectTimeOut") = ..ConnectTimeOutLogicalToDisplay(..ConnectTimeOut)
+ Set pData(sno,"RenderTimeOut") = ..RenderTimeOutLogicalToDisplay(..RenderTimeOut)
+ Set pData(sno,"RenderDirectlyOnTimeout") = ..RenderDirectlyOnTimeoutLogicalToDisplay(..RenderDirectlyOnTimeout)
+ Set pData(sno,"PrintServer") = ..PrintServerLogicalToDisplay(..PrintServer)
+ Set pData(sno,"PrintTimeOut") = ..PrintTimeOutLogicalToDisplay(..PrintTimeOut)
+ Set pData(sno,"ExcelServer") = ..ExcelServerLogicalToDisplay(..ExcelServer)
+ Set pData(sno,"ExcelServerTimeOut") = ..ExcelServerTimeOutLogicalToDisplay(..ExcelServerTimeOut)
+ Set pData(sno,"PS") = ..PSLogicalToDisplay(..PS)
+ Set pData(sno,"TimeOut") = ..TimeOutLogicalToDisplay(..TimeOut)
+ // skip %display
+ Set pData(sno,"Datasource") = ..DatasourceLogicalToDisplay(..Datasource)
+ Set pData(sno,"StripPI") = ..StripPILogicalToDisplay(..StripPI)
+ Set pData(sno,"SubReport") = ..SubReportLogicalToDisplay(..SubReport)
+ Set pData(sno,"MainReport") = ..MainReportLogicalToDisplay(..MainReport)
+ Set pData(sno,"TooLongText") = ..TooLongTextLogicalToDisplay(..TooLongText)
+ Set pData(sno,"SuppressExcelHeaders") = ..SuppressExcelHeadersLogicalToDisplay(..SuppressExcelHeaders)
+ Set pData(sno,"XsltVersion") = ..XsltVersionLogicalToDisplay(..XsltVersion)
+ Set pData(sno,"ReportXMLNameSpace") = ..ReportXMLNameSpaceLogicalToDisplay(..ReportXMLNameSpace)
+ Set pData(sno,"ReportXMLNameSpacePrefix") = ..ReportXMLNameSpacePrefixLogicalToDisplay(..ReportXMLNameSpacePrefix)
+ Set pData(sno,"NamespaceDeclarations") = ..NamespaceDeclarationsLogicalToDisplay(..NamespaceDeclarations)
+ Set pData(sno,"%disableBreak") = ..%disableBreakLogicalToDisplay(..%disableBreak)
+ // skip xmlstream
+ // skip tohtmlstream
+ // skip toxslfostream
+ // skip toexcelstream
+ // skip xmlstylesheet
+ Set pData(sno,"getxmlstylesheet") = ..getxmlstylesheetLogicalToDisplay(..getxmlstylesheet)
+ Set pData(sno,"xmlstylesheetarg") = ..xmlstylesheetargLogicalToDisplay(..xmlstylesheetarg)
+ Set pData(sno,"TableAltColor") = ..TableAltColorLogicalToDisplay(..TableAltColor)
+ Set pData(sno,"SplitAndMerge") = ..SplitAndMergeLogicalToDisplay(..SplitAndMerge)
+ Set pData(sno,"RepeatingElement") = ..RepeatingElementLogicalToDisplay(..RepeatingElement)
+ Set pData(sno,"CountRepeatingElement") = ..CountRepeatingElementLogicalToDisplay(..CountRepeatingElement)
+ Set pData(sno,"CheckPDFNotZeroLength") = ..CheckPDFNotZeroLengthLogicalToDisplay(..CheckPDFNotZeroLength)
+ Set pData(sno,"SplitOnly") = ..SplitOnlyLogicalToDisplay(..SplitOnly)
+ Set pData(sno,"SplitDir") = ..SplitDirLogicalToDisplay(..SplitDir)
+ Set pData(sno,"SplitRootName") = ..SplitRootNameLogicalToDisplay(..SplitRootName)
+ Set pData(sno,"%SplitReturnedPDFs") = ..%SplitReturnedPDFsLogicalToDisplay(..%SplitReturnedPDFs)
+ Set pData(sno,"OutputFileName") = ..OutputFileNameLogicalToDisplay(..OutputFileName)
+ Set pData(sno,"UseRawIOForXML") = ..UseRawIOForXMLLogicalToDisplay(..UseRawIOForXML)
+ Set pData(sno,"DefaultFontFaceCopyHTML") = ..DefaultFontFaceCopyHTMLLogicalToDisplay(..DefaultFontFaceCopyHTML)
+ Set pData(sno,"DefaultFontSizeCopyHTML") = ..DefaultFontSizeCopyHTMLLogicalToDisplay(..DefaultFontSizeCopyHTML)
+ Set pData(sno,"SetProcessWideRunTimeMode") = ..SetProcessWideRunTimeModeLogicalToDisplay(..SetProcessWideRunTimeMode)
+ Set pData(sno,"%ArrayLogFiles") = ..%ArrayLogFilesLogicalToDisplay(..%ArrayLogFiles)
+ Set pData(sno,"isServer") = ..isServerLogicalToDisplay(..isServer)
+ Set pData(sno,"isHTML5") = ..isHTML5LogicalToDisplay(..isHTML5)
+ Set pData(sno,"xmlfile") = ..xmlfileLogicalToDisplay(..xmlfile)
+ Set pData(sno,"OptionLang") = ..OptionLangLogicalToDisplay(..OptionLang)
+ Set pData(sno,"OptionNoComplexScript") = ..OptionNoComplexScriptLogicalToDisplay(..OptionNoComplexScript)
+ Set pData(sno,"OptionRelaxed") = ..OptionRelaxedLogicalToDisplay(..OptionRelaxed)
+ Set pData(sno,"OptionDPI") = ..OptionDPILogicalToDisplay(..OptionDPI)
+ Set pData(sno,"OptionOwnerPassword") = ..OptionOwnerPasswordLogicalToDisplay(..OptionOwnerPassword)
+ Set pData(sno,"OptionUserPassword") = ..OptionUserPasswordLogicalToDisplay(..OptionUserPassword)
+ Set pData(sno,"OptionNoPrint") = ..OptionNoPrintLogicalToDisplay(..OptionNoPrint)
+ Set pData(sno,"OptionNoCopy") = ..OptionNoCopyLogicalToDisplay(..OptionNoCopy)
+ Set pData(sno,"OptionNoEdit") = ..OptionNoEditLogicalToDisplay(..OptionNoEdit)
+ Set pData(sno,"OptionNoAnnotations") = ..OptionNoAnnotationsLogicalToDisplay(..OptionNoAnnotations)
+ Set pData(sno,"OptionNoFillInForms") = ..OptionNoFillInFormsLogicalToDisplay(..OptionNoFillInForms)
+ Set pData(sno,"OptionNoAccessContent") = ..OptionNoAccessContentLogicalToDisplay(..OptionNoAccessContent)
+ Set pData(sno,"OptionNoAssembleDoc") = ..OptionNoAssembleDocLogicalToDisplay(..OptionNoAssembleDoc)
+ Set pData(sno,"OptionNoPrintHq") = ..OptionNoPrintHqLogicalToDisplay(..OptionNoPrintHq)
+ Set pData(sno,"OptionEnableAccessibility") = ..OptionEnableAccessibilityLogicalToDisplay(..OptionEnableAccessibility)
+ Set pData(sno,"OptionPDFProfile") = ..OptionPDFProfileLogicalToDisplay(..OptionPDFProfile)
+ Set pData(sno,"OptionConserve") = ..OptionConserveLogicalToDisplay(..OptionConserve)
+ Set pData(sno,"OptionCachePath") = ..OptionCachePathLogicalToDisplay(..OptionCachePath)
+ Set pData(sno,"OptionFlush") = ..OptionFlushLogicalToDisplay(..OptionFlush)
+ Set pData(sno,"UseHTML5") = ..UseHTML5LogicalToDisplay(..UseHTML5)
+ Set pData(sno,"UseSemaphore") = ..UseSemaphoreLogicalToDisplay(..UseSemaphore)
+ Set pData(sno,"AggregatesIgnoreNLS") = ..AggregatesIgnoreNLSLogicalToDisplay(..AggregatesIgnoreNLS)
+ Set pData(sno,"SaxMemSize") = ..SaxMemSizeLogicalToDisplay(..SaxMemSize)
+ Set pData(sno,"PDFMergeMemSize") = ..PDFMergeMemSizeLogicalToDisplay(..PDFMergeMemSize)
+ Set pData(sno,"Mode") = ..ModeLogicalToDisplay(..Mode)
+ Set pData(sno,"FileLifeTime") = ..FileLifeTimeLogicalToDisplay(..FileLifeTime)
+ Set pData(sno,"OldBehaviorLineFeedOnBreak") = ..OldBehaviorLineFeedOnBreakLogicalToDisplay(..OldBehaviorLineFeedOnBreak)
+ Quit:pSeries'=""
+ }
+ If ('tSC) Quit tSC
+ Quit tSC }
+%CopyDataToModel(pData,pSeries="") public {
+ // Generated by %ZEN.DataModel.ObjectDataModel
+ Set tSC = 1
+ For sno = $S(pSeries="":1,1:pSeries):1:..%seriesCount {
+ Set ..ReportDir = ..ReportDirDisplayToLogical($G(pData(sno,"ReportDir")))
+ Set ..ConnectTimeOut = ..ConnectTimeOutDisplayToLogical($G(pData(sno,"ConnectTimeOut")))
+ Set ..RenderTimeOut = ..RenderTimeOutDisplayToLogical($G(pData(sno,"RenderTimeOut")))
+ Set ..RenderDirectlyOnTimeout = ..RenderDirectlyOnTimeoutDisplayToLogical($G(pData(sno,"RenderDirectlyOnTimeout")))
+ Set ..PrintServer = ..PrintServerDisplayToLogical($G(pData(sno,"PrintServer")))
+ Set ..PrintTimeOut = ..PrintTimeOutDisplayToLogical($G(pData(sno,"PrintTimeOut")))
+ Set ..ExcelServer = ..ExcelServerDisplayToLogical($G(pData(sno,"ExcelServer")))
+ Set ..ExcelServerTimeOut = ..ExcelServerTimeOutDisplayToLogical($G(pData(sno,"ExcelServerTimeOut")))
+ Set ..PS = ..PSDisplayToLogical($G(pData(sno,"PS")))
+ Set ..TimeOut = ..TimeOutDisplayToLogical($G(pData(sno,"TimeOut")))
+ // skip %display
+ Set ..Datasource = ..DatasourceDisplayToLogical($G(pData(sno,"Datasource")))
+ Set ..StripPI = ..StripPIDisplayToLogical($G(pData(sno,"StripPI")))
+ Set ..SubReport = ..SubReportDisplayToLogical($G(pData(sno,"SubReport")))
+ Set ..MainReport = ..MainReportDisplayToLogical($G(pData(sno,"MainReport")))
+ Set ..TooLongText = ..TooLongTextDisplayToLogical($G(pData(sno,"TooLongText")))
+ Set ..SuppressExcelHeaders = ..SuppressExcelHeadersDisplayToLogical($G(pData(sno,"SuppressExcelHeaders")))
+ Set ..XsltVersion = ..XsltVersionDisplayToLogical($G(pData(sno,"XsltVersion")))
+ Set ..ReportXMLNameSpace = ..ReportXMLNameSpaceDisplayToLogical($G(pData(sno,"ReportXMLNameSpace")))
+ Set ..ReportXMLNameSpacePrefix = ..ReportXMLNameSpacePrefixDisplayToLogical($G(pData(sno,"ReportXMLNameSpacePrefix")))
+ Set ..NamespaceDeclarations = ..NamespaceDeclarationsDisplayToLogical($G(pData(sno,"NamespaceDeclarations")))
+ Set ..%disableBreak = ..%disableBreakDisplayToLogical($G(pData(sno,"%disableBreak")))
+ // skip xmlstream
+ // skip tohtmlstream
+ // skip toxslfostream
+ // skip toexcelstream
+ // skip xmlstylesheet
+ Set ..getxmlstylesheet = ..getxmlstylesheetDisplayToLogical($G(pData(sno,"getxmlstylesheet")))
+ Set ..xmlstylesheetarg = ..xmlstylesheetargDisplayToLogical($G(pData(sno,"xmlstylesheetarg")))
+ Set ..TableAltColor = ..TableAltColorDisplayToLogical($G(pData(sno,"TableAltColor")))
+ Set ..SplitAndMerge = ..SplitAndMergeDisplayToLogical($G(pData(sno,"SplitAndMerge")))
+ Set ..RepeatingElement = ..RepeatingElementDisplayToLogical($G(pData(sno,"RepeatingElement")))
+ Set ..CountRepeatingElement = ..CountRepeatingElementDisplayToLogical($G(pData(sno,"CountRepeatingElement")))
+ Set ..CheckPDFNotZeroLength = ..CheckPDFNotZeroLengthDisplayToLogical($G(pData(sno,"CheckPDFNotZeroLength")))
+ Set ..SplitOnly = ..SplitOnlyDisplayToLogical($G(pData(sno,"SplitOnly")))
+ Set ..SplitDir = ..SplitDirDisplayToLogical($G(pData(sno,"SplitDir")))
+ Set ..SplitRootName = ..SplitRootNameDisplayToLogical($G(pData(sno,"SplitRootName")))
+ Set ..%SplitReturnedPDFs = ..%SplitReturnedPDFsDisplayToLogical($G(pData(sno,"%SplitReturnedPDFs")))
+ Set ..OutputFileName = ..OutputFileNameDisplayToLogical($G(pData(sno,"OutputFileName")))
+ Set tBool = $G(pData(sno,"UseRawIOForXML"))
+ Set tBool = $Case(tBool,"true":1,"false":0,:tBool)
+ Set ..UseRawIOForXML = tBool
+ Set ..DefaultFontFaceCopyHTML = ..DefaultFontFaceCopyHTMLDisplayToLogical($G(pData(sno,"DefaultFontFaceCopyHTML")))
+ Set ..DefaultFontSizeCopyHTML = ..DefaultFontSizeCopyHTMLDisplayToLogical($G(pData(sno,"DefaultFontSizeCopyHTML")))
+ Set ..SetProcessWideRunTimeMode = ..SetProcessWideRunTimeModeDisplayToLogical($G(pData(sno,"SetProcessWideRunTimeMode")))
+ Set ..%ArrayLogFiles = ..%ArrayLogFilesDisplayToLogical($G(pData(sno,"%ArrayLogFiles")))
+ Set tBool = $G(pData(sno,"isServer"))
+ Set tBool = $Case(tBool,"true":1,"false":0,:tBool)
+ Set ..isServer = tBool
+ Set tBool = $G(pData(sno,"isHTML5"))
+ Set tBool = $Case(tBool,"true":1,"false":0,:tBool)
+ Set ..isHTML5 = tBool
+ Set ..xmlfile = ..xmlfileDisplayToLogical($G(pData(sno,"xmlfile")))
+ Set ..OptionLang = ..OptionLangDisplayToLogical($G(pData(sno,"OptionLang")))
+ Set ..OptionNoComplexScript = ..OptionNoComplexScriptDisplayToLogical($G(pData(sno,"OptionNoComplexScript")))
+ Set ..OptionRelaxed = ..OptionRelaxedDisplayToLogical($G(pData(sno,"OptionRelaxed")))
+ Set ..OptionDPI = ..OptionDPIDisplayToLogical($G(pData(sno,"OptionDPI")))
+ Set ..OptionOwnerPassword = ..OptionOwnerPasswordDisplayToLogical($G(pData(sno,"OptionOwnerPassword")))
+ Set ..OptionUserPassword = ..OptionUserPasswordDisplayToLogical($G(pData(sno,"OptionUserPassword")))
+ Set ..OptionNoPrint = ..OptionNoPrintDisplayToLogical($G(pData(sno,"OptionNoPrint")))
+ Set ..OptionNoCopy = ..OptionNoCopyDisplayToLogical($G(pData(sno,"OptionNoCopy")))
+ Set ..OptionNoEdit = ..OptionNoEditDisplayToLogical($G(pData(sno,"OptionNoEdit")))
+ Set ..OptionNoAnnotations = ..OptionNoAnnotationsDisplayToLogical($G(pData(sno,"OptionNoAnnotations")))
+ Set ..OptionNoFillInForms = ..OptionNoFillInFormsDisplayToLogical($G(pData(sno,"OptionNoFillInForms")))
+ Set ..OptionNoAccessContent = ..OptionNoAccessContentDisplayToLogical($G(pData(sno,"OptionNoAccessContent")))
+ Set ..OptionNoAssembleDoc = ..OptionNoAssembleDocDisplayToLogical($G(pData(sno,"OptionNoAssembleDoc")))
+ Set ..OptionNoPrintHq = ..OptionNoPrintHqDisplayToLogical($G(pData(sno,"OptionNoPrintHq")))
+ Set ..OptionEnableAccessibility = ..OptionEnableAccessibilityDisplayToLogical($G(pData(sno,"OptionEnableAccessibility")))
+ Set ..OptionPDFProfile = ..OptionPDFProfileDisplayToLogical($G(pData(sno,"OptionPDFProfile")))
+ Set ..OptionConserve = ..OptionConserveDisplayToLogical($G(pData(sno,"OptionConserve")))
+ Set ..OptionCachePath = ..OptionCachePathDisplayToLogical($G(pData(sno,"OptionCachePath")))
+ Set ..OptionFlush = ..OptionFlushDisplayToLogical($G(pData(sno,"OptionFlush")))
+ Set ..UseHTML5 = ..UseHTML5DisplayToLogical($G(pData(sno,"UseHTML5")))
+ Set ..UseSemaphore = ..UseSemaphoreDisplayToLogical($G(pData(sno,"UseSemaphore")))
+ Set ..AggregatesIgnoreNLS = ..AggregatesIgnoreNLSDisplayToLogical($G(pData(sno,"AggregatesIgnoreNLS")))
+ Set ..SaxMemSize = ..SaxMemSizeDisplayToLogical($G(pData(sno,"SaxMemSize")))
+ Set ..PDFMergeMemSize = ..PDFMergeMemSizeDisplayToLogical($G(pData(sno,"PDFMergeMemSize")))
+ Set ..Mode = ..ModeDisplayToLogical($G(pData(sno,"Mode")))
+ Set ..FileLifeTime = ..FileLifeTimeDisplayToLogical($G(pData(sno,"FileLifeTime")))
+ Set ..OldBehaviorLineFeedOnBreak = ..OldBehaviorLineFeedOnBreakDisplayToLogical($G(pData(sno,"OldBehaviorLineFeedOnBreak")))
+ Quit:pSeries'=""
+ }
+ If ('tSC) Quit tSC
+ Quit tSC }
+%CreateDisplay()
+ New tSC
+ New report1
+ Set report1 = ""
+ If (..SubReport="") Kill %ComponentIds
+ New report1
+ Set report1 = ##class(%ZEN.Report.Display.report).%New()
+ New %display Set %display = report1
+ Set report1.name="OrdersReport"
+ Set report1.style="font-family : serif"
+ New hdr2
+ Set hdr2 = ##class(%ZEN.Report.Display.header).%New()
+ Do report1.children.Insert(hdr2)
+ New p3
+ Set p3 = ##class(%ZEN.Report.Display.p).%New()
+ Set p3.class="banner1"
+ Set p3.content=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3975605940"),"製品別注文レポート")
+ Do hdr2.children.Insert(p3)
+ If (p3.id'="") {
+ Set %ComponentIds(p3.id) = p3
+ }
+ New f3
+ Set f3 = ##class(%ZEN.Report.Display.fo).%New()
+ Do hdr2.children.Insert(f3)
+ New ln4
+ Set ln4 = ##class(%ZEN.Report.Display.line).%New()
+ Set ln4.pattern="empty"
+ Do f3.children.Insert(ln4)
+ If (ln4.id'="") {
+ Set %ComponentIds(ln4.id) = ln4
+ }
+ New ln4
+ Set ln4 = ##class(%ZEN.Report.Display.line).%New()
+ Set ln4.pattern="empty"
+ Do f3.children.Insert(ln4)
+ If (ln4.id'="") {
+ Set %ComponentIds(ln4.id) = ln4
+ }
+ If (f3.id'="") {
+ Set %ComponentIds(f3.id) = f3
+ }
+ New tbl3
+ Set tbl3 = ##class(%ZEN.Report.Display.table).%New()
+ Set tbl3.class="table1"
+ Set tbl3.orient="row"
+ Set tbl3.style="font-family : serif"
+ Set tbl3.width="3.45in"
+ Do hdr2.children.Insert(tbl3)
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.caption=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3183892391"),"作成者:")
+ Set tm4.field="@runBy"
+ Do tbl3.children.Insert(tm4)
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.caption=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3129149837"),"作成時間:")
+ Set tm4.field="@runTime"
+ Do tbl3.children.Insert(tm4)
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.caption=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1653232181"),"注文数合計:")
+ Set tm4.field="count"
+ Do tbl3.children.Insert(tm4)
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.caption=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2313667700"),"注文総額:")
+ Set tm4.field="totalSum"
+ Do tbl3.children.Insert(tm4)
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ If (tbl3.id'="") {
+ Set %ComponentIds(tbl3.id) = tbl3
+ }
+ If (hdr2.id'="") {
+ Set %ComponentIds(hdr2.id) = hdr2
+ }
+ New grp2
+ Set grp2 = ##class(%ZEN.Report.Display.group).%New()
+ Set grp2.line="1px"
+ Set grp2.name="OrdersRep"
+ Set grp2.pagebreak=1
+ Do report1.children.Insert(grp2)
+ New hdr3
+ Set hdr3 = ##class(%ZEN.Report.Display.header).%New()
+ Do grp2.children.Insert(hdr3)
+ New ln4
+ Set ln4 = ##class(%ZEN.Report.Display.line).%New()
+ Set ln4.pattern="empty"
+ Do hdr3.children.Insert(ln4)
+ If (ln4.id'="") {
+ Set %ComponentIds(ln4.id) = ln4
+ }
+ New tbl4
+ Set tbl4 = ##class(%ZEN.Report.Display.table).%New()
+ Set tbl4.class="table2"
+ Set tbl4.orient="row"
+ Set tbl4.width="3.8in"
+ Do hdr3.children.Insert(tbl4)
+ New tm5
+ Set tm5 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm5.field="@name"
+ Set tm5.width="2in"
+ Do tbl4.children.Insert(tm5)
+ New cptn6
+ Set cptn6 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn6.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4160096662"),"商品:")
+ Set cptn6.width="2in"
+ Do tm5.children.Insert(cptn6)
+ If (cptn6.id'="") {
+ Set %ComponentIds(cptn6.id) = cptn6
+ }
+ If (tm5.id'="") {
+ Set %ComponentIds(tm5.id) = tm5
+ }
+ New tm5
+ Set tm5 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm5.field="totalQuantity"
+ Do tbl4.children.Insert(tm5)
+ New cptn6
+ Set cptn6 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn6.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2904473392"),"注文数:")
+ Do tm5.children.Insert(cptn6)
+ If (cptn6.id'="") {
+ Set %ComponentIds(cptn6.id) = cptn6
+ }
+ If (tm5.id'="") {
+ Set %ComponentIds(tm5.id) = tm5
+ }
+ New tm5
+ Set tm5 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm5.field="totalAmount"
+ Set tm5.formatNumber="###,###,##0.00;(#)"
+ Do tbl4.children.Insert(tm5)
+ New cptn6
+ Set cptn6 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn6.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2313667700"),"注文総額:")
+ Do tm5.children.Insert(cptn6)
+ If (cptn6.id'="") {
+ Set %ComponentIds(cptn6.id) = cptn6
+ }
+ If (tm5.id'="") {
+ Set %ComponentIds(tm5.id) = tm5
+ }
+ If (tbl4.id'="") {
+ Set %ComponentIds(tbl4.id) = tbl4
+ }
+ New ln4
+ Set ln4 = ##class(%ZEN.Report.Display.line).%New()
+ Set ln4.pattern="empty"
+ Do hdr3.children.Insert(ln4)
+ If (ln4.id'="") {
+ Set %ComponentIds(ln4.id) = ln4
+ }
+ If (hdr3.id'="") {
+ Set %ComponentIds(hdr3.id) = hdr3
+ }
+ New tbl3
+ Set tbl3 = ##class(%ZEN.Report.Display.table).%New()
+ Set tbl3.altcolor="#DFDFFF"
+ Set tbl3.class="table4"
+ Set tbl3.group="record"
+ Set tbl3.width="6in"
+ Do grp2.children.Insert(tbl3)
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.special="number"
+ Set tm4.style="color: darkblue;"
+ Set tm4.width=".45in"
+ Do tbl3.children.Insert(tm4)
+ New cptn5
+ Set cptn5 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn5.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1885708031"),"#")
+ Do tm4.children.Insert(cptn5)
+ If (cptn5.id'="") {
+ Set %ComponentIds(cptn5.id) = cptn5
+ }
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.field="@time"
+ Set tm4.style="padding-left: 4px;"
+ Set tm4.width="2.5in"
+ Do tbl3.children.Insert(tm4)
+ New cptn5
+ Set cptn5 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn5.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1775181110"),"販売時間")
+ Do tm4.children.Insert(cptn5)
+ If (cptn5.id'="") {
+ Set %ComponentIds(cptn5.id) = cptn5
+ }
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.field="@quantity"
+ Set tm4.width="2.65in"
+ Do tbl3.children.Insert(tm4)
+ New cptn5
+ Set cptn5 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn5.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"449631239"),"数量")
+ Do tm4.children.Insert(cptn5)
+ If (cptn5.id'="") {
+ Set %ComponentIds(cptn5.id) = cptn5
+ }
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ New tm4
+ Set tm4 = ##class(%ZEN.Report.Display.item).%New()
+ Set tm4.field="@amount"
+ Set tm4.width="2.65in"
+ Do tbl3.children.Insert(tm4)
+ New cptn5
+ Set cptn5 = ##class(%ZEN.Report.Display.caption).%New()
+ Set cptn5.value=$get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"419838949"),"金額")
+ Do tm4.children.Insert(cptn5)
+ If (cptn5.id'="") {
+ Set %ComponentIds(cptn5.id) = cptn5
+ }
+ If (tm4.id'="") {
+ Set %ComponentIds(tm4.id) = tm4
+ }
+ If (tbl3.id'="") {
+ Set %ComponentIds(tbl3.id) = tbl3
+ }
+ If (grp2.id'="") {
+ Set %ComponentIds(grp2.id) = grp2
+ }
+ If (report1.id'="") {
+ Set %ComponentIds(report1.id) = report1
+ }
+ Do ..%OnAfterCreateDisplay(report1)
+ Quit report1
+%GetPropertyInfo(pInfo,pExtended=0,pModelId="",pContainer="") public {
+ // Generated by %ZEN.DataModel.ObjectDataModel
+ Set tSC = 1
+ Set pInfo("ReportDir") = $I(pInfo)
+ Set pInfo("ConnectTimeOut") = $I(pInfo)
+ Set pInfo("RenderTimeOut") = $I(pInfo)
+ Set pInfo("RenderDirectlyOnTimeout") = $I(pInfo)
+ Set pInfo("PrintServer") = $I(pInfo)
+ Set pInfo("PrintTimeOut") = $I(pInfo)
+ Set pInfo("ExcelServer") = $I(pInfo)
+ Set pInfo("ExcelServerTimeOut") = $I(pInfo)
+ Set pInfo("PS") = $I(pInfo)
+ Set pInfo("TimeOut") = $I(pInfo)
+ Set pInfo("%display") = $I(pInfo)
+ Set pInfo("%display","%ptype") = "1"
+ Set pInfo("Datasource") = $I(pInfo)
+ Set pInfo("StripPI") = $I(pInfo)
+ Set pInfo("SubReport") = $I(pInfo)
+ Set pInfo("MainReport") = $I(pInfo)
+ Set pInfo("TooLongText") = $I(pInfo)
+ Set pInfo("SuppressExcelHeaders") = $I(pInfo)
+ Set pInfo("XsltVersion") = $I(pInfo)
+ Set pInfo("ReportXMLNameSpace") = $I(pInfo)
+ Set pInfo("ReportXMLNameSpacePrefix") = $I(pInfo)
+ Set pInfo("NamespaceDeclarations") = $I(pInfo)
+ Set pInfo("%disableBreak") = $I(pInfo)
+ Set pInfo("xmlstream") = $I(pInfo)
+ Set pInfo("xmlstream","%ptype") = "1"
+ Set pInfo("tohtmlstream") = $I(pInfo)
+ Set pInfo("tohtmlstream","%ptype") = "1"
+ Set pInfo("toxslfostream") = $I(pInfo)
+ Set pInfo("toxslfostream","%ptype") = "1"
+ Set pInfo("toexcelstream") = $I(pInfo)
+ Set pInfo("toexcelstream","%ptype") = "1"
+ Set pInfo("xmlstylesheet") = $I(pInfo)
+ Set pInfo("xmlstylesheet","%ptype") = "1"
+ Set pInfo("getxmlstylesheet") = $I(pInfo)
+ Set pInfo("xmlstylesheetarg") = $I(pInfo)
+ Set pInfo("TableAltColor") = $I(pInfo)
+ Set pInfo("SplitAndMerge") = $I(pInfo)
+ Set pInfo("RepeatingElement") = $I(pInfo)
+ Set pInfo("CountRepeatingElement") = $I(pInfo)
+ Set pInfo("CheckPDFNotZeroLength") = $I(pInfo)
+ Set pInfo("SplitOnly") = $I(pInfo)
+ Set pInfo("SplitDir") = $I(pInfo)
+ Set pInfo("SplitRootName") = $I(pInfo)
+ Set pInfo("%SplitReturnedPDFs") = $I(pInfo)
+ Set pInfo("OutputFileName") = $I(pInfo)
+ Set pInfo("UseRawIOForXML") = $I(pInfo)
+ Set pInfo("UseRawIOForXML","%ptype") = "14"
+ Set pInfo("DefaultFontFaceCopyHTML") = $I(pInfo)
+ Set pInfo("DefaultFontSizeCopyHTML") = $I(pInfo)
+ Set pInfo("SetProcessWideRunTimeMode") = $I(pInfo)
+ Set pInfo("%ArrayLogFiles") = $I(pInfo)
+ Set pInfo("isServer") = $I(pInfo)
+ Set pInfo("isServer","%ptype") = "14"
+ Set pInfo("isHTML5") = $I(pInfo)
+ Set pInfo("isHTML5","%ptype") = "14"
+ Set pInfo("xmlfile") = $I(pInfo)
+ Set pInfo("OptionLang") = $I(pInfo)
+ Set pInfo("OptionNoComplexScript") = $I(pInfo)
+ Set pInfo("OptionRelaxed") = $I(pInfo)
+ Set pInfo("OptionDPI") = $I(pInfo)
+ Set pInfo("OptionOwnerPassword") = $I(pInfo)
+ Set pInfo("OptionUserPassword") = $I(pInfo)
+ Set pInfo("OptionNoPrint") = $I(pInfo)
+ Set pInfo("OptionNoCopy") = $I(pInfo)
+ Set pInfo("OptionNoEdit") = $I(pInfo)
+ Set pInfo("OptionNoAnnotations") = $I(pInfo)
+ Set pInfo("OptionNoFillInForms") = $I(pInfo)
+ Set pInfo("OptionNoAccessContent") = $I(pInfo)
+ Set pInfo("OptionNoAssembleDoc") = $I(pInfo)
+ Set pInfo("OptionNoPrintHq") = $I(pInfo)
+ Set pInfo("OptionEnableAccessibility") = $I(pInfo)
+ Set pInfo("OptionPDFProfile") = $I(pInfo)
+ Set pInfo("OptionConserve") = $I(pInfo)
+ Set pInfo("OptionCachePath") = $I(pInfo)
+ Set pInfo("OptionFlush") = $I(pInfo)
+ Set pInfo("UseHTML5") = $I(pInfo)
+ Set pInfo("UseSemaphore") = $I(pInfo)
+ Set pInfo("AggregatesIgnoreNLS") = $I(pInfo)
+ Set pInfo("SaxMemSize") = $I(pInfo)
+ Set pInfo("PDFMergeMemSize") = $I(pInfo)
+ Set pInfo("Mode") = $I(pInfo)
+ Set pInfo("FileLifeTime") = $I(pInfo)
+ Set pInfo("OldBehaviorLineFeedOnBreak") = $I(pInfo)
+ If (pExtended) {
+  Set tProp = "ReportDir"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"763682723"),"ReportDir")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "ConnectTimeOut"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2960494927"),"-1 for RenderConnectTimeOut means never timeout.<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2546376193"),"ConnectTimeOut")
+  Set tProp = "RenderTimeOut"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4205180378"),"-1 for RenderTimeOut means never timeout.<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"530661634"),"RenderTimeOut")
+  Set tProp = "RenderDirectlyOnTimeout"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2184554284"),"if we do not render directly to Render Server in RENDERTIMEOUT, Zen Reports renders directly, spawing new JVM")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1703852295"),"RenderDirectlyOnTimeout")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "PrintServer"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3001703955"),"specifies PrintServer port of PrintServer which prints PDFs<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"536885568"),"PrintServer")
+  Set tProp = "PrintTimeOut"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3456409871"),"-1 for PrintTimeOut means never timeout.<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2608089127"),"PrintTimeOut")
+  Set tProp = "ExcelServer"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1529911738"),"specifies ExcelServer port of ExcelServer which renders Excel spreadsheets<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1962313057"),"ExcelServer")
+  Set tProp = "ExcelServerTimeOut"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2058591467"),"-1 for ExcelServerTimeOut means never timeout.<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"908352226"),"ExcelServerTimeOut")
+  Set tProp = "PS"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"481276661"),"Postscript Printer or Printer used by pdfprint/PrintServer")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"151015397"),"PS")
+  Set tProp = "TimeOut"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1991314158"),"TimeOut")
+  Set tProp = "%display"
+  Set pInfo(tProp,"%type") = "dataCombo"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4024237276"),"backpointer to display object that belongs to this report")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1158225542"),"%display")
+  Set pInfo(tProp,"cached") = 1
+  Set tProp = "Datasource"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"696202137"),"See the DATASOURCE parameter for details.")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3562036384"),"Datasource")
+  Set tProp = "StripPI"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"999597205"),"StripPI")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "SubReport"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3453638387"),"This property is used on toxslfo and tohtml to indicate they are being fetched as sub-reports")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"655259700"),"SubReport")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "MainReport"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2780442296"),"MainReport")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "TooLongText"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2685138942"),"TooLongText")
+  Set tProp = "SuppressExcelHeaders"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3288749144"),"SuppressExcelHeaders")
+  Set tProp = "XsltVersion"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3406064621"),"XsltVersion")
+  Set tProp = "ReportXMLNameSpace"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4240648898"),"ReportXMLNameSpace")
+  Set tProp = "ReportXMLNameSpacePrefix"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2607464702"),"ReportXMLNameSpacePrefix")
+  Set tProp = "NamespaceDeclarations"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"908730082"),"If provided, this is a string of XML namespace declarations.")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2395489701"),"NamespaceDeclarations")
+  Set tProp = "%disableBreak"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2062581167"),"%disableBreak")
+  Set tProp = "xmlstream"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3953260839"),"xmlstream")
+  Set tProp = "tohtmlstream"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3055109123"),"tohtmlstream")
+  Set tProp = "toxslfostream"
+  Set pInfo(tProp,"%type") = "hidden"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3865499387"),"toxslfostream")
+  Set tProp = "toexcelstream"
+  Set pInfo(tProp,"%type") = "dataCombo"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"456816239"),"toexcelstream")
+  Set pInfo(tProp,"cached") = 1
+  Set tProp = "xmlstylesheet"
+  Set pInfo(tProp,"%type") = "dataCombo"
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1437562892"),"xmlstylesheet")
+  Set pInfo(tProp,"cached") = 1
+  Set tProp = "getxmlstylesheet"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4037199647"),"getxmlstylesheet")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "xmlstylesheetarg"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3491636028"),"xmlstylesheetarg")
+  Set tProp = "TableAltColor"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4160753451"),"TableAltColor")
+  Set tProp = "SplitAndMerge"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"73192082"),"SplitAndMerge")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "RepeatingElement"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2796085969"),"RepeatingElement")
+  Set tProp = "CountRepeatingElement"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2020424904"),"CountRepeatingElement")
+  Set tProp = "CheckPDFNotZeroLength"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"480840212"),"CheckPDFNotZeroLength")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "SplitOnly"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"10571416"),"If SPLITANDMERGE set, split only, don't merge at end")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"261522931"),"SplitOnly")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "SplitDir"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2173594906"),"This is directory where PDF files produced by split will go")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"537785171"),"SplitDir")
+  Set tProp = "SplitRootName"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2353972185"),"Instead of generating temporary names for split PDF files, use this as a root name, and add an integer suffix to file")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"89462854"),"SplitRootName")
+  Set tProp = "%SplitReturnedPDFs"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"374041946"),"This property hold returned PDFs")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"567466473"),"%SplitReturnedPDFs")
+  Set tProp = "OutputFileName"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1875190230"),"This is an internal property used to hold the outputfilename")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"90257998"),"OutputFileName")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "UseRawIOForXML"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"858116320"),"UseRawIOForXML - set to 1 to use RawIO in XML output, otherwise use translation tables")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2420083845"),"UseRawIOForXML")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "DefaultFontFaceCopyHTML"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1809425882"),"Used on item when copyhtml=""true"" to specify a default font face")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"352665958"),"DefaultFontFaceCopyHTML")
+  Set tProp = "DefaultFontSizeCopyHTML"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2567830231"),"Used on item when copyhtml=""true"" to specify a default font size")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3771109613"),"DefaultFontSizeCopyHTML")
+  Set tProp = "SetProcessWideRunTimeMode"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2317284015"),"Process wide runtime mode")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"780999443"),"SetProcessWideRunTimeMode")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "%ArrayLogFiles"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2194247239"),"Place to hold temporary logfiles")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3818292681"),"%ArrayLogFiles")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "isServer"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2600853292"),"isServer")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "isHTML5"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1344665827"),"isHTML5")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "xmlfile"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 30
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2903898342"),"xmlfile generated by ZEN Report")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"127414006"),"xmlfile")
+  Set pInfo(tProp,"maxlength") = 50
+  Set tProp = "OptionLang"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1419843445"),"For Fop only, the language to use for user information with value in OptionLang<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"628351281"),"OptionLang")
+  Set tProp = "OptionNoComplexScript"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"513477278"),"For Fop only, disable complex script features when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2307216914"),"OptionNoComplexScript")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionRelaxed"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"423680557"),"For Fop only, relaxed/less strict validation (where available) when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2951552713"),"OptionRelaxed")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionDPI"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"816731047"),"For Fop only, target resolution in dots per inch (dpi) where xxx is a number with value in OptionDPI<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2115830418"),"OptionDPI")
+  Set tProp = "OptionOwnerPassword"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"713017593"),"For Fop only, PDF file will be encrypted with value in OptionOwnerPassword<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"922836901"),"OptionOwnerPassword")
+  Set tProp = "OptionUserPassword"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3795350298"),"For Fop only, PDF file will be encrypted with value in OptionUserPassword<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3708769142"),"OptionUserPassword")
+  Set tProp = "OptionNoPrint"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3291668276"),"For Fop only, PDF file will be encrypted without printing permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1808950795"),"OptionNoPrint")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoCopy"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3789449241"),"For Fop only, PDF file will be encrypted without copy content permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4175195023"),"OptionNoCopy")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoEdit"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3360633296"),"For Fop only, PDF file will be encrypted without edit content permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"877858327"),"OptionNoEdit")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoAnnotations"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3767849023"),"For Fop only, PDF file will be encrypted without edit annotation permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"128211375"),"OptionNoAnnotations")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoFillInForms"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2494847618"),"For Fop only, PDF file will be encrypted without fill in interactive form fields when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2508315053"),"OptionNoFillInForms")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoAccessContent"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2368253471"),"For Fop only, PDF file will be encrypted without extract text and graphics permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1878200790"),"OptionNoAccessContent")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoAssembleDoc"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1478304009"),"For Fop only, PDF file will be encrypted without assemble the document permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1201384053"),"OptionNoAssembleDoc")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionNoPrintHq"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2159380914"),"For Fop only, PDF file will be encrypted without print high quality permission when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"425648172"),"OptionNoPrintHq")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionEnableAccessibility"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"870951037"),"For Fop only, enables accessibility features (Tagged PDF etc., default off) when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2638365033"),"OptionEnableAccessibility")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionPDFProfile"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1139697665"),"For Fop only, PDF file will be generated with the specified profile with value in OptionPDFProfile<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1856827730"),"OptionPDFProfile")
+  Set tProp = "OptionConserve"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2330496915"),"For Fop only, enable memory-conservation policy (trades memory-consumption for disk I/O) when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2376772646"),"OptionConserve")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "OptionCachePath"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1315368723"),"For Fop only, specifies a file/directory path location for the font cache file with value in OptionCachePath<br>")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"506222924"),"OptionCachePath")
+  Set tProp = "OptionFlush"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1493158633"),"For Fop only, flushes the current font cache file when true or 1<br>")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1184312964"),"OptionFlush")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "UseHTML5"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3674734461"),"Set to true in order to generate HTML5 regardless of browser support")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2743871312"),"UseHTML5")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "UseSemaphore"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2392724063"),"Set to true to cause ZEN Report to control going to RenderServer with Semaphore")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"285478814"),"UseSemaphore")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "AggregatesIgnoreNLS"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1782998097"),"Aggregates Ignore NLS if this is true")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3435084798"),"AggregatesIgnoreNLS")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+  Set tProp = "SaxMemSize"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2715793194"),"Specify amount of memory used by SAXON processing (especially used when XSLTVERSION=2.0), defaults to 512m")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"4025820955"),"SaxMemSize")
+  Set tProp = "PDFMergeMemSize"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2715793194"),"Specify amount of memory used by SAXON processing (especially used when XSLTVERSION=2.0), defaults to 512m")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"2872846302"),"PDFMergeMemSize")
+  Set tProp = "Mode"
+  Set pInfo(tProp,"%type") = "textarea"
+  Set pInfo(tProp,"size") = 5
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"3898530174"),"Specify report mode")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"939059349"),"Mode")
+  Set tProp = "FileLifeTime"
+  Set pInfo(tProp,"%type") = "text"
+  Set pInfo(tProp,"size") = 6
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1963514378"),"Specify file life time, when life time exceeded, purge task will delete it")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1404862046"),"FileLifeTime")
+  Set tProp = "OldBehaviorLineFeedOnBreak"
+  Set pInfo(tProp,"%type") = "checkbox"
+  Set pInfo(tProp,"title") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1954053736"),"Old behavior of linefeedOnBreak, where for PDF we issue <fo:block/> not a line feed")
+  Set pInfo(tProp,"caption") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"1485262111"),"OldBehaviorLineFeedOnBreak")
+  Set pInfo(tProp,"label") = $get(^IRIS.Msg("TRUEDEMO",$s($mvv(58)="":"en",1:$mvv(58)),"0"),"")
+ }
+ Quit tSC }
+%GetTempDir() public {
+	Quit ^%SYS("TempDir") }
+%InitProperties() public {
+ Do ..%InitProperties1()
+ Quit 1 }
+%RunReport(embedXSL=0,setProcessWideRunTimeMode=0,pMode="")
+ New tSC,tStart
+ Set tSC = 1
+ Set tStart = $ZH
+ ; report level parameters xmlns= xmlprefix=
+ New i,stream,%dummy,%query,%node,%level,%break,%tag,%save,%breakValue,%trueBreak,%switch,%endLoop,%noData,%lastSibling,%firstSibling,%trueSiblingNo,%hasQuery,%groupStarted,%deferredElements,%hasData,%embedXSL,%xmlns,%xmlprefix,%tagname,%elname,%currentrow,%orderby,%cache,%rowpos,%indices,%endFlag,%val,%streamStore,%callStore,%open,%group, %label, %name, %ifexpression, tProcessGroup, tag, label, tBreakOnExpression, %filter, %name, text, inc, %agg, %AggExpression, %setProcessWideRunTimeMode, %top, %sqlexpression, %labelId, tStatement, SQLCODE, %excelSheetNames, err, %excelDateTime, %horlog, %odbcDate, %seconds, %excelTime, %runtimeMode, %excelName, %mode, days, daysdiff, excelDays, excelFraction, seconds, %count, %excelname,ctr,tParms,%agg0,%count0,%countForAvg0,%agg1,%count1,%countForAvg1,%agg2,%count2,%countForAvg2
+ Kill ^||%ISC.ZENReport.elementStore
+ Set %embedXSL = embedXSL
+ Set %setProcessWideRunTimeMode = setProcessWideRunTimeMode
+ Set %mode = $g(pMode)
+ if %embedXSL'=0 Set %xmlns="http://www.intersytems.com/mydefaultnamespace"
+ else  Set %xmlns=""
+ if %embedXSL'=0 Set %xmlprefix="my"
+ else  Set %xmlprefix=""
+ Set %endLoop=0
+ Set %firstSibling(0)=1
+ Set %lastSibling(0)=1
+ Set %trueSiblingNo(0)=1
+ Set %groupStarted(0) = 1
+ Set %groupStarted(1) = 0
+ if %setProcessWideRunTimeMode Set tRuntimeMode = $zu(115,5,2)
+  Set tStatement=##class(%SQL.Statement).%New(2)
+  If tStatement="" Set tSC=%objlasterror goto Error
+  Set tSC = tStatement.%Prepare("select ps.TimeOfSale,p.ShortName,ps.Quantity,ps.Amount   from TRU.ProductSale ps, TRU.Product p where ps.Product = p.ID order by p.ShortName, ps.TimeOfSale") If ('tSC) Goto Error
+  Set %query(0) = tStatement.%Execute()
+  if %query(0).%SQLCODE < 0 { set tSC = $$Error^%apiOBJ(5540,%query(0).%SQLCODE,%query(0).%Message) Goto Error }
+  Set %noData(0,1) = 0
+  Set %runtimeMode(0,1)=2
+  Set %top = ""
+  X:$e(%top)="%" "Set %top=$e(%top,2,*) "
+  Do CalcCache^%occZENReports(0,1,"",%top,0,1)
+ Set %count0(%trueSiblingNo(0))=0
+ Set %node(1)=0
+ Set %agg0(%trueSiblingNo(0),3)=0 // totalSum
+ Set %agg0(%trueSiblingNo(0),4)=0 // count
+ Set %name="OrdersReport"
+ if $e(%name)="!" {
+     X "Set %name="_$e(%name,2,$L(%name))
+ }
+ Set %tagname = %name
+ Set %tag(0)=%tagname
+ Write "<"_%tagname
+ Do ..%OnReportTag()
+ Do ..%TagNameSpace(%embedXSL)
+ Set %val=""
+ Set %filter=1
+ Set text=$tr($ZDT($H,3),$c(0))
+ Write:%filter'=0 " runTime='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Set %val=""
+ Set %filter=1
+ Set text=$tr($UserName,$c(0))
+ Write:%filter'=0 " runBy='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Write ">",!
+Fetch1
+ If '$$Next^%occZENReports(1,0,.tSC) Goto EndLoop
+ Do GroupAcc1 ; jsl 11-15-07
+ If ('tSC) Goto Error
+Dispatch
+ if $g(%label)="GroupEnd2" k %label GoTo GroupEnd2
+ if $g(%label)="GroupEnd3" k %label GoTo GroupEnd3
+ ; parameters xmlns= xmlprefix=
+Group2 ; OrdersRep
+ X "Set %ifexpression=1"
+ If '%ifexpression {
+ s %lastSibling(1)=1
+ }
+ If '%ifexpression Goto EndFetchX2 ;OrdersRep
+ Set %group(1,1)="GroupEnd2"
+ Set tBreakOnExpression=$$FieldLookup^%occZENReports("ShortName",0,1)
+ Set tProcessGroup = ('$D(%break(1))||(%break(1)'=tBreakOnExpression))
+ Set:$D(%break(1)) %trueBreak(1,1) = (%break(1)'=tBreakOnExpression)
+ If tProcessGroup {
+  Set %query(1)=%query(0)
+  Set %noData(1,1) = 0
+  Set %hasData(1,1) = 0
+  Set %runtimeMode(1,1)=$g(%runtimeMode(0,1))
+  Set %hasQuery(1)=0
+  Set %top = ""
+  X:$e(%top)="%" "Set %top=$e(%top,2,*) "
+  Do CalcCache^%occZENReports(1,0,"",%top,0,1)
+   Do GroupStart2 ; OrdersRep
+  Do GroupBreak2
+ }
+   Set %switch(1)=1
+   if +$g(%trueBreak(1,1)) {
+   } 
+   if '$g(%trueBreak(1,1)) {
+                    Goto Fetch2
+   } else {
+   } 
+Fetch2 ; OrdersRep
+ if $D(%cache(1)),$isobject(%cache(1)) {
+   Set %rowpos(1)=%cache(1).counter.currentrow
+ }
+ Goto GroupDo2
+GroupBreak2 ; OrdersRep
+ Quit
+GroupStart2 ; OrdersRep
+ If ($D(%tag(1))) { Do GroupEnd2 }
+ if 'tSC goto Error
+ Set %groupStarted(1)= 1
+ Set %trueSiblingNo(1)=1
+ Set %open("GroupEnd2")=1
+ Set %count1(%trueSiblingNo(1))=0
+ Set %break(1)=$$FieldLookup^%occZENReports("ShortName",0,1)
+ Set %level=1
+ Set inc=$I(%node(1))
+ s %lastSibling(1)=1
+ s %firstSibling(1)=1
+ Kill ^||%ISC.ZENReport.elementStore(1,1)
+ Kill %streamStore(1,1)
+ Kill %callStore(1,1)
+ Set %name="OrdersRep"
+ if $e(%name)="!" {
+     X "Set %name="_$e(%name,2,$L(%name))
+ }
+ Set %tagname = %name
+ Set %tag(1)=%tagname
+ Write "<"_%tagname
+ Set %filter=1
+ Set text=$tr($$FieldLookup^%occZENReports("ShortName",0,1),$c(0))
+ Write:%filter'=0 " name='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Write ">",!
+ Set %count1(%trueSiblingNo(1))=0
+ Set %node(2)=0
+ Set %agg1(%trueSiblingNo(1),2)=0 // totalQuantity
+ Set %agg1(%trueSiblingNo(1),3)=0 // totalAmount
+ Quit
+GroupAcc2 ; OrdersRep
+ if (%firstSibling(1)=1)||(%hasQuery(%trueSiblingNo(1))=1) {
+ Set %count1(%trueSiblingNo(1))=$G(%count1(%trueSiblingNo(1)))+1
+ Set %val=$$FieldLookup^%occZENReports("Quantity",1,1)
+ Set %agg1(%trueSiblingNo(1),2)=$g(%agg1(%trueSiblingNo(1),2))+($classmethod("%ZEN.Report.aggregate","%PreProcessValue",$$FieldLookup^%occZENReports("Quantity",1,1),"1",2,"1")) // totalQuantity
+ Set %val=$$FieldLookup^%occZENReports("Amount",1,1)
+ Set %agg1(%trueSiblingNo(1),3)=$g(%agg1(%trueSiblingNo(1),3))+($classmethod("%ZEN.Report.aggregate","%PreProcessValue",$$FieldLookup^%occZENReports("Amount",1,1),"1",2,"1")) // totalAmount
+ }
+ Quit
+GroupEnd2 ; OrdersRep
+ Set %count=$g(%count)+1
+ Set tag ="GroupEnd2"
+ Set label=$g(%group(1,%trueSiblingNo(1)))
+ if label="" Set label=tag
+ if tag'=label,%count=1 Set %label=label Set %count=$g(%count)+1 goto Dispatch
+ Set %count=0
+ Set %open(label)=0
+ If ($D(%tag(2))) { Do GroupEnd3 } //record close child group
+ if $g(%tag(1))'="" {
+ new i,stream,chunksize,chunk,filteredStream,len,c,searchLITag,tag,part
+ for i=1:1:+$g(^||%ISC.ZENReport.elementStore(1,%trueSiblingNo(1))) w ^||%ISC.ZENReport.elementStore(1,%trueSiblingNo(1),i),!
+ for i=1:1:+$g(%streamStore(1,%trueSiblingNo(1))) {
+     set elemname=%streamStore(1,%trueSiblingNo(1),"elemname",i)
+     set oid=%streamStore(1,%trueSiblingNo(1),"oid",i)
+     set escape=%streamStore(1,%trueSiblingNo(1),"escape",i)
+	 w !,"<"_elemname_">"
+     set stream=##class(%Stream.Object).%Open(oid)
+     if stream'="" {
+       do stream.Rewind()
+       if escape'="html" {
+         Set chunksize=32000
+         While 'stream.AtEnd {
+             Set chunk=stream.Read(chunksize)
+             Set chunk=$tr(chunk,$c(0))
+             w $$xml^%occZENReports(chunk,escape)
+         }
+       } else { 
+         set filteredStream=##class(%Library.GlobalCharacterStream).%New()
+         Set searchLITag=0
+         while (stream.AtEnd=0) {
+            Set c=stream.Read(1)
+            if c="<",searchLITag=0 {
+                Do filteredStream.Write(c)
+                set tag=stream.Read(2)
+                Do filteredStream.Write(tag)
+                if tag="LI"||(tag="li") {
+                   Set searchLITag=1
+                }
+            }
+            elseif c="<",searchLITag=1 {
+               set tag=stream.Read(4)
+               if $e(tag,1,3)="LI>"||($e(tag,1,3)="li>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=1
+               } elseif $e(tag,1,4)="/UL>"||($e(tag,1,4)="/UL>")||($e(tag,1,4)="/OL>")||($e(tag,1,4)="/OL>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } elseif $e(tag,1,4)="/LI>"||($e(tag,1,4)="/li>") {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } else {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+               }
+            } else {
+               Do filteredStream.Write(c)
+            }
+         }
+         set stream=filteredStream
+         Do stream.Rewind()
+         set len=20000
+         while (stream.AtEnd=0) {
+             set part=stream.Read(.len)
+             if ($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")) while (($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")))&&(stream.AtEnd=0) { s part=part_stream.Read(1) }
+             w $$xml^%occZENReports(part,escape)
+         }
+       }
+     }
+	 w !,"</"_elemname_">"
+ }
+ new i,stream,chunk,beg,end,hasStatus
+ Set tSC=1
+ for i=1:1:+$g(%callStore(1,%trueSiblingNo(1))) {
+    Set method=%callStore(1,%trueSiblingNo(1),"method",i)
+    Set param=%callStore(1,%trueSiblingNo(1),"param",i)
+    Set hasStatus=%callStore(1,%trueSiblingNo(1),"hasStatus",i)
+    if hasStatus {
+        Set stream=$zobjmethod($this,method,param,.tSC)
+        if 'tSC quit
+    } else {
+        Set stream=$zobjmethod($this,method,param)
+    }
+    if tSC=1,$D(stream),$isObject(stream) {
+        Do stream.Rewind()
+        Set chunksize=32000
+	    While 'stream.AtEnd {
+	        Set chunk=stream.Read(.chunksize)
+            if $f(chunk,"<?xml") {
+                Set beg=$f(chunk,"<?xml")-$L("<?xml")-1
+                Set end=$f(chunk,"?>",beg)
+                Set chunk=$e(chunk,1,beg)_$e(chunk,end,$l(chunk))
+            }
+            w chunk
+        }
+    }
+ }
+ if 'tSC quit
+ New saverow
+ if $D(%rowpos(1)) {
+   Set saverow=%cache(1).counter.currentrow
+   Set %cache(1).counter.currentrow=%rowpos(1)
+ }
+ if $D(%rowpos(1)) {
+   Set %cache(1).counter.currentrow=saverow
+ }
+ if (%firstSibling(1)=1)||(%hasQuery(%trueSiblingNo(1))=1) {
+ if (%firstSibling(1)=1)||(%hasQuery(%trueSiblingNo(1))=1) {
+ Set %val=$G(%agg1(%trueSiblingNo(1),2))
+ X "Set %filter=1"
+ If (+%filter'=0) {
+ Set %elname = "totalQuantity"
+   Write "<"_%elname_">",$$xml^%occZENReports($classmethod("%ZEN.Report.aggregate","%PostProcessValue",$g(%agg1(%trueSiblingNo(1),2)),"1",2,"1"),"xml"),"</"_%elname_">",!
+ }
+ Set %val=$G(%agg1(%trueSiblingNo(1),3))
+ X "Set %filter=1"
+ If (+%filter'=0) {
+ Set %elname = "totalAmount"
+   Write "<"_%elname_">",$$xml^%occZENReports($classmethod("%ZEN.Report.aggregate","%PostProcessValue",$g(%agg1(%trueSiblingNo(1),3)),"1",2,"1"),"xml"),"</"_%elname_">",!
+ }
+ }
+ }
+ Write:$g(%tag(1))'="" "</",%tag(1),">",!
+ Kill %tag(1)
+ }
+ kill %break(1)
+ kill:$g(%lastSibling(1)) %trueBreak(1,1)
+ Quit
+GroupDo2 ; OrdersRep
+ Do GroupAcc2 ; OrdersRep
+ ; parameters xmlns= xmlprefix=
+Group3 ; record
+ X "Set %ifexpression=1"
+ If '%ifexpression {
+ s %lastSibling(2)=1
+ }
+ If '%ifexpression Goto EndFetchX3 ;record
+ Set %group(2,1)="GroupEnd3"
+ Set tProcessGroup = 1
+ Set %trueBreak(2,1) = 0
+ If tProcessGroup {
+  Set %query(2)=%query(1)
+  Set %noData(2,1) = 0
+  Set %hasData(2,1) = 0
+  Set %runtimeMode(2,1)=$g(%runtimeMode(1,1))
+  Set %hasQuery(1)=0
+  Set %top = ""
+  X:$e(%top)="%" "Set %top=$e(%top,2,*) "
+  Do CalcCache^%occZENReports(2,0,"",%top,0,1)
+   Do GroupStart3 ; record
+  Do GroupBreak3
+ }
+   Set %switch(2)=1
+   if +$g(%trueBreak(2,1)) {
+   } 
+   if '$g(%trueBreak(2,1)) {
+                    Goto Fetch3
+   } else {
+   } 
+Fetch3 ; record
+ if $D(%cache(2)),$isobject(%cache(2)) {
+   Set %rowpos(2)=%cache(2).counter.currentrow
+ }
+ Goto GroupDo3
+GroupBreak3 ; record
+ Quit
+GroupStart3 ; record
+ If ($D(%tag(2))) { Do GroupEnd3 }
+ if 'tSC goto Error
+ Set %groupStarted(2)= 1
+ Set %trueSiblingNo(2)=1
+ Set %open("GroupEnd3")=1
+ Set %count2(%trueSiblingNo(2))=0
+ Set %break(2)=""
+ Set %level=2
+ Set inc=$I(%node(2))
+ s %lastSibling(2)=1
+ s %firstSibling(2)=1
+ Kill ^||%ISC.ZENReport.elementStore(2,1)
+ Kill %streamStore(2,1)
+ Kill %callStore(2,1)
+ Set %name="record"
+ if $e(%name)="!" {
+     X "Set %name="_$e(%name,2,$L(%name))
+ }
+ Set %tagname = %name
+ Set %tag(2)=""
+ Write "<"_%tagname
+ Set %val=$$FieldLookup^%occZENReports("TimeOfSale",1,1)
+ Set %filter=1
+ Set text=$tr($PIECE(%val,".",1),$c(0))
+ Write:%filter'=0 " time='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Set %filter=1
+ Set text=$tr($$FieldLookup^%occZENReports("Quantity",1,1),$c(0))
+ Write:%filter'=0 " quantity='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Set %filter=1
+ Set text=$tr($$FieldLookup^%occZENReports("Amount",1,1),$c(0))
+ Write:%filter'=0 " amount='",$s(((($F(text," "))&&("xml"="noneifspace")))||("xml"="none"):text,1:$ZCVT(text,"O","XML")),"'"
+ Write "/>",!
+ Set %count2(%trueSiblingNo(2))=0
+ Set %node(3)=0
+ Quit
+GroupAcc3 ; record
+ if (%firstSibling(2)=1)||(%hasQuery(%trueSiblingNo(2))=1) {
+ Set %count2(%trueSiblingNo(2))=$G(%count2(%trueSiblingNo(2)))+1
+ }
+ Quit
+GroupEnd3 ; record
+ Set %count=$g(%count)+1
+ Set tag ="GroupEnd3"
+ Set label=$g(%group(2,%trueSiblingNo(2)))
+ if label="" Set label=tag
+ if tag'=label,%count=1 Set %label=label Set %count=$g(%count)+1 goto Dispatch
+ Set %count=0
+ Set %open(label)=0
+ if $g(%tag(2))'="" {
+ new i,stream,chunksize,chunk,filteredStream,len,c,searchLITag,tag,part
+ for i=1:1:+$g(^||%ISC.ZENReport.elementStore(2,%trueSiblingNo(2))) w ^||%ISC.ZENReport.elementStore(2,%trueSiblingNo(2),i),!
+ for i=1:1:+$g(%streamStore(2,%trueSiblingNo(2))) {
+     set elemname=%streamStore(2,%trueSiblingNo(2),"elemname",i)
+     set oid=%streamStore(2,%trueSiblingNo(2),"oid",i)
+     set escape=%streamStore(2,%trueSiblingNo(2),"escape",i)
+	 w !,"<"_elemname_">"
+     set stream=##class(%Stream.Object).%Open(oid)
+     if stream'="" {
+       do stream.Rewind()
+       if escape'="html" {
+         Set chunksize=32000
+         While 'stream.AtEnd {
+             Set chunk=stream.Read(chunksize)
+             Set chunk=$tr(chunk,$c(0))
+             w $$xml^%occZENReports(chunk,escape)
+         }
+       } else { 
+         set filteredStream=##class(%Library.GlobalCharacterStream).%New()
+         Set searchLITag=0
+         while (stream.AtEnd=0) {
+            Set c=stream.Read(1)
+            if c="<",searchLITag=0 {
+                Do filteredStream.Write(c)
+                set tag=stream.Read(2)
+                Do filteredStream.Write(tag)
+                if tag="LI"||(tag="li") {
+                   Set searchLITag=1
+                }
+            }
+            elseif c="<",searchLITag=1 {
+               set tag=stream.Read(4)
+               if $e(tag,1,3)="LI>"||($e(tag,1,3)="li>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=1
+               } elseif $e(tag,1,4)="/UL>"||($e(tag,1,4)="/UL>")||($e(tag,1,4)="/OL>")||($e(tag,1,4)="/OL>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } elseif $e(tag,1,4)="/LI>"||($e(tag,1,4)="/li>") {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } else {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+               }
+            } else {
+               Do filteredStream.Write(c)
+            }
+         }
+         set stream=filteredStream
+         Do stream.Rewind()
+         set len=20000
+         while (stream.AtEnd=0) {
+             set part=stream.Read(.len)
+             if ($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")) while (($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")))&&(stream.AtEnd=0) { s part=part_stream.Read(1) }
+             w $$xml^%occZENReports(part,escape)
+         }
+       }
+     }
+	 w !,"</"_elemname_">"
+ }
+ new i,stream,chunk,beg,end,hasStatus
+ Set tSC=1
+ for i=1:1:+$g(%callStore(2,%trueSiblingNo(2))) {
+    Set method=%callStore(2,%trueSiblingNo(2),"method",i)
+    Set param=%callStore(2,%trueSiblingNo(2),"param",i)
+    Set hasStatus=%callStore(2,%trueSiblingNo(2),"hasStatus",i)
+    if hasStatus {
+        Set stream=$zobjmethod($this,method,param,.tSC)
+        if 'tSC quit
+    } else {
+        Set stream=$zobjmethod($this,method,param)
+    }
+    if tSC=1,$D(stream),$isObject(stream) {
+        Do stream.Rewind()
+        Set chunksize=32000
+	    While 'stream.AtEnd {
+	        Set chunk=stream.Read(.chunksize)
+            if $f(chunk,"<?xml") {
+                Set beg=$f(chunk,"<?xml")-$L("<?xml")-1
+                Set end=$f(chunk,"?>",beg)
+                Set chunk=$e(chunk,1,beg)_$e(chunk,end,$l(chunk))
+            }
+            w chunk
+        }
+    }
+ }
+ if 'tSC quit
+ New saverow
+ if $D(%rowpos(2)) {
+   Set saverow=%cache(2).counter.currentrow
+   Set %cache(2).counter.currentrow=%rowpos(2)
+ }
+ if $D(%rowpos(2)) {
+   Set %cache(2).counter.currentrow=saverow
+ }
+ if (%firstSibling(2)=1)||(%hasQuery(%trueSiblingNo(2))=1) {
+ if (%firstSibling(2)=1)||(%hasQuery(%trueSiblingNo(2))=1) {
+ }
+ }
+ Write:$g(%tag(2))'="" "</",%tag(2),">",!
+ Kill %tag(2)
+ }
+ kill %break(2)
+ kill:$g(%lastSibling(2)) %trueBreak(2,1)
+ Quit
+GroupDo3 ; record
+ Do GroupAcc3 ; record
+EndFetch3 ; record
+ Set %trueBreak(2,1) = 1
+ Set %noData(2,1) = 1
+ // fall through pLevel=2
+EndFetchX3 ;record
+EndFetch2 ; OrdersRep
+ Set %noData(1,1) = 1
+ // go back for more data from upper level pLevel=1 (in else clause)
+ Goto Fetch1
+EndFetchX2 ;OrdersRep
+ Goto Fetch1
+GroupAcc1
+ Set %count0(%trueSiblingNo(0))=$G(%count0(%trueSiblingNo(0)))+1
+ Set %val=$$FieldLookup^%occZENReports("Amount",0,1)
+ Set %agg0(%trueSiblingNo(0),3)=$g(%agg0(%trueSiblingNo(0),3))+($classmethod("%ZEN.Report.aggregate","%PreProcessValue",$$FieldLookup^%occZENReports("Amount",0,1),"1",2,"1")) // totalSum
+ Set %val=$$FieldLookup^%occZENReports("TimeOfSale",0,1)
+ Set %agg0(%trueSiblingNo(0),4)=$g(%agg0(%trueSiblingNo(0),4))+1 // count
+ Quit
+EndLoop
+ Set %endLoop=1
+ Set %endFlag(1)=1
+ If ($D(%break(1))) { Do GroupEnd2 }
+ if $D(%cache(0)) if %cache(0).counter.totalRows=0 Goto ExitEndSiblingGroups1
+ if $g(%lastSibling(1))'=1 { ; if we processed last sibling we are done with siblings at end of report
+ }
+ExitEndSiblingGroups1
+ new i,stream,chunksize,chunk,filteredStream,len,c,searchLITag,tag,part
+ for i=1:1:+$g(^||%ISC.ZENReport.elementStore(0,%trueSiblingNo(0))) w ^||%ISC.ZENReport.elementStore(0,%trueSiblingNo(0),i),!
+ for i=1:1:+$g(%streamStore(0,%trueSiblingNo(0))) {
+     set elemname=%streamStore(0,%trueSiblingNo(0),"elemname",i)
+     set oid=%streamStore(0,%trueSiblingNo(0),"oid",i)
+     set escape=%streamStore(0,%trueSiblingNo(0),"escape",i)
+	 w !,"<"_elemname_">"
+     set stream=##class(%Stream.Object).%Open(oid)
+     if stream'="" {
+       do stream.Rewind()
+       if escape'="html" {
+         Set chunksize=32000
+         While 'stream.AtEnd {
+             Set chunk=stream.Read(chunksize)
+             Set chunk=$tr(chunk,$c(0))
+             w $$xml^%occZENReports(chunk,escape)
+         }
+       } else { 
+         set filteredStream=##class(%Library.GlobalCharacterStream).%New()
+         Set searchLITag=0
+         while (stream.AtEnd=0) {
+            Set c=stream.Read(1)
+            if c="<",searchLITag=0 {
+                Do filteredStream.Write(c)
+                set tag=stream.Read(2)
+                Do filteredStream.Write(tag)
+                if tag="LI"||(tag="li") {
+                   Set searchLITag=1
+                }
+            }
+            elseif c="<",searchLITag=1 {
+               set tag=stream.Read(4)
+               if $e(tag,1,3)="LI>"||($e(tag,1,3)="li>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=1
+               } elseif $e(tag,1,4)="/UL>"||($e(tag,1,4)="/UL>")||($e(tag,1,4)="/OL>")||($e(tag,1,4)="/OL>") {
+                  Do filteredStream.Write("</LI>")
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } elseif $e(tag,1,4)="/LI>"||($e(tag,1,4)="/li>") {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+                  Set searchLITag=0
+               } else {
+                  Do filteredStream.Write(c)
+                  Do filteredStream.Write(tag)
+               }
+            } else {
+               Do filteredStream.Write(c)
+            }
+         }
+         set stream=filteredStream
+         Do stream.Rewind()
+         set len=20000
+         while (stream.AtEnd=0) {
+             set part=stream.Read(.len)
+             if ($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")) while (($l(part,"<")'=$l(part,">"))||($l(part,"&")'=$l(part,";")))&&(stream.AtEnd=0) { s part=part_stream.Read(1) }
+             w $$xml^%occZENReports(part,escape)
+         }
+       }
+     }
+	 w !,"</"_elemname_">"
+ }
+ new i,stream,chunk,beg,end,hasStatus
+ Set tSC=1
+ for i=1:1:+$g(%callStore(0,%trueSiblingNo(0))) {
+    Set method=%callStore(0,%trueSiblingNo(0),"method",i)
+    Set param=%callStore(0,%trueSiblingNo(0),"param",i)
+    Set hasStatus=%callStore(0,%trueSiblingNo(0),"hasStatus",i)
+    if hasStatus {
+        Set stream=$zobjmethod($this,method,param,.tSC)
+        if 'tSC quit
+    } else {
+        Set stream=$zobjmethod($this,method,param)
+    }
+    if tSC=1,$D(stream),$isObject(stream) {
+        Do stream.Rewind()
+        Set chunksize=32000
+	    While 'stream.AtEnd {
+	        Set chunk=stream.Read(.chunksize)
+            if $f(chunk,"<?xml") {
+                Set beg=$f(chunk,"<?xml")-$L("<?xml")-1
+                Set end=$f(chunk,"?>",beg)
+                Set chunk=$e(chunk,1,beg)_$e(chunk,end,$l(chunk))
+            }
+            w chunk
+        }
+    }
+ }
+ if 'tSC quit
+ New saverow
+ if $D(%rowpos(0)) {
+   Set saverow=%cache(0).counter.currentrow
+   Set %cache(0).counter.currentrow=%rowpos(0)
+ }
+ if $D(%rowpos(0)) {
+   Set %cache(0).counter.currentrow=saverow
+ }
+ if (%firstSibling(0)=1)||(%hasQuery(%trueSiblingNo(0))=1) {
+ Set %val=$G(%agg0(%trueSiblingNo(0),3))
+ X "Set %filter=1"
+ If (+%filter'=0) {
+ Set %elname = "totalSum"
+   Write "<"_%elname_">",$$xml^%occZENReports($classmethod("%ZEN.Report.aggregate","%PostProcessValue",$g(%agg0(%trueSiblingNo(0),3)),"1",2,"1"),"xml"),"</"_%elname_">",!
+ }
+ Set %val=$G(%agg0(%trueSiblingNo(0),4))
+ X "Set %filter=1"
+ If (+%filter'=0) {
+ Set %elname = "count"
+   Write "<"_%elname_">",$$xml^%occZENReports($classmethod("%ZEN.Report.aggregate","%PostProcessValue",$g(%agg0(%trueSiblingNo(0),4)),"",2,"1"),"xml"),"</"_%elname_">",!
+ }
+ }
+ Write:$g(%tag(0))'="" "</",%tag(0),">",!
+ Kill %tag(0)
+ Goto Done
+Done
+ s i=""  f  s i=$o(%indices(i)) q:i=""  kill ^||%ISC.ZENReport("ZENReportCache",i)
+ k %indices
+ Quit tSC
+Error
+ Do ..%LogError(tSC)
+ Quit tSC
+Trap
+ Set $ZT=""
+ Set tSC = $$Error^%apiOBJ(5001,$ZE)
+ Goto Error
+	Return
+zPage(skipheader=1) public {
+	New %CSPsc Set %CSPsc=1
+	Set dopage=(%request.Method'="HEAD")
+	Set %response.Domain="TRUEDEMO"
+	If %response.Language="" Do %response.MatchLanguage()
+	If 'skipheader Do $zutil(96,18,2,"UTF8")
+	Try {
+		If ..OnPreHTTP()=0 Set dopage=0
+		If 'skipheader Set %CSPsc=%response.WriteHTTPHeader(.dopage) Set:('%CSPsc) dopage=0
+		If $get(dopage) Set %CSPsc=..OnPage()
+	} Catch exception {
+		If $ZError'["<ZTHRO"||($get(%CSPsc)="")||(+%CSPsc) Set %CSPsc=exception.AsStatus()
+	}
+	Quit %CSPsc }

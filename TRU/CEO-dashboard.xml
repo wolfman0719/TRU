@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2020.4 (Build 545U)" ts="2021-06-19 11:26:35">
+<Class name="FolderManager.Export41195">
+<IncludeCode>%DeepSee</IncludeCode>
+<ProcedureBlock>0</ProcedureBlock>
+<Super>%DeepSee.UserLibrary.Container</Super>
+<TimeChanged>65914,41195.13176</TimeChanged>
+<TimeCreated>65914,41195.119062</TimeCreated>
+
+<XData name="Contents">
+<Description>
+Items Exported From Folder Manager.</Description>
+<XMLNamespace>http://www.intersystems.com/deepsee</XMLNamespace>
+<Data><![CDATA[
+<items><dashboard xmlns="http://www.intersystems.com/deepsee/library" name="CEO2" folderName="" title="CEO経営指標" description="IRIS指標" keywords="CEO" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2015-04-16T05:17:15.285Z" createdBy="_SYSTEM" category="" bookCover="" scheme="" worklistCount="1" snapTo="false" snapGrid="false" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" titleBarOpacity="" titleBarColor="" selectedTitleBarOpacity="" selectedTitleBarColor="" titleBarTextColor="" selectedTitleBarTextColor="" titleBarFont="" companyName="" companyLogo="" companyStyle="" backgroundColor="" backgroundImage="" backgroundRepeat="" backgroundSize="" backgroundOpacity="1" widgetBorders="" widgetBordersSwitch="" widgetBordersColor="" widgetBordersStyle="" widgetBordersWidth="" widgetBordersToggle="false">
+  <widget name="Smiley" type="meter" subtype="smiley" subtypeClass="" title="最近の売り上げスマイリー" dataSource="TRU.Production.Main/CEO Metrics.metric" dataLink="" drillDownDataSource="" top="0" left="0" width="290" height="300" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" showToolbar="false" showToolbarBottomBorder="false" showToolbarOnlyWhenMaximized="false" colorToolbar="" opacityToolbar="" backgroundColor="" opacity="" theme="" dataColorList="">
+    <control name="" action="refresh" target="*" targetProperty="" location="dashboard" type="timer" controlClass="" timeout="60" label="" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen="">
+      <valueRequired>false</valueRequired>
+    </control>
+    <dataProperty name="" label="最近の売り上げ" width="" align="" subtype="" style="" display="" format="" showAs="" valueColumn="false" summary="" summaryValue="" dataValue="RecentSales" targetValue="" thresholdLower="" thresholdUpper="" rangeLower="" rangeUpper="" baseValue="" override=""></dataProperty>
+  </widget>
+  <widget name="Stock Level" type="pivot" subtype="barChart" subtypeClass="barChart" title="在庫状況" dataSource="TRU.Production.Main/CEO Metrics.metric" dataLink="Sales Performance" drillDownDataSource="" top="0" left="292" width="422" height="296" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" showToolbar="false" showToolbarBottomBorder="false" showToolbarOnlyWhenMaximized="false" colorToolbar="" opacityToolbar="" backgroundColor="" opacity="" theme="" dataColorList="">
+    <control name="" action="refresh" target="*" targetProperty="" location="dashboard" type="timer" controlClass="" timeout="5" label="" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen="">
+      <valueRequired>false</valueRequired>
+    </control>
+    <dataProperty name="" label="在庫レベル" width="" align="" subtype="" style="" display="value" format="#,#" showAs="value" valueColumn="false" summary="" summaryValue="" dataValue="StockLevel" targetValue="" thresholdLower="" thresholdUpper="" rangeLower="" rangeUpper="" baseValue="" override=""></dataProperty>
+    <dataProperty name="" label="販売数" width="" align="" subtype="" style="" display="" format="#,#" showAs="" valueColumn="false" summary="" summaryValue="" dataValue="ProductUnits" targetValue="" thresholdLower="" thresholdUpper="" rangeLower="" rangeUpper="" baseValue="" override=""></dataProperty>
+    <override name="barChart">{legendVisible:'false',seriesColorScheme:'pastel',xAxis:{_type:'axis'},yAxisList:[{_type:'axis'}],chartPivot:true,_type:'barChart'}</override>
+  </widget>
+  <widget name="" type="pivot" subtype="areaChart" subtypeClass="lineChart" title="総売上トレンド" dataSource="TotalSales2.kpi" dataLink="" drillDownDataSource="" top="2" left="716" width="530" height="296" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" showToolbar="false" showToolbarBottomBorder="false" showToolbarOnlyWhenMaximized="false" colorToolbar="" opacityToolbar="" backgroundColor="" opacity="" theme="" dataColorList="">
+    <control name="" action="refresh" target="*" targetProperty="" location="widget" type="timer" controlClass="" timeout="5" label="" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen="">
+      <valueRequired>false</valueRequired>
+    </control>
+    <property name="XgridLines">0</property>
+    <property name="YgridLines">1</property>
+    <property name="analyzer">0</property>
+    <property name="chartToggle">none</property>
+    <property name="dimensionSource"></property>
+    <property name="excel">0</property>
+    <property name="labelStyle"></property>
+    <property name="labels">1</property>
+    <property name="legendPos">right</property>
+    <property name="pivotSelect"></property>
+    <property name="showDimensions">0</property>
+    <property name="showPercentage">0</property>
+    <property name="valueLabels">0</property>
+  </widget>
+  <widget name="Sales Perfomance" type="meter" subtype="speedometer" subtypeClass="" title="" dataSource="TRU.Production.Main/CEO Metrics.metric" dataLink="" drillDownDataSource="" top="294" left="2" width="1250" height="332" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="4" rowSpanL="4" showToolbar="true" showToolbarBottomBorder="true" showToolbarOnlyWhenMaximized="false" colorToolbar="#F0F0F0" opacityToolbar="1" backgroundColor="#F0F0F0" opacity="1" theme="" dataColorList="">
+    <control name="" action="refresh" target="*" targetProperty="" location="widget" type="timer" controlClass="" timeout="60" label="" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen="">
+      <valueRequired>false</valueRequired>
+    </control>
+    <dataProperty name="" label="総販売個数" width="" align="" subtype="speedometer" style="" display="value" format="" showAs="value" valueColumn="false" summary="" summaryValue="" dataValue="TotalUnits" targetValue="TotalUnits" thresholdLower="1000" thresholdUpper="10000" rangeLower="" rangeUpper="100000" baseValue="" override="{height:300,width:300,dataBinding:&apos;TotalUnits&apos;,rangeUpper:&apos;100000&apos;,targetValue:&apos;TotalUnits&apos;,thresholdLower:&apos;1000&apos;,thresholdUpper:&apos;10000&apos;,value:&apos;2460&apos;,_type:&apos;speedometer&apos;}"></dataProperty>
+    <dataProperty name="" label="取引数" width="" align="" subtype="speedometer" style="" display="value" format="" showAs="value" valueColumn="false" summary="" summaryValue="" dataValue="TotalTransactions" targetValue="20000" thresholdLower="1000" thresholdUpper="10000" rangeLower="" rangeUpper="" baseValue="" override="{height:97,width:97,x:97,y:0,disabled:true,thresholdLower:&apos;1000&apos;,thresholdUpper:&apos;100000&apos;,_type:&apos;speedometer&apos;}"></dataProperty>
+    <dataProperty name="" label="最近の売上" width="" align="" subtype="speedometer" style="" display="value" format="" showAs="value" valueColumn="false" summary="" summaryValue="" dataValue="RecentSales" targetValue="" thresholdLower="10000" thresholdUpper="100000" rangeLower="" rangeUpper="" baseValue="" override="{height:300,width:300,x:600,y:0,dataBinding:&apos;RecentSales&apos;,thresholdLower:&apos;10000&apos;,thresholdUpper:&apos;100000&apos;,_type:&apos;speedometer&apos;}"></dataProperty>
+    <dataProperty name="" label="総売上" width="" align="" subtype="speedometer" style="" display="value" format="" showAs="value" valueColumn="false" summary="" summaryValue="" dataValue="TotalSales" targetValue="100000" thresholdLower="1000" thresholdUpper="2000000" rangeLower="" rangeUpper="" baseValue="" override="{height:227,width:227,x:681,y:0,disabled:true,targetValue:&apos;100000&apos;,thresholdLower:&apos;1000&apos;,thresholdUpper:&apos;2000000&apos;,_type:&apos;speedometer&apos;}"></dataProperty>
+  </widget>
+</dashboard>
+</items>
+]]></Data>
+</XData>
+</Class>
+</Export>

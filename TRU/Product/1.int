@@ -1,0 +1,1769 @@
+ROUTINE TRU.Product.1 [Type=INT,Generated]
+ ;TRU.Product.1
+ ;Generated for class TRU.Product.  Do NOT edit. 06/19/2021 11:08:52PM
+ ;;57326F54;TRU.Product
+ ;
+SQLUPPER(v,l) { quit $zu(28,v,7,$g(l,32767)) }
+ALPHAUP(v,r) { quit $zu(28,v,6) }
+STRING(v,l) { quit $zu(28,v,9,$g(l,32767)) }
+SQLSTRING(v,l) { quit $zu(28,v,8,$g(l,32767)) }
+UPPER(v) { quit $zu(28,v,5) }
+MVR(v) { quit $zu(28,v,2) }
+TRUNCATE(v,l) { quit $e(v,1,$g(l,3641144)) }
+%BuildDeferredIndices(lockFlag=0,journalFlag=1) public {
+	return $$Error^%apiOBJ(5758,"%Storage.Persistent::%BuildDeferredIndices") }
+%BuildIndices(pIndexList="",pAutoPurge=1,pLockFlag=0,pJournalFlag="",pStartID="",pEndID="",pIgnoreIndexList="") public {
+	if ($listlength(pIndexList)=1)&&($listget(pIndexList,1)="") { return 1 }
+	Set class=$classname(),tBuildFlags=1,tBuildFlags(class)=$c(0,0)
+	Set tPtr=0,tStatus=1
+	While $listnext(pIndexList,tPtr,tIndex) {
+		continue:tIndex=""
+		If '$d(^oddCOM(class,"i",tIndex)) {
+			Set tStatus=$select(+tStatus:$$Error^%apiOBJ(5066,class_"::"_tIndex),1:$$AppendStatus^%occSystem(tStatus,$$Error^%apiOBJ(5066,class_"::"_tIndex)))
+		}
+	}
+	If ('tStatus) RETURN tStatus
+	if ((pIndexList="")||($listfind(pIndexList,"Code"))),'$listfind(pIgnoreIndexList,"Code") { set $Extract(tBuildFlags(class),1)=$c(1) }
+	if ((pIndexList="")||($listfind(pIndexList,"ShortName"))),'$listfind(pIgnoreIndexList,"ShortName") { set $Extract(tBuildFlags(class),2)=$c(1) }
+	Quit ..%BuildIndexInternal(.pLockFlag,.pAutoPurge,.pStartID,.pEndID,.pIndexList,.tBuildFlags,"^TRU.ProductD",0,.pJournalFlag,0) }
+%BuildIndicesSegment(pStartID,pEndID,pIndexHandle=0,pLockFlag=1,pFirstRange=0,pJob="") public {
+	New %tIndexBuffer
+	Try {
+		set tStatus=1,tLocked=0
+		If pLockFlag'=2,$Ascii(pIndexHandle($classname()),1),$SortBegin(^TRU.ProductI("Code")),$increment(^IRIS.TempIndexBuild(pJob,1)) { Do $system.Event.Create($name(^IRIS.TempIndexBuild(pJob,1))) }
+		If pLockFlag'=2,$Ascii(pIndexHandle($classname()),2),$SortBegin(^TRU.ProductI("ShortName")),$increment(^IRIS.TempIndexBuild(pJob,2)) { Do $system.Event.Create($name(^IRIS.TempIndexBuild(pJob,2))) }
+		Set tPrefetch=$prefetchon(^TRU.ProductD)
+		If 'pFirstRange||('$data(^TRU.ProductD(pStartID))) { Set tID=$order(^TRU.ProductD(pStartID)) } Else { Set tID=pStartID }
+		While tID'="",(pEndID="")||(tID']]pEndID) {
+			If pLockFlag=2 {
+				Set tSC = ..%LockId(tID,1)
+				If ('tSC) {
+					Set tStatus=$select(+tStatus:tSC,1:$$AppendStatus^%occSystem(tStatus,tSC))
+					Set tID=$order(^TRU.ProductD(tID))
+					Continue
+				}
+			}
+			If pLockFlag'=2||($data(^TRU.ProductD(tID))) {
+				Set tSC=..%FileIndices(tID,.pIndexHandle)
+				If ('tSC) { Set tStatus=$select(+tStatus:tSC,1:$$AppendStatus^%occSystem(tStatus,tSC)) }
+			}
+			Do:pLockFlag=2 ..%UnlockId(tID,1,1)
+			set tID=$order(^TRU.ProductD(tID))
+		}
+	}
+	Catch tException {
+		Set tSC=tException.AsStatus(),tStatus=$select(+tStatus:tSC,1:$$AppendStatus^%occSystem(tStatus,tSC))
+	}
+	If pLockFlag'=2,$Ascii(pIndexHandle($classname()),1) {
+		If $increment(^IRIS.TempIndexBuild(pJob,1),-1)=0 { Do $system.Event.Delete($name(^IRIS.TempIndexBuild(pJob,1))) } Else { Try { Do $system.Event.Wait($name(^IRIS.TempIndexBuild(pJob,1))) } Catch {} }
+		If $SortEnd(^TRU.ProductI("Code")) {}
+	}
+	If pLockFlag'=2,$Ascii(pIndexHandle($classname()),2) {
+		If $increment(^IRIS.TempIndexBuild(pJob,2),-1)=0 { Do $system.Event.Delete($name(^IRIS.TempIndexBuild(pJob,2))) } Else { Try { Do $system.Event.Wait($name(^IRIS.TempIndexBuild(pJob,2))) } Catch {} }
+		If $SortEnd(^TRU.ProductI("ShortName")) {}
+	}
+	Set:$Get(tPrefetch) tPrefetch=$prefetchoff(^TRU.ProductD)
+	Quit tStatus }
+%CheckConstraints(pID,pConstraintList="",pCheckDisabled=0,pErrorInfo) [ SQLCODE,pID,tCol1,tCol2 ] public { New SQLCODE,tCol1,tCol2 
+	set tStatus = ..%OnDetermineClass($select(pID="":"",1:$listbuild(pID_"")),.tMSTC) if ('tStatus) { set pErrorInfo = $Listbuild(pID) quit tStatus } if tMSTC '= $classname() { quit $classmethod(tMSTC,"%CheckConstraints",pID,pConstraintList) }
+	set tStatus = 1, pErrorInfo = ""
+	 ;---&sql(select Code,ShortName INTO :tCol1,:tCol2 FROM TRU.Product WHERE %ID = :pID)
+ 	 ;--- ** SQL PUBLIC Variables: SQLCODE, pID, tCol1, tCol2
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xExP7scFkIca49U6beCvGNRJzSlT","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xExP7scFkIca49U6beCvGNRJzSlT")||($ze["<ZSQLU>") { d %0dsqlA } else { throw } }
+	if 'SQLCODE {
+		if ((pConstraintList="")||($lf(pConstraintList,"Code"))) && ('..CodeCheckUnique(pID,tCol1)) { set tStatus = $select(+tStatus:$$Error^%apiOBJ(5808,$classname()_".Code"),1:$$AppendStatus^%occSystem(tStatus,$$Error^%apiOBJ(5808,$classname()_".Code"))) }
+		if ((pConstraintList="")||($lf(pConstraintList,"ShortName"))) && ('..ShortNameCheckUnique(pID,tCol2)) { set tStatus = $select(+tStatus:$$Error^%apiOBJ(5808,$classname()_".ShortName"),1:$$AppendStatus^%occSystem(tStatus,$$Error^%apiOBJ(5808,$classname()_".ShortName"))) }
+		set pErrorInfo = $Listbuild(pID,tCol1,tCol2)
+	} elseif SQLCODE < 0 { set tStatus = $$Error^%apiOBJ(5540,SQLCODE,$Get(%msg)) }
+	quit tStatus }
+ q
+%0dsqlA	n %xxsql
+	s %xxsql("S",1)="SELECT Code , ShortName INTO :tCol1 , :tCol2 FROM TRU . Product WHERE %ID = :pID"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")=""
+	s %xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+%CheckConstraintsForExtent(pConstraintList="",pCheckDisabled=0,pErrorLog) [ SQLCODE,tID ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE,tID 
+	kill pErrorLog set tStatusAll = 1, pErrorLog = 0 if '$listvalid(pConstraintList) { set pConstraintList = $listfromstring(pConstraintList) }
+	 ;---&sql(declare ext cursor for select %ID into :tID FROM TRU.Product)
+ 	 ;--- ** SQL PUBLIC Variables: SQLCODE, tID
+	 
+	 ;---&sql(open ext)
+	try { if $g(%ext09558)'="" { s SQLCODE=-101 } else { s %ext09558=$classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEoENxwmLFezh2H36qooSVE4X4mx","%New") if '$isobject(%ext09558) { s %ext09558=$$%0dsqlC() } } } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEoENxwmLFezh2H36qooSVE4X4mx")||($ze["<ZSQLU>") { s %ext09558=$$%0dsqlC() } else { throw } }
+	if SQLCODE '< 0 {
+		for {
+			 ;---&sql(fetch ext)
+ 			 ;--- ** SQL PUBLIC Variables: %ROWCOUNT, %ROWID, %msg, SQLCODE
+			if $isobject($g(%ext09558))'=1 { s SQLCODE=-102 } else { do %ext09558.FET() if SQLCODE=0 { } }
+			if SQLCODE { if SQLCODE=100 { quit } elseif SQLCODE<0 { set tStatusAll = $select(+tStatusAll:$$Error^%apiOBJ(5521,SQLCODE,$Get(%msg)),1:$$AppendStatus^%occSystem(tStatusAll,$$Error^%apiOBJ(5521,SQLCODE,$Get(%msg)))) quit } }
+			set tStatus = ..%CheckConstraints(tID,pConstraintList,pCheckDisabled,.tErrorInfo)
+			if ('tStatus) { set tStatusAll = $select(+tStatusAll:tStatus,1:$$AppendStatus^%occSystem(tStatusAll,tStatus)) set:pErrorLog<1000 pErrorLog = pErrorLog + 1, pErrorLog(pErrorLog) = tErrorInfo _ $Listbuild(tStatus) }
+		}
+		 ;---&sql(close ext)
+		if '$isobject($get(%ext09558)) { set SQLCODE=-102 } else { set SQLCODE=0 kill %ext09558 }
+	}
+	quit tStatusAll }
+ q
+%0dsqlC()	n %xxsql
+	s %xxsql("S",1)="DECLARE ext CURSOR FOR SELECT %ID INTO :tID FROM TRU . Product"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")=""
+	s %xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	return $$BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),",0,ext,","TRU.Product.CLS",1)
+%ComposeOid(id) public {
+	set tCLASSNAME = $listget($g(^TRU.ProductD(id)),1)
+	if tCLASSNAME="" { quit $select(id="":"",1:$listbuild(id_"","TRU.Product")) }
+	set tClass=$piece(tCLASSNAME,$extract(tCLASSNAME),*-1)
+	set:tClass'["." tClass="User."_tClass
+	quit $select(id="":"",1:$listbuild(id_"",tClass)) }
+%DeleteData(id,concurrency) public {
+	Quit:id="" $$Error^%apiOBJ(5812)
+	set $Ztrap="DeleteDataERR" set lockok=0,sc=""
+	If concurrency {
+		Lock +(^TRU.ProductD(id)#"E"):$zu(115,4)
+		Set lockok=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0))
+		Set:lockok=2&&($tlevel) %0CacheLock($classname(),"E")=1
+		If 'lockok {
+			Quit $$Error^%apiOBJ(5803,$classname())
+		}
+	}
+	If ($Data(^TRU.ProductD(id))) {
+		Set bsv0N1=^TRU.ProductD(id)
+		Set bsv0N2=$zu(28,$listget(bsv0N1,8),7,32768)
+		Set bsv0N3=$zu(28,$listget(bsv0N1,6),7,32768)
+		If concurrency, ('$g(%0CacheLock($classname(),"E"))) {
+			Lock +^TRU.ProductI("Code",bsv0N3):$zu(115,4)
+			If $test {
+				Lock -^TRU.ProductI("Code",bsv0N3)
+			} Else {
+				Set sc = $$Error^%apiOBJ(5803,$classname())
+				Goto DeleteDataEXIT
+			}
+		}
+		If concurrency, ('$g(%0CacheLock($classname(),"E"))) && ($listget(bsv0N1,8)'="") {
+			Lock +^TRU.ProductI("ShortName",bsv0N2):$zu(115,4)
+			If $test {
+				Lock -^TRU.ProductI("ShortName",bsv0N2)
+			} Else {
+				Set sc = $$Error^%apiOBJ(5803,$classname())
+				Goto DeleteDataEXIT
+			}
+		}
+		If $data(^oddEXTR($classname())) {
+			Set fc=""
+			For {
+				Set fc=$order(^rINDEXEXT("F",$classname(),"Code","f",fc))
+				Quit:fc=""
+				Set fk=""
+				For {
+					Set fk=$order(^rINDEXEXT("F",$classname(),"Code","f",fc,fk))
+					Quit:fk=""
+					Set sc=$classmethod(fc,fk_"Delete",$listget(bsv0N1,6))
+					If ('sc) { Goto DeleteDataEXIT }
+				}
+			}
+			Set fc=""
+			For {
+				Set fc=$order(^rINDEXEXT("F",$classname(),"%1","f",fc))
+				Quit:fc=""
+				Set fk=""
+				For {
+					Set fk=$order(^rINDEXEXT("F",$classname(),"%1","f",fc,fk))
+					Quit:fk=""
+					Set sc=$classmethod(fc,fk_"Delete",id)
+					If ('sc) { Goto DeleteDataEXIT }
+				}
+			}
+			Set fc=""
+			For {
+				Set fc=$order(^rINDEXEXT("F",$classname(),"IDKEY","f",fc))
+				Quit:fc=""
+				Set fk=""
+				For {
+					Set fk=$order(^rINDEXEXT("F",$classname(),"IDKEY","f",fc,fk))
+					Quit:fk=""
+					Set sc=$classmethod(fc,fk_"Delete",id)
+					If ('sc) { Goto DeleteDataEXIT }
+				}
+			}
+			Set fc=""
+			For {
+				Set fc=$order(^rINDEXEXT("F",$classname(),"ShortName","f",fc))
+				Quit:fc=""
+				Set fk=""
+				For {
+					Set fk=$order(^rINDEXEXT("F",$classname(),"ShortName","f",fc,fk))
+					Quit:fk=""
+					Set sc=$classmethod(fc,fk_"Delete",$listget(bsv0N1,8))
+					If ('sc) { Goto DeleteDataEXIT }
+				}
+			}
+		}
+		Set bsv0N4=$zu(28,$listget(bsv0N1,8),7,32768)
+		Set bsv0N5=$zu(28,$listget(bsv0N1,6),7,32768)
+		Kill ^TRU.ProductI("Code",bsv0N5,id)
+		Kill ^TRU.ProductI("ShortName",bsv0N4,id)
+		Kill ^TRU.ProductD(id)
+		Set sc=1
+	}
+	Else { Set sc=$$Error^%apiOBJ(5810,$classname(),id) }
+DeleteDataEXIT
+	If concurrency,lockok {
+		Lock -(^TRU.ProductD(id)#"E")
+	}
+DeleteDataRET	Set $Ztrap = ""
+	QUIT sc
+DeleteDataERR	Set $Ztrap = "DeleteDataRET"
+	Set sc = $$Error^%apiOBJ(5002,$ZE)
+	Goto DeleteDataEXIT }
+%Exists(oid="") public {
+	Quit ..%ExistsId($listget(oid)) }
+%ExistsId(id) public {
+	Try { set tExists = $s(id="":0,$d(^TRU.ProductD(id)):1,1:0) } catch tException { set tExists = 0 if '(tException.%IsA("%Exception.SystemException")) { throw tException } elseif tException.Name'="<SUBSCRIPT>" { ZT $ZE } } quit tExists }
+%FileIndices(id,pIndexHandle=0) public {
+	Set $ZTrap="CatchError",sc=1
+	Set bsv0N2=$Get(^TRU.ProductD(id))
+	Set bsv0N3=$listget(bsv0N2,1)
+	If bsv0N3'="" {
+		Set bsv0N1=$piece(bsv0N3,$extract(bsv0N3),*-1)
+		Set:bsv0N1'["." bsv0N1="User."_bsv0N1
+		If bsv0N1'="" {
+			Quit $classmethod(bsv0N1,"%FileIndices",id,.pIndexHandle)
+		}
+	}
+	If ('pIndexHandle)||($Ascii($Get(pIndexHandle("TRU.Product")),1)=1) {
+		Set bsv0N4=$zu(28,$listget(bsv0N2,6),7,32768)
+		Set ^TRU.ProductI("Code",bsv0N4,id)=$listget(bsv0N2,1)
+	}
+	If ('pIndexHandle)||($Ascii($Get(pIndexHandle("TRU.Product")),2)=1) {
+		Set bsv0N5=$zu(28,$listget(bsv0N2,8),7,32768)
+		Set ^TRU.ProductI("ShortName",bsv0N5,id)=$listget(bsv0N2,1)
+	}
+	QUIT 1
+CatchError	s $ZTrap="" i $ZE'="" { s sc = $$Error^%apiOBJ(5002,$ZE) } q sc }
+%InsertBatch(objects,concurrency=0,useTransactions=0) public {
+	try {
+		set numerrs=0,errs="",cnt=0,ptr=0
+		while $listnext(objects,ptr,data) {
+			set cnt=cnt+1
+			set zzc9v1=$listget(data,8)
+			set zzc9v2=$listget(data,1)
+			set lock=0,locku=$c(0,0)
+			if (useTransactions) tstart
+			set id=$i(^TRU.ProductD)
+			set zzc14v1=$zu(28,zzc9v1,7,32768)
+			set zzc14v2=$zu(28,$listget(data,6),7,32768)
+			try {
+				set tInnerException = ""
+				;
+				if concurrency { lock +(^TRU.ProductD(id)#"E"):$zu(115,4) set lock=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0)) set:lock=2&&($tlevel) %0CacheLock($classname(),"E")=1 if 'lock { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } }
+				if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("Code",zzc14v2):$zu(115,4) if $Test { Set $Extract(locku,1)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("Code",zzc14v2)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":Code:"_$zreference)) }
+				if zzc9v1'="" { if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("ShortName",zzc14v1):$zu(115,4) if $Test { Set $Extract(locku,2)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("ShortName",zzc14v1)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":ShortName:"_$zreference)) }}
+				set ^TRU.ProductD(id)=data
+				set ^TRU.ProductI("Code",zzc14v2,id)=zzc9v2
+				set ^TRU.ProductI("ShortName",zzc14v1,id)=zzc9v2
+				if (useTransactions) { tcommit }
+			}
+			catch tInnerException {
+				set newerr=$lb(cnt,tInnerException.AsStatus())
+				if '($length(errs)+$length(newerr)>32767) { set numerrs=numerrs+1, errs=errs_newerr }
+				if (useTransactions) && ($Tlevel) trollback
+			}
+			lock:$Ascii($Extract(locku,1)) -^TRU.ProductI("Code",zzc14v2)#"D"
+			lock:$Ascii($Extract(locku,2)) -^TRU.ProductI("ShortName",zzc14v1)#"D"
+			if lock lock -(^TRU.ProductD(id)#"E")
+		}
+	}
+	catch tException {
+		set newerr=$lb($g(cnt),tException.AsStatus())
+		if '($length(errs)+$length(newerr)>32767) { set numerrs=numerrs+1, errs=errs_newerr }
+	}
+	QUIT ($lb(numerrs))_errs }
+%KillExtentData(killstreams=0)
+	Set $sequence(^TRU.ProductD)=""
+	If killstreams Kill ^TRU.ProductS
+	Kill ^TRU.ProductD
+	Quit 1
+%LoadData(id) public {
+	New %s1
+	set $ZTrap="CatchError",locked=0,userze=$ze,$ze=""
+	If i%%Concurrency=4 {
+		Lock +(^TRU.ProductD(id)#"E"):$zu(115,4)
+		if '$t do init s i%%Concurrency=0 s:$ze="" $ze=userze return $$Error^%apiOBJ(5803,$classname())
+	} ElseIf i%%Concurrency>1 {
+		Lock +(^TRU.ProductD(id)#"SE"):$zu(115,4)
+		if '$t do init s i%%Concurrency=0 s:$ze="" $ze=userze return $$Error^%apiOBJ(5804,$classname())
+		set locked = 1
+	}
+	If $d(^TRU.ProductD(id),%s1)#2 {
+		If i%%Concurrency=2 { Lock -(^TRU.ProductD(id)#"SIE") }
+		S i%ImageFile=$lg(%s1,2),i%Name=$lg(%s1,3),i%UnitPrice=$lg(%s1,4),i%Description=$lg(%s1,5),i%Code=$lg(%s1,6),i%Weight=$lg(%s1,7),i%ShortName=$lg(%s1,8)
+		s:$ze="" $ze=userze
+		Quit 1
+	} Else {
+		If i%%Concurrency=2 { Lock -(^TRU.ProductD(id)#"SIE") }
+		do init
+		set sc = $$Error^%apiOBJ(5809,$classname(),id) goto CatchError
+	}
+CatchError	set $ZTrap = "" if $ZE'="" { s sc = $$Error^%apiOBJ(5002,$ZE) }
+	If ($get(locked))&&(i%%Concurrency<3) { Lock -(^TRU.ProductD(id)#"SIE") }
+	if '('sc) { set sc=$$Error^%apiOBJ(5809,$classname(),id) }
+	s:$ze="" $ze=userze
+	return sc
+init	Set i%Code="",i%Description="",i%ImageFile="",i%Name="",i%ShortName="",i%UnitPrice="",i%Weight=""
+	quit }
+%LoadDataFromMemory(id,objstate,obj) public {
+	New %s1
+	If $d(objstate(id)) {
+		Set %s1=$g(objstate(id))
+		S i%ImageFile=$lg(%s1,2),i%Name=$lg(%s1,3),i%UnitPrice=$lg(%s1,4),i%Description=$lg(%s1,5),i%Code=$lg(%s1,6),i%Weight=$lg(%s1,7),i%ShortName=$lg(%s1,8)
+		Quit 1
+	} Else {
+		Set i%Code="",i%Description="",i%ImageFile="",i%Name="",i%ShortName="",i%UnitPrice="",i%Weight=""
+		Quit $$Error^%apiOBJ(5809,$classname(),id)
+	} }
+%LockExtent(shared=0) public {
+	If shared {
+		Lock +(^TRU.ProductD#"S"):$zu(115,4) Quit:$t 1
+		Quit $$Error^%apiOBJ(5799,$classname())
+	}
+	Lock +(^TRU.ProductD):$zu(115,4) Quit:$t 1
+	Quit $$Error^%apiOBJ(5798,$classname()) }
+%LockId(id,shared=0,timeout) public { s:'($d(timeout)#2) timeout=$zu(115,4)
+	If id="" { Quit $$Error^%apiOBJ(5812) }
+	Set sc=1
+	If 'shared {
+		Lock +(^TRU.ProductD(id)#"E"):timeout Quit:$t 1
+		Quit $$Error^%apiOBJ(5803,id_":"_$classname())
+	}
+	Lock +(^TRU.ProductD(id)#"SE"):timeout Quit:$t 1
+	Quit $$Error^%apiOBJ(5804,id_":"_$classname()) }
+%NormalizeObject() public {
+	If '$system.CLS.GetModified() Quit 1
+	If m%Code Set:i%Code'="" i%Code=(..CodeNormalize(i%Code))
+	If m%Description Set:i%Description'="" i%Description=(..DescriptionNormalize(i%Description))
+	If m%ImageFile Set:i%ImageFile'="" i%ImageFile=(..ImageFileNormalize(i%ImageFile))
+	If m%Name Set:i%Name'="" i%Name=(..NameNormalize(i%Name))
+	If m%ShortName Set:i%ShortName'="" i%ShortName=(..ShortNameNormalize(i%ShortName))
+	If m%UnitPrice Set:i%UnitPrice'="" i%UnitPrice=(..UnitPriceNormalize(i%UnitPrice))
+	If m%Weight Set:i%Weight'="" i%Weight=(..WeightNormalize(i%Weight))
+	Quit 1 }
+%OnDetermineClass(oid,class) public {
+	Set id=$listget($get(oid))
+	Quit:id="" $$Error^%apiOBJ(5812)
+	Set idclass=$lg($get(^TRU.ProductD(id)),1)
+	If idclass="" { Set class="TRU.Product" Quit 1 }
+	Set class=$piece(idclass,$extract(idclass),*-1)
+	Set:class'["." class="User."_class
+	QUIT 1 }
+%PhysicalAddress(id,paddr)
+	if $Get(id)="" Quit $$Error^%apiOBJ(5813,$classname())
+	if (id="") { quit $$Error^%apiOBJ(5832,$classname(),id) }
+	s paddr(1)=$lb($Name(^TRU.ProductD(id)),$classname(),"IDKEY","listnode",id)
+	s paddr=1
+	Quit 1
+%PurgeIndices(idxlist="",lockExtent=0,pIgnoreIndexList="") public {
+	Set locked=0,sc=1
+	Try {
+		if ($listlength(idxlist)=1)&&($listget(idxlist,1)="") { return 1 }
+		Set tPtr=0
+		While $listnext(idxlist,tPtr,tIndex) {
+			continue:tIndex=""
+			If '($d(^oddCOM($classname(),"i",tIndex))) {
+				Set sc=$select(+sc:$$Error^%apiOBJ(5066,$classname()_"::"_tIndex),1:$$AppendStatus^%occSystem(sc,$$Error^%apiOBJ(5066,$classname()_"::"_tIndex)))
+			}
+		}
+		If ('sc) { Return sc }
+		If lockExtent {
+			Set sc=..%LockExtent(0)
+			If ('sc) { Return sc }
+			Set locked=1
+		}
+		If $system.CLS.IsMthd("%OnBeforePurgeIndices") {
+			Set sc=..%OnBeforePurgeIndices(.idxlist)
+			If (('sc))||(($listlength(idxlist)=1)&&($listget(idxlist,1)="")) {
+				If locked {
+					Do ..%SQLReleaseTableLock(0)
+				}
+				Return sc
+			}
+		}
+		if ((idxlist="")||($listfind(idxlist,"Code"))),'$listfind(pIgnoreIndexList,"Code") {
+			kill ^TRU.ProductI("Code")
+		}
+		if ((idxlist="")||($listfind(idxlist,"ShortName"))),'$listfind(pIgnoreIndexList,"ShortName") {
+			kill ^TRU.ProductI("ShortName")
+		}
+		Set sc=1
+		If $system.CLS.IsMthd("%OnAfterPurgeIndices") { Set sc=..%OnAfterPurgeIndices(.idxlist) }
+	} Catch tException {
+		Set sc=tException.AsStatus(),$ZE=""
+	}
+	If locked { Do ..%UnlockExtent(0) }
+	Quit sc }
+%SQLAcquireLock(%rowid,s=0,unlockref=0)
+	new %d,gotlock
+	set %d(1)=%rowid set s=$e("E",'unlockref)_$e("S",s)
+	lock +^TRU.ProductD(%d(1))#s:$zu(115,4) set gotlock=$t
+	if gotlock,'unlockref { set:$case($SYSTEM.Lock.ReturnCode(),2:1,4:1,:0)&&($tlevel) %0CacheLock("TRU.Product","E")=1 }
+	set:gotlock&&unlockref unlockref=unlockref+1,unlockref(unlockref)=$lb($name(^TRU.ProductD(%d(1))),"TRU.Product",s_"D")
+	QUIT gotlock
+%SQLAcquireTableLock(s=0,SQLCODE,to="")
+	set s=$e("S",s) set:to="" to=$zu(115,4) lock +^TRU.ProductD#s:to QUIT:$t 1 set SQLCODE=-110 if s="S" { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler35",,"TRU"_"."_"Product") } else { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler36",,"TRU"_"."_"Product") } QUIT 0
+	Return
+%SQLBuildIndices(pIndices="",pLockFlag=0,pStartID="",pEndID="",pIgnoreIndexList="")
+	QUIT ..%BuildIndices(pIndices,,pLockFlag,,pStartID,pEndID,pIgnoreIndexList)
+%SQLBuildPurgeIndexForRow(pIndices="",pActions="BP",pLockRow=1,%d,%e,pIgnoreIndexList="")
+	// Purge and build index nodes for a single row using given values, return Status Code
+	new sn,tSC,tLock set tSC=1,pActions=$zcvt(pActions,"U")
+	try {
+		if $g(%d(1))="" { set tSC=$select(+tSC:$$Error^%apiOBJ(5521,-108,"RowID value must be specified in %d(1) when calling %SQLBuildPurgeIndexForRow for table 'TRU.Product'"),1:$$AppendStatus^%occSystem(tSC,$$Error^%apiOBJ(5521,-108,"RowID value must be specified in %d(1) when calling %SQLBuildPurgeIndexForRow for table 'TRU.Product'"))) RETURN tSC }
+		if pLockRow { if '..%SQLAcquireLock(%d(1)) { set tSC=$select(+tSC:$$Error^%apiOBJ(5521,-114,"Unable to lock row in table 'TRU.Product' with %ID = '"_%d(1)_"'"),1:$$AppendStatus^%occSystem(tSC,$$Error^%apiOBJ(5521,-114,"Unable to lock row in table 'TRU.Product' with %ID = '"_%d(1)_"'"))) RETURN tSC  } else { set tLock=1 }}
+		if ((pIndices="")||($lf(pIndices,"Code"))),'$listfind(pIgnoreIndexList,"Code") {
+			if pActions["P" {
+				set sn(1)=$zu(28,%e(2),7) set sn(2)=%d(1) k ^TRU.ProductI("Code",sn(1),sn(2))
+			}
+			if pActions["B" {
+				set sn(1)=$zu(28,%d(2),7) set sn(2)=%d(1) set ^TRU.ProductI("Code",sn(1),sn(2))=%d(9)
+			}
+		}
+		if ((pIndices="")||($lf(pIndices,"ShortName"))),'$listfind(pIgnoreIndexList,"ShortName") {
+			if pActions["P" {
+				set sn(1)=$zu(28,%e(6),7) set sn(2)=%d(1) k ^TRU.ProductI("ShortName",sn(1),sn(2))
+			}
+			if pActions["B" {
+				set sn(1)=$zu(28,%d(6),7) set sn(2)=%d(1) set ^TRU.ProductI("ShortName",sn(1),sn(2))=%d(9)
+			}
+		}
+		if pLockRow { do ..%SQLReleaseLock(%d(1),0,0) set tLock=0 }
+	}
+	catch {
+		if $g(tLock) { do ..%SQLReleaseLock(%d(1),0,0) }
+		set tSC=$select(+tSC:$$Error^%apiOBJ(5594,$ze),1:$$AppendStatus^%occSystem(tSC,$$Error^%apiOBJ(5594,$ze)))
+	}
+	QUIT tSC
+%SQLCheckUniqueIndices(pIndices,pOK)
+	new d,g,n,o set d=0
+	if $lf(pIndices,"Code") {
+		set g="^TRU.ProductI(""Code"")",o="^TRU.ProductI(""Code"","
+		for  {
+			set g=$q(@g@("")) quit:g=""||(o'=$e(g,1,$l(o)))
+			if $qs(g,2)'=" " { set n=$q(@g@("")) quit:n=""  if o=$e(n,1,$l(o)),$lb($qs(g,2))=$lb($qs(n,2)) { set d=1 quit  }}
+	}
+		if d { set pOK=0,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler42",,"Code","TRU"_"."_"Product") QUIT  }
+	}
+	if $lf(pIndices,"ShortName") {
+		set g="^TRU.ProductI(""ShortName"")",o="^TRU.ProductI(""ShortName"","
+		for  {
+			set g=$q(@g@("")) quit:g=""||(o'=$e(g,1,$l(o)))
+			if $qs(g,2)'=" " { set n=$q(@g@("")) quit:n=""  if o=$e(n,1,$l(o)),$lb($qs(g,2))=$lb($qs(n,2)) { set d=1 quit  }}
+	}
+		if d { set pOK=0,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler42",,"ShortName","TRU"_"."_"Product") QUIT  }
+	}
+	set pOK=1 QUIT
+%SQLCopyIcolIntoName()
+	if %oper="DELETE" {
+		set:$d(%d(1)) %f("ID")=%d(1)
+		QUIT
+	}
+	set:$d(%d(1)) %f("ID")=%d(1) set:$a(%e,2)&&$d(%d(2)) %f("Code")=%d(2) set:$a(%e,3)&&$d(%d(3)) %f("Description")=%d(3) set:$a(%e,4)&&$d(%d(4)) %f("ImageFile")=%d(4) set:$a(%e,5)&&$d(%d(5)) %f("Name")=%d(5) set:$a(%e,6)&&$d(%d(6)) %f("ShortName")=%d(6) set:$a(%e,7)&&$d(%d(7)) %f("UnitPrice")=%d(7) set:$a(%e,8)&&$d(%d(8)) %f("Weight")=%d(8) set:$a(%e,9)&&$d(%d(9)) %f("x__classname")=%d(9)
+	QUIT
+%SQLDefineiDjVars(%d,subs,master)
+	QUIT
+%SQLDelete(%rowid,%check,%tstart=1,%mv=0,%polymorphic=0)
+	// SQL DELETE method for table TRU.Product
+	new bva,ce,%d,dc,%e,%ele,%itm,%key,%l,%nc,omcall,%oper,%pos,%s,sn,sqlcode,subs set %oper="DELETE",sqlcode=0,%ROWID=%rowid,%d(1)=%rowid,%e(1)=%rowid,%l=$c(0)
+	if '$d(%0CacheSQLRA) { new %0CacheSQLRA set omcall=1 }
+	if '$a(%check,2) {
+		new %ls lock +^TRU.ProductD(%d(1))#"E":$zu(115,4) set %ls=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,4:2,2:2,1:3,:""))
+		set:%ls=2 $e(%check,2)=$c(1) set:%ls=2&&($tlevel) %0CacheLock("TRU.Product","E")=1 set:$case(%ls,1:1,2:1,:0) $e(%l)=$c(1)
+		if '%ls||(%ls=3) { set SQLCODE=-110,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer",$s('%ls:"SQLFiler40",1:"SQLFiler55"),,%oper,"TRU"_"."_"Product",$g(%d(1))) RETURN  }
+	}
+	if %tstart { TSTART:($zu(115,1)=1)||('$TLEVEL&&($zu(115,1)=2))  }
+	set $zt="ERRORDelete"
+	do ..%SQLGetOld(%rowid,.%d,.%e,.sqlcode) if sqlcode { set SQLCODE=-106,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler58",,"TRU"_"."_"Product",%rowid) do ..%SQLEExit() QUIT  }
+	if %e(9)'="" { set sn=$p(%e(9),$e(%e(9)),$l(%e(9),$e(%e(9)))-1) if "TRU.Product"'=sn { new %f do ..%SQLCopyIcolIntoName() do $classmethod(sn,"%SQLDelete",%rowid,%check,%tstart,%mv,1) QUIT  }}
+	if '$a(%check),'$zu(115,7) do  if sqlcode set SQLCODE=sqlcode do ..%SQLEExit() QUIT  
+	. new %fk,%k,%p,%st,%t,%z set %k="",%p("%1")="%d(1),",%p("Code")="%e(2),",%p("IDKEY")="%d(1),",%p("ShortName")="%e(6),"
+	. for  quit:sqlcode<0  set %k=$o(^rINDEXEXT("F","TRU.Product",%k)) quit:%k=""  set %t="" for  set %t=$o(^rINDEXEXT("F","TRU.Product",%k,"f",%t)) quit:%t=""  set %st=(%t="TRU.Product") set %fk="" for  set %fk=$o(^rINDEXEXT("F","TRU.Product",%k,"f",%t,%fk)) quit:%fk=""  x "set %z=$classmethod(%t,%fk_""SQLFKeyRefAction"",%st,%k,$a(%check,2),"_%p(%k)_")" if %z set sqlcode=-124 quit  
+	if '($a(%check,2)#2),'$g(%0CacheLock("TRU.Product","E")) {
+		lock +^TRU.ProductI("Code",$zu(28,%e(2),7))#"S":$zu(115,4) if $t { lock -^TRU.ProductI("Code",$zu(28,%e(2),7))#"S" } else { do ..%SQLUnlockError("Code") set SQLCODE=sqlcode do ..%SQLEExit() QUIT }
+		if $g(%e(6))'="" { lock +^TRU.ProductI("ShortName",$zu(28,%e(6),7))#"S":$zu(115,4) if $t { lock -^TRU.ProductI("ShortName",$zu(28,%e(6),7))#"S" } else { do ..%SQLUnlockError("ShortName") set SQLCODE=sqlcode do ..%SQLEExit() QUIT }}
+	}
+	set ce="" for  { set ce=$order(^oddSQL("TRU","Product","DC",ce)) quit:ce=""   do $classmethod(ce,"%SQLDeleteChildren",%d(1),%check,.sqlcode) quit:sqlcode<0  } if sqlcode<0 { set SQLCODE=sqlcode do ..%SQLEExit() QUIT } // Delete any children
+	if '$a(%check,3) {
+		set sn(1)=$zu(28,%e(2),7) set sn(2)=%d(1) k ^TRU.ProductI("Code",sn(1),sn(2))
+		set sn(1)=$zu(28,%e(6),7) set sn(2)=%d(1) k ^TRU.ProductI("ShortName",sn(1),sn(2))
+	}
+	k ^TRU.ProductD(%d(1))
+	do ..%SQLUnlock() TCOMMIT:%tstart&&($zu(115,1)=1)
+	set SQLCODE=0 kill:$g(omcall) %0CacheSQLRA
+	QUIT
+ERRORDelete	set $zt="",SQLCODE=-415,%msg=$s($g(%msg)'="":%msg_" -- ",1:"")_$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler51",,%oper,"TRU"_"."_"Product",$ze) if $ze["<FRAMESTACK>" { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler52",,$ze,%oper,"TRU"_"."_"Product") do ##Class(%SYS.System).WriteToConsoleLog(%msg) if ($zu(67,10,$j)=1)||($zu(67,10,$j)=3) { write !,%msg h 3 } HALT  } do ..%SQLEExit() QUIT
+	Return
+%SQLDeleteTempStreams()
+	// Delete all temporary streams
+	QUIT
+%SQLEExit()
+	do:%oper'="DELETE" ..%SQLUnlock2() do ..%SQLUnlock() 
+	if %tstart,$zu(115,1)=1,$TLEVEL { set %tstart=0 TROLLBACK 1 } kill:$g(omcall) %0CacheSQLRA QUIT  
+	Return
+%SQLExists(pLockOnly=0,pUnlockRef,%pVal...)
+	// SQL Foreign Key validation entry point for Key %1.  Called by FKeys that reference this Key to see if the row is defined
+	if pLockOnly>=0 { new id set id=%pVal(1) }
+	if pLockOnly>=0 { if '..%SQLGetLock(id,1,.pUnlockRef) { set sqlcode=-114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler39",,"TRU"_"."_"Product"_":"_"%1") QUIT 0 } }
+	if pLockOnly<1 {
+		new qv set qv=$d(^TRU.ProductD(%pVal(1))) QUIT:pLockOnly=-1 qv
+		do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) quit qv
+	}
+	else { do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) QUIT 1 }
+	Return
+%SQLGetLock(pRowId,pShared=0,pUnlockRef)
+	QUIT ..%SQLAcquireLock(pRowId,pShared,.pUnlockRef)
+%SQLGetOld(%rowid,%d,%e,sqlcode)
+	new s set %d(1)=%rowid,s="" if '$d(^TRU.ProductD(%d(1)),s) { set sqlcode=100 quit  }
+	 S $lg(%e(9),,,,,%e(2),,%e(6))=s
+	QUIT
+%SQLGetOldAll()
+	new s set %d(1)=%rowid,s="" if '$d(^TRU.ProductD(%d(1)),s) { set sqlcode=100 quit  }
+	 S $lg(%e(9),%e(4),%e(5),%e(7),%e(3),%e(2),%e(8),%e(6))=s
+	QUIT
+%SQLGetOldIndex(%rowid,%d,pF=0,sqlcode)
+	try {
+		new tClass,tF,tOid,tSC
+		set tOid=..%ComposeOid(%rowid)
+		if ''..%OnDetermineClass(tOid,.tClass),tClass'=$classname() {
+			set tF=1 do $classmethod(tClass,"%SQLGetOldIndex",%rowid,,.tF,.sqlcode)
+			set:$d(tF("Code")) %d(2)=tF("Code") set:$d(tF("x__classname")) %d(9)=tF("x__classname") set:$d(tF("ShortName")) %d(6)=tF("ShortName") 
+			RETURN
+		}
+	}
+	catch { }
+	new s set %d(1)=%rowid,s="" if '$d(^TRU.ProductD(%d(1)),s) { set sqlcode=100 quit  }
+	 S $lg(%e(9),,,,,%e(2),,%e(6))=s
+	if pF { set:$d(%d(2)) pF("Code")=%d(2) set:$d(%d(9)) pF("x__classname")=%d(9) set:$d(%d(6)) pF("ShortName")=%d(6)  }
+	set sqlcode=0
+	QUIT
+%SQLInsert(%d,%check,%inssel,%vco,%tstart=1,%mv=0)
+	// SQL INSERT method for table TRU.Product
+	new bva,%ele,%itm,%key,%f,%l,%n,%nc,%oper,%pos,%s,sqlcode,sn,subs,icol set %oper="INSERT",sqlcode=0,%l=$c(0,0,0,0,0)
+	if $a(%check,7) { new %diu merge %diu=%d }
+	if $d(%d(1)),'$zu(115,11) { if %d(1)'="" { set SQLCODE=-111,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler6",,"ID","TRU"_"."_"Product") RETURN ""  } kill %d(1) } 
+	if '$a(%check),'..%SQLValidateFields(.sqlcode) { set SQLCODE=sqlcode RETURN "" }
+	do:'$a(%check,8) ..%SQLNormalizeFields()
+	if %tstart { TSTART:($zu(115,1)=1)||('$TLEVEL&&($zu(115,1)=2))  } set $zt="ERRORInsert"
+	if '$a(%check) {
+		do {
+			if $g(%vco)'="" { d @%vco quit:sqlcode<0  }
+			do:$g(%d(2))="" ..%SQLnBuild():'$d(%n),..%SQLMissing($lg(%n,3)) 
+			quit:sqlcode<0		// A required field was missing
+				// Constraint Code
+				if '$a(%check,2) { lock +^TRU.ProductI("Code",$zu(28,%d(2),7)):$zu(115,4) if $t { set $e(%l,2)=$c(1) } else { do ..%SQLUnlockError("Code") quit  } }
+				if '$a(%check,7) { if $d(^TRU.ProductI("Code",$zu(28,%d(2),7))) { set sqlcode=-119,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler10",,"TRU"_"."_"Product","Code","Code"_"="_$$quoter^%apiSQL($g(%d(2)))) quit  }} // INSERT
+				else { new tID set tID=..CodeSQLFindRowIDByConstraint($lb(%d(2)),1) if tID'="" { kill %d merge %d=%diu kill %diu do ..%SQLUpdate(tID,%check,.%d),..%SQLUnlock2() set $e(%check,7)=$c(2) quit  }} // INSERT OR UPDATE
+			if $g(%d(6))'="" {	// Constraint ShortName
+				if '$a(%check,2) { lock +^TRU.ProductI("ShortName",$zu(28,%d(6),7)):$zu(115,4) if $t { set $e(%l,4)=$c(1) } else { do ..%SQLUnlockError("ShortName") quit  } }
+				if '$a(%check,7) { if $d(^TRU.ProductI("ShortName",$zu(28,%d(6),7))) { set sqlcode=-119,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler10",,"TRU"_"."_"Product","ShortName","ShortName"_"="_$$quoter^%apiSQL($g(%d(6)))) quit  }} // INSERT
+				else { new tID set tID=..ShortNameSQLFindRowIDByConstraint($lb(%d(6)),1) if tID'="" { kill %d merge %d=%diu kill %diu do ..%SQLUpdate(tID,%check,.%d),..%SQLUnlock2() set $e(%check,7)=$c(2) quit  }} // INSERT OR UPDATE
+			}
+		} while 0
+		QUIT:$a(%check,7)=2 $s('SQLCODE:tID,1:"")				// INSERT became UPDATE
+		if sqlcode<0 { set SQLCODE=sqlcode do ..%SQLEExit() RETURN "" }		// A constraint failed
+	}
+	if '$d(%d(1)) { set %d(1)=$i(^TRU.ProductD) } elseif %d(1)>$g(^TRU.ProductD) { if $i(^TRU.ProductD,$zabs(%d(1)-$g(^TRU.ProductD))) {}} elseif $d(^TRU.ProductD(%d(1))) { set SQLCODE=-119,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler33",,"ID",%d(1),"TRU"_"."_"Product"_"."_"ID") do ..%SQLEExit() RETURN "" }
+	set:'($d(%d(9))#2) %d(9)="" set:'($d(%d(2))#2) %d(2)="" set:'($d(%d(6))#2) %d(6)=""
+	if '$a(%check,2) {
+		new %ls lock +^TRU.ProductD(%d(1))#"E":$zu(115,4) set %ls=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,4:2,2:2,1:3,:""))
+		set:%ls=2 $e(%check,2)=$c(1) set:%ls=2&&($tlevel) %0CacheLock("TRU.Product","E")=1 set:$case(%ls,1:1,2:1,:0) $e(%l)=$c(1)
+		if '%ls||(%ls=3) { set SQLCODE=-110,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer",$s('%ls:"SQLFiler40",1:"SQLFiler55"),,%oper,"TRU"_"."_"Product",$g(%d(1))) do ..%SQLEExit() RETURN ""  }
+	}
+	set ^TRU.ProductD(%d(1))=$lb(%d(9),%d(4),%d(5),%d(7),%d(3),%d(2),%d(8),%d(6))
+	if '$a(%check,3) {
+		set sn(1)=$zu(28,%d(2),7) set sn(2)=%d(1) set ^TRU.ProductI("Code",sn(1),sn(2))=%d(9)
+		set sn(1)=$zu(28,%d(6),7) set sn(2)=%d(1) set ^TRU.ProductI("ShortName",sn(1),sn(2))=%d(9)
+	}
+	lock:$a(%l,2) -^TRU.ProductI("Code",$zu(28,%d(2),7))#"D" lock:$a(%l,4) -^TRU.ProductI("ShortName",$zu(28,%d(6),7))#"D" 
+	lock:$a(%l) -^TRU.ProductD(%d(1))#"E"
+	TCOMMIT:%tstart&&($zu(115,1)=1)
+	set SQLCODE=0
+	QUIT %d(1) 			// %SQLInsert
+ERRORInsert	set $zt="",SQLCODE=-415,%msg=$s($g(%msg)'="":%msg_" -- ",1:"")_$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler51",,%oper,"TRU"_"."_"Product",$ze)
+	if $ze["<FRAMESTACK>" { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler52",,$ze,%oper,"TRU"_"."_"Product") do ##Class(%SYS.System).WriteToConsoleLog(%msg) if ($zu(67,10,$j)=1)||($zu(67,10,$j)=3) { write !,%msg h 3 } HALT  }
+	do ..%SQLEExit()
+	RETURN ""
+%SQLInvalid(pIcol,pVal) public {
+	set:$l($g(pVal))>40 pVal=$e(pVal,1,40)_"..." do:'$d(%n) ..%SQLnBuild() set %msg=$s($g(%msg)'="":%msg_$c(13,10),1:"")_$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler37",,"TRU"_"."_"Product"_"."_$lg(%n,pIcol),$s($g(pVal)'="":$s(pVal="":"<NULL>",pVal=$c(0):"<EMPTY STRING>",1:"'"_pVal_"'"),1:"")),sqlcode=$s(%oper="INSERT":-104,1:-105)
+	QUIT sqlcode }
+%SQLMissing(fname)
+	set sqlcode=-108,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler47",,fname,"TRU"_"."_"Product") quit
+%SQLNormalizeFields()
+	new %f for %f=3,4,5 { set:$g(%d(%f))'="" %d(%f)=$e(%d(%f),1,100) }
+	set:$g(%d(2))'="" %d(2)=$e(%d(2),1,12)
+	set:$g(%d(6))'="" %d(6)=$e(%d(6),1,30)
+	for %f=7,8 { set:$g(%d(%f))'="" %d(%f)=$select($zu(115,13)&&(%d(%f)=$c(0)):"",1:$normalize($decimal(%d(%f)),2)) }
+	QUIT
+%SQLPurgeIndices(pIndices="",pLockExtent=0,pIgnoreIndexList="")
+	QUIT ..%PurgeIndices(pIndices,pLockExtent,pIgnoreIndexList)
+%SQLQuickLoad(%rowid,%nolock=0,pkey=0,qq=0)
+	// Get fields from row where SQLRowID=%rowid
+	new d,i,il,subs set:%nolock=2 %nolock=1
+	if %nolock=0 { if '..%SQLAcquireLock(%rowid) { set %qrc=114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler45",,"TRU"_"."_"Product",%rowid),%ROWCOUNT=0 QUIT  } set:$zu(115,2) il=$zu(115,2,0) }
+	new s,ul set ul=0,d(1)=%rowid if $zu(115,2)=1 { lock +^TRU.ProductD(d(1))#"S":$zu(115,4) if $t { set ul=1 } else { set %qrc=114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler46",,"TRU"_"."_"Product",%rowid),%ROWCOUNT=0 quit  } }
+	if '$d(^TRU.ProductD(d(1)),s) { set SQLCODE=100,%qrc=100 if %nolock=0 { do:$g(il) $zu(115,2,il) }} else { set SQLCODE=0
+	if qq { set d(9)=$lg(s) if d(9)'="" { new sn set sn=$p(d(9),$e(d(9)),$l(d(9),$e(d(9)))-1) if "TRU.Product"'=sn { if %nolock=0 { do ..%SQLReleaseLock(%rowid,0,1) do:$g(il) $zu(115,2,il) } kill d set:sn'["." sn="User."_sn do $classmethod(sn,"%SQLQuickLoad",%rowid,%nolock,0,1) QUIT  }}}
+	set d(2)=$lg(s,6) set d(3)=$lg(s,5) set d(4)=$lg(s,2) set d(5)=$lg(s,3) set d(6)=$lg(s,8) set d(7)=$lg(s,4) set d(8)=$lg(s,7) set d(9)=$lg(s)  }
+	do ..%SQLQuickLogicalToOdbc(.d)
+	if SQLCODE set %ROWCOUNT=0 set:SQLCODE<0 SQLCODE=-SQLCODE lock:ul -^TRU.ProductD(d(1))#"SI" set %qrc=SQLCODE QUIT
+	set:qq d=$zobjexport("TRU.Product",18),d=$zobjexport(9,18) set i=-1 for  { set i=$o(d(i)) quit:i=""  set d=$zobjexport(d(i),18) } set %qrc=0,%ROWCOUNT=1 lock:ul -^TRU.ProductD(d(1))#"SI" if %nolock=0 { do ..%SQLReleaseLock(%rowid,0,0) do:$g(il) $zu(115,2,il) } QUIT
+	Return
+%SQLReleaseLock(%rowid,s=0,i=0,e="")
+	new %d
+	set:e="" e=1 set %d(1)=%rowid set s=$e("E",e)_$e("S",s)_$e("D",i)
+	lock -^TRU.ProductD(%d(1))#s
+	QUIT
+%SQLReleaseTableLock(s=0,i=0)
+	set s=$e("S",s)_$e("D",i) lock -^TRU.ProductD#s QUIT 1
+	Return
+%SQLUnlock()
+	lock:$a(%l) -^TRU.ProductD(%d(1))#"E"
+	QUIT
+%SQLUnlock2()
+	lock:$a(%l,2) -^TRU.ProductI("Code",$zu(28,%d(2),7))#"D" lock:$a(%l,4) -^TRU.ProductI("ShortName",$zu(28,%d(6),7))#"D" QUIT
+%SQLUnlockError(cname)
+	set sqlcode=-110 if %oper="DELETE" { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler48",,"TRU"_"."_"Product",cname) } else { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler49",,"TRU"_"."_"Product",cname) } quit
+	Return
+%SQLUpdate(%rowid,%check,%d,%vco,%tstart=1,%mv=0,%polymorphic=0,%soid)
+	// SQL UPDATE method for table TRU.Product
+	new %e,bva,%ele,%itm,%key,%f,%l,%n,%nc,%oper,%pos,%s,icol,omcall,s,sn,sqlcode,subs,t set %oper="UPDATE",sqlcode=0,%ROWID=%rowid,$e(%e,1)=$c(0),%l=$c(0,0,0,0,0)
+	if '$d(%0CacheSQLRA) { new %0CacheSQLRA set omcall=1 }
+	if '$a(%check),'$a(%check,7),'..%SQLValidateFields(.sqlcode) { set SQLCODE=sqlcode QUIT  }
+	do:'$a(%check,8) ..%SQLNormalizeFields()
+	if $d(%d(1)),%d(1)'=%rowid { set SQLCODE=-107,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler16",,"ID","TRU"_"."_"Product") QUIT  }
+	for icol=2:1:9 { set $e(%e,icol)=$c($d(%d(icol))) }
+	set %d(1)=%rowid,%e(1)=%rowid
+	if '$a(%check,2) {
+		new %ls lock +^TRU.ProductD(%d(1))#"E":$zu(115,4) set %ls=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,4:2,2:2,1:3,:""))
+		set:%ls=2 $e(%check,2)=$c(1) set:%ls=2&&($tlevel) %0CacheLock("TRU.Product","E")=1 set:$case(%ls,1:1,2:1,:0) $e(%l)=$c(1)
+		if '%ls||(%ls=3) { set SQLCODE=-110,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer",$s('%ls:"SQLFiler40",1:"SQLFiler55"),,%oper,"TRU"_"."_"Product",$g(%d(1))) RETURN  }
+	}
+	if %tstart { TSTART:($zu(115,1)=1)||('$TLEVEL&&($zu(115,1)=2))  }
+	set $zt="ERRORUpdate"
+	if $g(%vco)="" { do ..%SQLGetOld(%rowid,.%d,.%e,.sqlcode) i sqlcode { s SQLCODE=-109,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler59",,"TRU"_"."_"Product",%rowid) do ..%SQLEExit() QUIT  } for icol=9,2,6 { set:'$d(%d(icol)) %d(icol)=%e(icol) set:%d(icol)=%e(icol) $e(%e,icol)=$c(0) }} else { do ..%SQLGetOldAll() if sqlcode { set SQLCODE=-109,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler59",,"TRU"_"."_"Product",%rowid) do ..%SQLEExit() QUIT  } for icol=2,3,4,5,6,7,8,9 { set:'$d(%d(icol)) %d(icol)=%e(icol) set:%d(icol)=%e(icol) $e(%e,icol)=$c(0) }}
+	if %e(9)'="" set sn=$p(%e(9),$e(%e(9)),$l(%e(9),$e(%e(9)))-1) if "TRU.Product"'=sn new %f do ..%SQLCopyIcolIntoName() do $classmethod(sn,"%SQLUpdate",%rowid,%check,.%d,$g(%vco),%tstart,%mv,1) QUIT
+	if '$a(%check) {
+		do {
+			if $g(%vco)'="" { d @%vco quit:sqlcode<0  }
+			if $a(%e,2),$g(%d(2))="" { do ..%SQLnBuild():'$d(%n),..%SQLMissing($lg(%n,3)) }
+			quit:sqlcode
+			if ($a(%e,2)) {	// UNIQUE constraint Code
+				if '($a(%check,2)#2),'$g(%0CacheLock("TRU.Product","E")) {
+					lock +^TRU.ProductI("Code",$zu(28,%d(2),7)):$zu(115,4) if $t { set $e(%l,2)=$c(1) } else { do ..%SQLUnlockError("Code") quit  } 
+					lock +^TRU.ProductI("Code",$zu(28,%e(2),7)):$zu(115,4) if $t { lock -^TRU.ProductI("Code",$zu(28,%e(2),7)) } else { do ..%SQLUnlockError("Code") quit  }
+				}
+				if $d(^TRU.ProductI("Code",$zu(28,%d(2),7))),'$d(^TRU.ProductI("Code",$zu(28,%d(2),7),%d(1))) { set sqlcode=-120,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler10",,"TRU"_"."_"Product","Code","Code"_"="_$$quoter^%apiSQL($g(%d(2)))) quit  }
+			}
+			new %fk,%st,%t,%y
+			if ($a(%e,2)),'$zu(115,7) {
+				set %t="" for  { set %t=$o(^rINDEXEXT("F","TRU.Product","Code","f",%t)) quit:%t=""  set %st=(%t="TRU.Product") s %fk="" for  { set %fk=$o(^rINDEXEXT("F","TRU.Product","Code","f",%t,%fk)) quit:%fk=""  x "set %y=$classmethod(%t,%fk_""SQLFKeyRefAction"",%st,""Code"",$a(%check,2),%e(2),%d(2))" if %y { set sqlcode=-123 quit  }}}
+			}
+			if ($a(%e,6)),$g(%d(6))'="" {	// UNIQUE constraint ShortName
+				if '($a(%check,2)#2),'$g(%0CacheLock("TRU.Product","E")) {
+					lock +^TRU.ProductI("ShortName",$zu(28,%d(6),7)):$zu(115,4) if $t { set $e(%l,4)=$c(1) } else { do ..%SQLUnlockError("ShortName") quit  } 
+					if %e(6)'="" { lock +^TRU.ProductI("ShortName",$zu(28,%e(6),7)):$zu(115,4) if $t { lock -^TRU.ProductI("ShortName",$zu(28,%e(6),7)) } else { do ..%SQLUnlockError("ShortName") quit  }}
+				}
+				if $d(^TRU.ProductI("ShortName",$zu(28,%d(6),7))),'$d(^TRU.ProductI("ShortName",$zu(28,%d(6),7),%d(1))) { set sqlcode=-120,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler10",,"TRU"_"."_"Product","ShortName","ShortName"_"="_$$quoter^%apiSQL($g(%d(6)))) quit  }
+			}
+			if ($a(%e,6)),'$zu(115,7) {
+				set %t="" for  { set %t=$o(^rINDEXEXT("F","TRU.Product","ShortName","f",%t)) quit:%t=""  set %st=(%t="TRU.Product") s %fk="" for  { set %fk=$o(^rINDEXEXT("F","TRU.Product","ShortName","f",%t,%fk)) quit:%fk=""  x "set %y=$classmethod(%t,%fk_""SQLFKeyRefAction"",%st,""ShortName"",$a(%check,2),%e(6),%d(6))" if %y { set sqlcode=-123 quit  }}}
+			}
+		} while 0
+		if sqlcode { set SQLCODE=sqlcode do ..%SQLEExit() QUIT  }
+	}
+	if $s($a(%e,2):1,$a(%e,3):1,$a(%e,4):1,$a(%e,5):1,$a(%e,6):1,$a(%e,7):1,$a(%e,8):1,1:$a(%e,9)) {
+		set ^TRU.ProductD(%d(1))=$listupdate($g(^TRU.ProductD(%d(1))),1,$a(%e,9):%d(9),$a(%e,4):%d(4),$a(%e,5):%d(5),$a(%e,7):%d(7),$a(%e,3):%d(3),$a(%e,2):%d(2),$a(%e,8):%d(8),$a(%e,6):%d(6))
+	}
+	if '$a(%check,3) { 
+		if $a(%e,2)||$a(%e,9) {	// Code index map
+			if $a(%e,2) { set sn(1)=$zu(28,%e(2),7) set sn(2)=%d(1) k ^TRU.ProductI("Code",sn(1),sn(2)) }
+			set sn(1)=$zu(28,%d(2),7) set sn(2)=%d(1) set ^TRU.ProductI("Code",sn(1),sn(2))=%d(9)
+		}
+		if $a(%e,6)||$a(%e,9) {	// ShortName index map
+			if $a(%e,6) { set sn(1)=$zu(28,%e(6),7) set sn(2)=%d(1) k ^TRU.ProductI("ShortName",sn(1),sn(2)) }
+			set sn(1)=$zu(28,%d(6),7) set sn(2)=%d(1) set ^TRU.ProductI("ShortName",sn(1),sn(2))=%d(9)
+		}
+	}
+	do ..%SQLUnlock2()
+	do ..%SQLUnlock() TCOMMIT:%tstart&&($zu(115,1)=1)
+	set SQLCODE=0 kill:$g(omcall) %0CacheSQLRA
+	QUIT
+ERRORUpdate	set $zt="",SQLCODE=-415,%msg=$s($g(%msg)'="":%msg_" -- ",1:"")_$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler51",,%oper,"TRU"_"."_"Product",$ze) if $ze["<FRAMESTACK>" { set %msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler52",,$ze,%oper,"TRU"_"."_"Product") do ##Class(%SYS.System).WriteToConsoleLog(%msg) if ($zu(67,10,$j)=1)||($zu(67,10,$j)=3) { write !,%msg h 3 } HALT  } do ..%SQLEExit() QUIT  
+	Return
+%SQLValidateCompFields(sqlcode)
+	QUIT 'sqlcode
+%SQLValidateFields(sqlcode)
+	new %f for %f=7,8 { if $g(%d(%f))'="",'($select($zu(115,13)&&(%d(%f)=$c(0)):1,$isvalidnum(%d(%f),2,0,):1,'$isvalidnum(%d(%f)):$$Error^%apiOBJ(7207,%d(%f)),1:$$Error^%apiOBJ(7204,%d(%f),0))) set sqlcode=..%SQLInvalid(%f+1,$g(%d(%f))) quit  } 
+	QUIT 'sqlcode
+%SQLnBuild() public {
+	set %n=$lb(,"ID","Code","Description","ImageFile","Name","ShortName","UnitPrice","Weight","x__classname")
+	QUIT }
+%SaveData(id) public {
+	try {
+		set id=$listget(i%"%%OID") if id'="" { set insert=0,idassigned=1 } else { set insert=1,idassigned=0 }
+		set lock=0,lockok=0,tSharedLock=0,locku=$c(0,0)
+		if 'idassigned { set id=$i(^TRU.ProductD) do ..%IdSet(id) set:$g(%objtxSTATUS)=2 %objtxOIDASSIGNED(+$this)="" }
+		set zzc10v1=$zu(28,i%ShortName,7,32768)
+		set zzc10v2=$zu(28,i%Code,7,32768)
+		try {
+			set tInnerException = ""
+			;
+			if 'insert {
+				if (i%%Concurrency<4)&&(i%%Concurrency) { lock +(^TRU.ProductD(id)#"E"):$zu(115,4) set lockok=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0)) set:lockok=2&&($tlevel) %0CacheLock($classname(),"E")=1 if lockok { set lock=1 } else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } }
+				if ('$Data(^TRU.ProductD(id))) {
+					set insert=1
+					if lock { lock -(^TRU.ProductD(id)#"E") set (lock,lockok) = 0 }
+				}
+			}
+			if insert {
+				if ('lockok&&..%Concurrency&&$tlevel)||(i%%Concurrency=4) {  lock +(^TRU.ProductD(id)#"E"):$zu(115,4) set lockok=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0)) set:(lockok=2&&(i%%Concurrency'=4)) %0CacheLock($classname(),"E")=1 set:lockok lock=1 if 'lockok { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } }
+				if i%%Concurrency=3 { lock +(^TRU.ProductD(id)#"ES") set tSharedLock=1 }
+				if (i%%Concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("Code",zzc10v2):$zu(115,4) if $Test { Set $Extract(locku,1)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("Code",zzc10v2)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":Code:"_$zreference)) }
+				if i%ShortName'="" { if (i%%Concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("ShortName",zzc10v1):$zu(115,4) if $Test { Set $Extract(locku,2)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("ShortName",zzc10v1)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":ShortName:"_$zreference)) }}
+				set ^TRU.ProductD(id)=$lb("",i%ImageFile,i%Name,i%UnitPrice,i%Description,i%Code,i%Weight,i%ShortName)
+				set ^TRU.ProductI("Code",zzc10v2,id)=""
+				set ^TRU.ProductI("ShortName",zzc10v1,id)=""
+			}
+			else {
+				set zzc31v1=^TRU.ProductD(id)
+				set zzc31v2=$listget(zzc31v1,8)
+				set zzc31v3=$zu(28,zzc31v2,7,32768)
+				set zzc31v4=$listget(zzc31v1,6)
+				set zzc31v5=$zu(28,zzc31v4,7,32768)
+				if i%Code'=zzc31v4 { if (i%%Concurrency)&&('$g(%0CacheLock($classname(),"E"))) { lock +^TRU.ProductI("Code",zzc10v2):$zu(115,4) if $Test { Set $Extract(locku,1)=$c(1) } else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } l +^TRU.ProductI("Code",zzc31v5):$zu(115,4) if $t { l -^TRU.ProductI("Code",zzc31v5) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) }} If ($data(^TRU.ProductI("Code",zzc10v2)))&&('$data(^TRU.ProductI("Code",zzc10v2,id))) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":Code:"_$zreference)) } }
+				if i%ShortName'="" { if i%ShortName'=zzc31v2 { if (i%%Concurrency)&&('$g(%0CacheLock($classname(),"E"))) { lock +^TRU.ProductI("ShortName",zzc10v1):$zu(115,4) if $Test { Set $Extract(locku,2)=$c(1) } else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } if zzc31v2'="" { l +^TRU.ProductI("ShortName",zzc31v3):$zu(115,4) if $t { l -^TRU.ProductI("ShortName",zzc31v3) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) }}} If ($data(^TRU.ProductI("ShortName",zzc10v1)))&&('$data(^TRU.ProductI("ShortName",zzc10v1,id))) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":ShortName:"_$zreference)) } } }
+				if (i%Code'=zzc31v4) {
+					kill ^TRU.ProductI("Code",zzc31v5,id)
+					if i%Code'=zzc31v4{ n %fk,%fc s %fc="" f  s %fc=$o(^rINDEXEXT("F",$classname(),"Code","f",%fc)) q:%fc=""  s %fk="" f  s %fk=$o(^rINDEXEXT("F",$classname(),"Code","f",%fc,%fk)) q:%fk=""  s tStatus=$classmethod(%fc,%fk_"Update",zzc31v4,i%Code) i ('tStatus) Throw ##class(%Exception.StatusException).ThrowIfInterrupt(tStatus) }
+					set ^TRU.ProductI("Code",zzc10v2,id)=""
+				}
+				if (i%ShortName'=zzc31v2) {
+					kill ^TRU.ProductI("ShortName",zzc31v3,id)
+					if i%ShortName'=zzc31v2{ n %fk,%fc s %fc="" f  s %fc=$o(^rINDEXEXT("F",$classname(),"ShortName","f",%fc)) q:%fc=""  s %fk="" f  s %fk=$o(^rINDEXEXT("F",$classname(),"ShortName","f",%fc,%fk)) q:%fk=""  s tStatus=$classmethod(%fc,%fk_"Update",zzc31v2,i%ShortName) i ('tStatus) Throw ##class(%Exception.StatusException).ThrowIfInterrupt(tStatus) }
+					set ^TRU.ProductI("ShortName",zzc10v1,id)=""
+				}
+				set ^TRU.ProductD(id)=$lb("",i%ImageFile,i%Name,i%UnitPrice,i%Description,i%Code,i%Weight,i%ShortName)
+			}
+			set tStatus = 1
+		}
+		catch tInnerException {
+			if ('idassigned) { Set $zobjoid("",$listget(i%"%%OID"))="",i%"%%OID"="" kill:$g(%objtxSTATUS)=2 %objtxOIDASSIGNED(+$this) }
+			if (tSharedLock) {  lock -(^TRU.ProductD(id)#"ES") } elseif (lockok=1)&&(insert)&&(i%%Concurrency=4) {  lock -(^TRU.ProductD(id)) }
+		}
+		lock:$Ascii($Extract(locku,1)) -^TRU.ProductI("Code",zzc10v2)#"D"
+		lock:$Ascii($Extract(locku,2)) -^TRU.ProductI("ShortName",zzc10v1)#"D"
+		if lock lock -(^TRU.ProductD(id)#"E")
+		if $Isobject(tInnerException) { throw tInnerException }
+	}
+	catch tException {
+		set tStatus = tException.AsStatus()
+	}
+	quit tStatus }
+%SaveDirect(id="",idList="",data,concurrency=-1) public {
+	try {
+		set zzc5v1=$listget(data,8)
+		set zzc5v2=$listget(data,6)
+		set zzc5v3=$listget(data,1)
+		if concurrency=-1 { set concurrency=$zu(115,10) }
+		if id'="" { set insert=0,idassigned=1 } else { set insert=1,idassigned=0 }
+		set lock=0,tSharedLock=0,locku=$c(0,0)
+		if 'idassigned { set id=$i(^TRU.ProductD) }
+		set zzc10v1=$zu(28,zzc5v1,7,32768)
+		set zzc10v2=$zu(28,zzc5v2,7,32768)
+		try {
+			set tInnerException = ""
+			;
+			if 'insert {
+				if concurrency { lock +(^TRU.ProductD(id)#"E"):$zu(115,4) set lock=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0)) set:lock=2&&($tlevel) %0CacheLock($classname(),"E")=1 if 'lock { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } }
+				if ('$Data(^TRU.ProductD(id))) {
+					set insert=1
+					if lock { lock -(^TRU.ProductD(id)#"E") set (lock,lockok) = 0 }
+				}
+			}
+			if insert {
+				if concurrency { lock +(^TRU.ProductD(id)#"E"):$zu(115,4) set lock=$s('$t:0,1:$case($SYSTEM.Lock.ReturnCode(),0:1,2:2,4:2,:0)) set:lock=2&&($tlevel) %0CacheLock($classname(),"E")=1 if 'lock { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } }
+				if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("Code",zzc10v2):$zu(115,4) if $Test { Set $Extract(locku,1)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("Code",zzc10v2)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":Code:"_$zreference)) }
+				if zzc5v1'="" { if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { l +^TRU.ProductI("ShortName",zzc10v1):$zu(115,4) if $Test { Set $Extract(locku,2)=$c(1) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } } If $data(^TRU.ProductI("ShortName",zzc10v1)) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":ShortName:"_$zreference)) }}
+				set ^TRU.ProductD(id)=data
+				set ^TRU.ProductI("Code",zzc10v2,id)=zzc5v3
+				set ^TRU.ProductI("ShortName",zzc10v1,id)=zzc5v3
+			}
+			else {
+				set zzc31v1=$lg(idList,1)
+				set zzc31v2=^TRU.ProductD(zzc31v1)
+				set zzc31v3=$listget(zzc31v2,8)
+				set zzc31v4=$zu(28,zzc31v3,7,32768)
+				set zzc31v5=$listget(zzc31v2,6)
+				set zzc31v6=$zu(28,zzc31v5,7,32768)
+				if zzc5v2'=zzc31v5 { if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { lock +^TRU.ProductI("Code",zzc10v2):$zu(115,4) if $Test { Set $Extract(locku,1)=$c(1) } else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } l +^TRU.ProductI("Code",zzc31v6):$zu(115,4) if $t { l -^TRU.ProductI("Code",zzc31v6) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) }} If ($data(^TRU.ProductI("Code",zzc10v2)))&&('$data(^TRU.ProductI("Code",zzc10v2,id))) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":Code:"_$zreference)) } }
+				if zzc5v1'="" { if zzc5v1'=zzc31v3 { if (concurrency)&&('$g(%0CacheLock($classname(),"E"))) { lock +^TRU.ProductI("ShortName",zzc10v1):$zu(115,4) if $Test { Set $Extract(locku,2)=$c(1) } else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) } if zzc31v3'="" { l +^TRU.ProductI("ShortName",zzc31v4):$zu(115,4) if $t { l -^TRU.ProductI("ShortName",zzc31v4) } Else { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5803,$classname())) }}} If ($data(^TRU.ProductI("ShortName",zzc10v1)))&&('$data(^TRU.ProductI("ShortName",zzc10v1,id))) { Throw ##class(%Exception.StatusException).ThrowIfInterrupt($$Error^%apiOBJ(5808,$classname()_":ShortName:"_$zreference)) } } }
+				if (zzc5v2'=zzc31v5) {
+					kill ^TRU.ProductI("Code",zzc31v6,zzc31v1)
+					if zzc5v2'=zzc31v5{ n %fk,%fc s %fc="" f  s %fc=$o(^rINDEXEXT("F",$classname(),"Code","f",%fc)) q:%fc=""  s %fk="" f  s %fk=$o(^rINDEXEXT("F",$classname(),"Code","f",%fc,%fk)) q:%fk=""  s tStatus=$classmethod(%fc,%fk_"Update",zzc31v5,zzc5v2) i ('tStatus) Throw ##class(%Exception.StatusException).ThrowIfInterrupt(tStatus) }
+					set ^TRU.ProductI("Code",zzc10v2,id)=zzc5v3
+				}
+				if (zzc5v1'=zzc31v3) {
+					kill ^TRU.ProductI("ShortName",zzc31v4,zzc31v1)
+					if zzc5v1'=zzc31v3{ n %fk,%fc s %fc="" f  s %fc=$o(^rINDEXEXT("F",$classname(),"ShortName","f",%fc)) q:%fc=""  s %fk="" f  s %fk=$o(^rINDEXEXT("F",$classname(),"ShortName","f",%fc,%fk)) q:%fk=""  s tStatus=$classmethod(%fc,%fk_"Update",zzc31v3,zzc5v1) i ('tStatus) Throw ##class(%Exception.StatusException).ThrowIfInterrupt(tStatus) }
+					set ^TRU.ProductI("ShortName",zzc10v1,id)=zzc5v3
+				}
+				set ^TRU.ProductD(id)=data
+			}
+			set tStatus = 1
+		}
+		catch tInnerException {
+		}
+		lock:$Ascii($Extract(locku,1)) -^TRU.ProductI("Code",zzc10v2)#"D"
+		lock:$Ascii($Extract(locku,2)) -^TRU.ProductI("ShortName",zzc10v1)#"D"
+		if lock lock -(^TRU.ProductD(id)#"E")
+		if $Isobject(tInnerException) { throw tInnerException }
+	}
+	catch tException {
+		set tStatus = tException.AsStatus()
+	}
+	quit tStatus }
+%SaveIndices(pStartId="",pEndId="",lockExtent=0) public {
+	If lockExtent {
+		Set sc=..%LockExtent(0)
+		Quit:('sc) sc
+	}
+	s id=$order(^TRU.ProductD(pStartId),-1),tEndId=$S(pEndId'="":pEndId,1:pStartId)
+BSLoop	s id=$O(^TRU.ProductD(id)) g:(id="")||(id]]tEndId) BSLoopDun
+	Set bsv0N1=$Get(^TRU.ProductD(id))
+	Set bsv0N2=$zu(28,$listget(bsv0N1,6),7,32768)
+	Set ^TRU.ProductI("Code",bsv0N2,id)=$listget(bsv0N1,1)
+	Set bsv0N3=$zu(28,$listget(bsv0N1,8),7,32768)
+	Set ^TRU.ProductI("ShortName",bsv0N3,id)=$listget(bsv0N1,1)
+	g BSLoop
+BSLoopDun
+	If lockExtent { Do ..%UnlockExtent(0) }
+	Quit 1
+CatchError	Set $ZTrap=""
+	If $ZE'="" {
+		Set sc = $$Error^%apiOBJ(5002,$ZE)
+	}
+	If lockExtent { Do ..%UnlockExtent(0) }
+	Quit sc }
+%SortBegin(idxlist="",excludeunique=0)
+	if 'excludeunique,$select(idxlist="":1,$listfind(idxlist,"Code"):1,1:0) If $SortBegin(^TRU.ProductI("Code"))
+	if 'excludeunique,$select(idxlist="":1,$listfind(idxlist,"ShortName"):1,1:0) If $SortBegin(^TRU.ProductI("ShortName"))
+	Quit 1
+%SortEnd(idxlist="",commit=1,excludeunique=0) public {
+	if 'excludeunique,$select(idxlist="":1,$listfind(idxlist,"Code"):1,1:0) If $SortEnd(^TRU.ProductI("Code"),commit)
+	if 'excludeunique,$select(idxlist="":1,$listfind(idxlist,"ShortName"):1,1:0) If $SortEnd(^TRU.ProductI("ShortName"),commit)
+	Quit 1 }
+%UnlockExtent(shared=0,immediate=0) public {
+	If 'shared {
+		If 'immediate {
+			Lock -^TRU.ProductD
+			 Quit 1
+		}
+		Lock -^TRU.ProductD#"I"
+		Quit 1
+	}
+	If 'immediate {
+		Lock -^TRU.ProductD#"S"
+		Quit 1
+	}
+	Lock -^TRU.ProductD#"SI"
+	Quit 1 }
+%UnlockId(id,shared=0,immediate=0) public {
+	If 'shared {
+		If 'immediate {
+			Lock -(^TRU.ProductD(id)#"E")
+			Quit 1
+		}
+		Lock -(^TRU.ProductD(id)#"IE")
+		Quit 1
+	}
+	If 'immediate {
+		Lock -(^TRU.ProductD(id)#"SE")
+		Quit 1
+	}
+	Lock -(^TRU.ProductD(id)#"SIE")
+	Quit 1 }
+%ValidateIndices(idxList="",autoCorrect=0,lockOption=1,multiProcess=1,mapList,verbose=1,errors)
+	if '$listvalid(idxList) { QUIT $$Error^%apiOBJ(5591,"##class(TRU.Product).%ValidateIndices()","idxList",""""" or a $list of index names") }
+	if $case(autoCorrect,1:0,0:0,:1) { QUIT $$Error^%apiOBJ(5591,"##class(TRU.Product).%ValidateIndices()","autoCorrect","'0' or '1'") }
+	if $case(lockOption,2:0,1:0,0:0,:1) { QUIT $$Error^%apiOBJ(5591,"##class(TRU.Product).%ValidateIndices()","lockOption","'0', '1' or '2'") }
+	if $case(multiProcess,1:0,0:0,:1) { QUIT $$Error^%apiOBJ(5591,"##class(TRU.Product).%ValidateIndices()","multiProcess","'0' or '1'") }
+	if $case(verbose,1:0,0:0,:1) { QUIT $$Error^%apiOBJ(5591,"##class(TRU.Product).%ValidateIndices()","verbose","'0' or '1'") }
+	new mapList QUIT $$ValidateIndices^%SYS.SECURITY("TRU.Product",idxList,autoCorrect,lockOption,multiProcess,,verbose,.errors)
+%ValidateObject(unused=0,checkserial=1) public {
+	set sc=1
+	If '$system.CLS.GetModified() Quit sc
+	Set iv=..Code If iv="" Set rc=$$Error^%apiOBJ(5659,$classname()_"::Code("_$this_",ID="_..%Id()_")"),sc=$select(+sc:rc,1:$$AppendStatus^%occSystem(sc,rc))
+	If m%Code Set rc=(..CodeIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"Code",iv)
+	If m%Description Set iv=..Description If iv'="" Set rc=(..DescriptionIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"Description",iv)
+	If m%ImageFile Set iv=..ImageFile If iv'="" Set rc=(..ImageFileIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"ImageFile",iv)
+	If m%Name Set iv=..Name If iv'="" Set rc=(..NameIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"Name",iv)
+	If m%ShortName Set iv=..ShortName If iv'="" Set rc=(..ShortNameIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"ShortName",iv)
+	If m%UnitPrice Set iv=..UnitPrice If iv'="" Set rc=(..UnitPriceIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"UnitPrice",iv)
+	If m%Weight Set iv=..Weight If iv'="" Set rc=(..WeightIsValid(iv)) If ('rc) Set sc=$$EmbedErr^%occSystem(sc,rc,5802,"Weight",iv)
+	Quit sc }
+zBuildData(DisplayFlag=1) public {
+	Set tSC = 1
+	Set tClassDef = ##class(%Dictionary.CompiledClass).%OpenId(..%ClassName(1))
+	Set tIndex = tClassDef.XDatas.FindObjectId(..%ClassName(1)_"||DefaultData")
+	If (tIndex = "") {
+		Write:DisplayFlag "既定データが定義されていない",!
+		Quit tSC
+	}
+	Set tStream = tClassDef.XDatas.GetAt(tIndex).Data
+	Do tStream.Rewind()
+	Set tReader = ##class(%XML.Reader).%New()
+	Set tSC = tReader.OpenStream(tStream)
+	If ('tSC) Quit tSC
+	Do tReader.Correlate("product",..%ClassName(1))
+	// delete existing data
+	Do ..%KillExtent()
+	Do ##class(TRU.ProductSale).%KillExtent()
+	Do ##class(TRU.ProductInventory).%KillExtent()
+	Set n = 1	
+	While (tReader.Next(.tProduct,.tSC)) {
+		Write:DisplayFlag n,?5,tProduct.Name,!
+		Set tSC = tProduct.%Save()
+		If ('tSC) {
+			Do:DisplayFlag $System.Status.DisplayError(tSC)
+			Quit
+		}
+		Set n = n + 1
+	}
+	Quit tSC }
+zFindByCode(pCode) [ SQLCODE,id,pCode ] public { New SQLCODE,id 
+	Set id = ""
+	 ;---&sql(SELECT %ID INTO :id 
+ 	 ;---			FROM Product
+ 	 ;---			WHERE Code = :pCode )
+ 	 ;--- ** SQL PUBLIC Variables: SQLCODE, id, pCode
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEbgLFiHocpP7wdLzgqT6Bi8qJiq","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEbgLFiHocpP7wdLzgqT6Bi8qJiq")||($ze["<ZSQLU>") { d %0dsqlF } else { throw } }
+	Quit ..%OpenId(id) }
+ q
+%0dsqlF	n %xxsql
+	s %xxsql("S",1)="SELECT %ID INTO :id FROM Product WHERE Code = :pCode"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")=""
+	s %xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zXMLDTD(top,format,input,dtdlist)
+ Quit ##class(%XML.Implementation).XMLDTD("TRU.Product",.top,.format,.input,.dtdlist)
+zXMLExportInternal()
+ New tag,summary,attrsVal,savelocal,aval,k,tmpPrefix,prefixDepth,hasNoContent,hasElement,topAttrs,beginprefix,endprefix,savexsiAttrs,initialxsiAttrs,initlist,initialCR,inlineFlag,popAtEnd,saveTopPrefix,saveTypesPrefix,saveAttrsPrefix,saveUsePrefix,initlist
+ Set $ztrap="XMLExportInternalTrap",popAtEnd=0
+ Set summary=summaryArg,initialxsiAttrs=xsiAttrs
+ If group Quit $$Error^%apiOBJ(6386,"TRU.Product")
+ If indentFlag Set initialCR=($extract(currentIndent,1,2)=$c(13,10))
+ Set id=createId
+ Set temp=""
+ If id'="" {
+   If $piece($get(idlist(+$this)),",",2)'="" Quit 1
+   Set idlist(+$this)=id_",1"
+ }
+ If encoded Set initlist=$lb($get(oreflist),inlineFlagArg),oreflist=1,inlineFlag=inlineFlagArg
+ If 'nocycle,('encoded||inlineFlag) {
+   If $data(oreflist($this)) Quit $$Error^%apiOBJ(6296,"TRU.Product")
+   Set oreflist($this)=""
+ }
+ Set tag=$get(topArg)
+ Set tmpi=(($get(typeAttr)'="")&&(typeAttr'="TRU.Product"))
+ If $IsObject(namespaces) {
+     Set popAtEnd=1,saveTopPrefix=topPrefix,saveTypesPrefix=typesPrefix,saveAttrsPrefix=attrsPrefix,saveUsePrefix=usePrefix
+     Set sc=namespaces.PushNodeForExport("",$get(local,0),(encoded||tmpi),"",,.topPrefix,.topAttrs,.typesPrefix,.attrsPrefix,.usePrefix)
+     If 'sc Quit sc
+   Set beginprefix=$select(namespaces.ElementQualified&&usePrefix:typesPrefix,1:"")
+   If topAttrs'="" Set temp=temp_" "_topAttrs
+   If tag="" Set tag=$select(encoded:"Product",1:"product")
+   Set xsitype=namespaces.OutputTypeAttribute
+ } Else {
+   Set saveTopPrefix=topPrefix,saveTypesPrefix=typesPrefix,saveAttrsPrefix=attrsPrefix,saveUsePrefix=usePrefix
+   Set typesPrefix=namespaces If (typesPrefix'=""),($extract(typesPrefix,*)'=":") Set typesPrefix=typesPrefix_":"
+   If 'encoded Set namespaces=""
+   Set (topPrefix,attrsPrefix,topAttrs,beginprefix)=""
+   If tag="" Set tag=typesPrefix_$select(encoded:"Product",1:"product")
+   Set xsitype=0
+ }
+ Set local=+$get(local),savelocal=local
+ Set endprefix="</"_beginprefix,beginprefix="<"_beginprefix
+ If tmpi Set temp=temp_" "_xsiPrefix_"type="""_typesPrefix_"Product"""_xsiAttrs,xsiAttrs=""
+   If id'="" Set temp=" "_$select($get(soap12):soapPrefix_"id",1:"id")_"=""id"_id_""""_temp
+ If encoded Set temp=temp_xsiAttrs,xsiAttrs=""
+ If indentFlag Set %xmlmsg=currentIndent if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg } If encoded Set currentIndent=$select(initialCR:"",1:$c(13,10))_currentIndent_indentChars
+ If tag[":" Set topPrefix=$piece(tag,":"),tag=$piece(tag,":",2)  If topPrefix'="" Set topPrefix=topPrefix_":"
+ Set %xmlmsg="<"_topPrefix_tag_temp if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+ Set attrsVal=attrsArg,attrsArg="" Set %xmlmsg=attrsVal if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+ If 'encoded {
+   Set val=..Code
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"code="""_$select(val=$c(0):"",1:$zcvt(val,"O","XML"))_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..Name
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"name="""_$select(val=$c(0):"",1:$zcvt(val,"O","XML"))_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..ShortName
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"shortName="""_$select(val=$c(0):"",1:$zcvt(val,"O","XML"))_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..Description
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"description="""_$select(val=$c(0):"",1:$zcvt(val,"O","XML"))_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..UnitPrice
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"price="""_val_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..Weight
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"weight="""_val_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+   Set val=..ImageFile
+   If val'="" {
+     Set %xmlmsg=" "_attrsPrefix_"image="""_$select(val=$c(0):"",1:$zcvt(val,"O","XML"))_"""" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ Set %xmlmsg=">" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+ If encoded {
+   Set val=..Code
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"code"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"string""",1:"")_">"_$select(val=$c(0):"",1:$select((val["<")||(val[">")||(val["&"):"<![CDATA["_$replace(val,"]]>","]]]]><![CDATA[>")_"]]>",1:val))_endprefix_"code>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..Name
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"name"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"string""",1:"")_">"_$select(val=$c(0):"",1:$select((val["<")||(val[">")||(val["&"):"<![CDATA["_$replace(val,"]]>","]]]]><![CDATA[>")_"]]>",1:val))_endprefix_"name>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..ShortName
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"shortName"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"string""",1:"")_">"_$select(val=$c(0):"",1:$select((val["<")||(val[">")||(val["&"):"<![CDATA["_$replace(val,"]]>","]]]]><![CDATA[>")_"]]>",1:val))_endprefix_"shortName>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..Description
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"description"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"string""",1:"")_">"_$select(val=$c(0):"",1:$select((val["<")||(val[">")||(val["&"):"<![CDATA["_$replace(val,"]]>","]]]]><![CDATA[>")_"]]>",1:val))_endprefix_"description>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..UnitPrice
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"price"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"decimal""",1:"")_">"_val_endprefix_"price>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..Weight
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"weight"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"decimal""",1:"")_">"_val_endprefix_"weight>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If encoded {
+   Set val=..ImageFile
+   If val'="" {
+     Set %xmlmsg=currentIndent_beginprefix_"image"_$select(xsitype:" "_xsiPrefix_"type="""_schemaPrefix_"string""",1:"")_">"_$select(val=$c(0):"",1:$select((val["<")||(val[">")||(val["&"):"<![CDATA["_$replace(val,"]]>","]]]]><![CDATA[>")_"]]>",1:val))_endprefix_"image>" if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }
+   }
+ }
+ If indentFlag,encoded { Set currentIndent=$extract(currentIndent,1,*-$length(indentChars)) Set %xmlmsg=currentIndent if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg }}
+ Set %xmlmsg="</"_topPrefix_tag_">"
+ if $data(%xmlBlock) { Do xeWrite^%occXMLInternal } else { write %xmlmsg } If indentFlag,'initialCR if $data(%xmlBlock) { Set %xmlmsg="" Do xeWriteLine^%occXMLInternal } else { write ! } Set $extract(currentIndent,1,2)=""
+ If '$IsObject(namespaces) || (popAtEnd=1) Set topPrefix=saveTopPrefix,typesPrefix=saveTypesPrefix,attrsPrefix=saveAttrsPrefix,usePrefix=saveUsePrefix
+ If popAtEnd Do namespaces.PopNode()
+ If encoded Set oreflist=$list(initlist),inlineFlag=$list(initlist,2)
+ If 'encoded||inlineFlag {
+   If 'nocycle Kill oreflist($this)
+ }
+ Quit sc
+XMLExportInternalTrap Set $ztrap=""
+ If $data(val) , $IsObject(val) , ($piece($ze,">",1)="<METHOD DOES NOT EXIST") {
+   Set sc=$$Error^%apiOBJ(6249,$classname(val))
+ } Else {
+   Set sc=$$Error^%apiOBJ(5002,$ze)
+ }
+XMLExportExit 
+ If '$IsObject(namespaces) || (popAtEnd=1) Set topPrefix=saveTopPrefix,typesPrefix=saveTypesPrefix,attrsPrefix=saveAttrsPrefix,usePrefix=saveUsePrefix
+ If popAtEnd Do namespaces.PopNode()
+ Quit sc
+zXMLGetSchemaImports(imports,classes)
+ Quit ##class(%XML.Implementation).XMLGetSchemaImports("TRU.Product",.imports,.classes)
+zXMLImportAttributes()
+ ;
+ New data,ref
+ Do XMLImportAttrnode()
+ If ($data(attributeList("code"))) {
+   Set exists("Code")=1
+   Set ref="code",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   If data="" Set data=$c(0)
+   Set numAttrs=numAttrs+1
+   Set ..Code=data
+ }
+ If ($data(attributeList("name"))) {
+   Set ref="name",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   If data="" Set data=$c(0)
+   Set numAttrs=numAttrs+1
+   Set ..Name=data
+ }
+ If ($data(attributeList("shortName"))) {
+   Set ref="shortName",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   If data="" Set data=$c(0)
+   Set numAttrs=numAttrs+1
+   Set ..ShortName=data
+ }
+ If ($data(attributeList("description"))) {
+   Set ref="description",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   If data="" Set data=$c(0)
+   Set numAttrs=numAttrs+1
+   Set ..Description=data
+ }
+ If ($data(attributeList("price"))) {
+   Set ref="price",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   Set data=$zstrip(data,"<>W",$c(13,10)) If data'="" Set data=$inumber(data,"LO","") Goto:data="" XMLImportAttrErr Goto:('$select($zu(115,13)&&(data=$c(0)):1,$isvalidnum(data,2,0,):1,'$isvalidnum(data):$$Error^%apiOBJ(7207,data),1:$$Error^%apiOBJ(7204,data,0))) XMLImportAttrErr
+   If data'="" Set numAttrs=numAttrs+1
+   Set ..UnitPrice=data
+ }
+ If ($data(attributeList("weight"))) {
+   Set ref="weight",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   Set data=$zstrip(data,"<>W",$c(13,10)) If data'="" Set data=$inumber(data,"LO","") Goto:data="" XMLImportAttrErr Goto:('$select($zu(115,13)&&(data=$c(0)):1,$isvalidnum(data,2,0,):1,'$isvalidnum(data):$$Error^%apiOBJ(7207,data),1:$$Error^%apiOBJ(7204,data,0))) XMLImportAttrErr
+   If data'="" Set numAttrs=numAttrs+1
+   Set ..Weight=data
+ }
+ If ($data(attributeList("image"))) {
+   Set ref="image",data=$case($data(@(tree)@("d",$zlascii(attributeList(ref),13))),1:@(tree)@("d",$zlascii(attributeList(ref),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList(ref)))
+   If data="" Set data=$c(0)
+   Set numAttrs=numAttrs+1
+   Set ..ImageFile=data
+ }
+ Quit 1
+XMLImportAttrErr Quit $$Error^%apiOBJ(6260,ref,$get(@(tree)@("d",$zlascii(attributeList(ref),13))),@(tree)@("d",$zlascii(nodelist,9))_$$XMLImportAttrLocation(nodelist))
+XMLImportFixedAttrErr Quit $$Error^%apiOBJ(6320,ref,$get(@(tree)@("d",$zlascii(attributeList(ref),13))),@(tree)@("d",$zlascii(nodelist,9))_$$XMLImportAttrLocation(nodelist))
+XMLImportAttrLocation(nodelist) new msg,loc
+ Set loc=$lb($zlascii(nodelist,21),$zlascii(nodelist,25))
+ If loc="" Quit ""
+ Set msg=$get(^%qMsg("%ObjectErrors",$s(""'="":$zcvt("","L"),1:$s($mvv(58)="":"en",1:$mvv(58))),"XMLImportLocation")," (%1,%2)")
+ Quit $$FormatText^%occMessages(msg,$listget(loc,1),$listget(loc,2))
+zXMLImportInternal()
+ New child,childlist,node,nodelist,inner,innerlist,data,encodedArray,key,nsIndex,savechild,savechildlist,saveinner,saveinnnerlist,exists
+ Set $ztrap="XMLImportInternalTrap"
+ Set encoded=$case($piece(fmt,",",1),"":0,"literal":0,"encoded":1,"encoded12":1,:"")
+ If encoded="" Quit $$Error^%apiOBJ(6231,fmt)
+ Set nsIndex=$select($get(namespace)="":"",1:$get(@(tree)@("N",namespace)))
+ Set node=nodeArg,nodelist=nodeArgChildlist
+ If tag'=@(tree)@("d",$zlascii(nodelist,9)) Set inner=node Goto XMLImportMalformed
+ If bareProjection Quit $$Error^%apiOBJ(6386,"TRU.Product")
+ If encoded {
+   Do XMLImportAttrnode() If $data(attributeList("id")) Set idlist(node)=$this
+ }
+ If 'encoded Set sc=..XMLImportAttributes() If 'sc Quit sc
+ If $zboolean(+($zlascii(nodelist,13)#16),+1,1) Quit 1
+ Set sc=$$XMLImportElements()
+ If $get(checkRequired),(''sc) { Set nodelist=""
+   If '$data(exists("Code")) Set nodelist=nodelist_"Code, "
+   If nodelist'="" Set sc=$$Error^%apiOBJ(6318,$extract(nodelist,1,*-2))
+ }
+XMLImportExit Quit sc
+XMLImportElements() ;
+XMLLOOP1 Set descriptor=$zlascii(nodelist,$zwascii(nodelist,17)) Set child=($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))\16)_","_$zwascii(nodelist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set child=##class(%XML.ImportHandler).NextChild(tree,node,.nodelist,child,.descriptor) } Else { Set child="" }} For { Quit:child=""  Quit:(descriptor#16)'=2  Set descriptor=$piece(child,",",2)+4 Set child=$piece(child,",",1)_","_descriptor Set descriptor=$zlascii(nodelist,descriptor) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set child=##class(%XML.ImportHandler).NextChild(tree,node,.nodelist,child,.descriptor) } Else {Set child="" }} } Goto XMLLOOP2
+XMLLOOP For  { Set descriptor=$piece(child,",",2)+4 Set child=$piece(child,",",1)_","_descriptor Set descriptor=$zlascii(nodelist,descriptor) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set child=##class(%XML.ImportHandler).NextChild(tree,node,.nodelist,child,.descriptor) } Else {Set child="" }} Quit:child=""  Quit:(descriptor#16)'=2  }
+XMLLOOP2 If child="" Quit sc
+ If (descriptor#16)'=0 Set inner=child Goto XMLImportMalformedNoTag
+ Set childlist=@(tree)@((descriptor\16))
+ Set tag=@(tree)@("d",$zlascii(childlist,9))
+ If encoded,(tag="code") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   Set exists("Code")=1
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" If '##class(%XML.ImportHandler).SerializeNode(tree,child,0,0,.data,,,childlist) Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             If data="" Set data=$c(0)
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..Code=data
+   Goto XMLLOOP } }
+ If encoded,(tag="name") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" If '##class(%XML.ImportHandler).SerializeNode(tree,child,0,0,.data,,,childlist) Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             If data="" Set data=$c(0)
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..Name=data
+   Goto XMLLOOP } }
+ If encoded,(tag="shortName") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" If '##class(%XML.ImportHandler).SerializeNode(tree,child,0,0,.data,,,childlist) Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             If data="" Set data=$c(0)
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..ShortName=data
+   Goto XMLLOOP } }
+ If encoded,(tag="description") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" If '##class(%XML.ImportHandler).SerializeNode(tree,child,0,0,.data,,,childlist) Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             If data="" Set data=$c(0)
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..Description=data
+   Goto XMLLOOP } }
+ If encoded,(tag="price") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             Set data=$zstrip(data,"<>W",$c(13,10)) If data'="" Set data=$inumber(data,"LO","") Goto:data="" XMLImportErrchild Goto:('$select($zu(115,13)&&(data=$c(0)):1,$isvalidnum(data,2,0,):1,'$isvalidnum(data):$$Error^%apiOBJ(7207,data),1:$$Error^%apiOBJ(7204,data,0))) XMLImportErrchild
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..UnitPrice=data
+   Goto XMLLOOP } }
+ If encoded,(tag="weight") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             Set data=$zstrip(data,"<>W",$c(13,10)) If data'="" Set data=$inumber(data,"LO","") Goto:data="" XMLImportErrchild Goto:('$select($zu(115,13)&&(data=$c(0)):1,$isvalidnum(data,2,0,):1,'$isvalidnum(data):$$Error^%apiOBJ(7207,data),1:$$Error^%apiOBJ(7204,data,0))) XMLImportErrchild
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..Weight=data
+   Goto XMLLOOP } }
+ If encoded,(tag="image") {
+   If ($get(namespace)="")||$case($zwascii(childlist,19),0:1,nsIndex:1,:0) {
+   If encoded Set savechild=child,savechildlist=childlist
+   If encoded,$$XMLImportIdChild() {
+     Set data=idlist(child)
+   } Else { Goto:'sc XMLImportExit
+     If $zboolean(+($zlascii(childlist,13)#16),+1,1) { Set data=""
+     } Else {
+             If (($length(childlist)-$zwascii(childlist,17)-3)\4)>1 {
+               Set data="" If '##class(%XML.ImportHandler).SerializeNode(tree,child,0,0,.data,,,childlist) Goto XMLImportErrchild
+             } Else { Set descriptor=$zlascii(childlist,$zwascii(childlist,17)) Set data=($zlascii(@(tree)@($piece(child,",",1)),$piece(child,",",2))\16)_","_$zwascii(childlist,17) If (descriptor#16)=3 { If (descriptor\16)'=0 { Set data=##class(%XML.ImportHandler).NextChild(tree,child,.childlist,data,.descriptor) } Else { Set data="" }}
+               If data'="" { Goto:(descriptor#16)=0 XMLImportErrchild Set data=@(tree)@("d",(descriptor\16)) }}
+             If data="" Set data=$c(0)
+     }
+     If encoded Do XMLImportAttrchild() If $data(attributeList("id")) Set idlist(child)=data
+   }
+   If encoded Set child=savechild,childlist=savechildlist
+   Set ..ImageFile=data
+   Goto XMLLOOP } }
+ Goto XMLImportBadTagchild
+XMLImportBadTagchild Set inner=child
+XMLImportBadTag Quit $$Error^%apiOBJ(6237,tag_$$XMLImportLocation(inner))
+XMLImportBadTypenode Set inner=node Goto XMLImportBadType
+XMLImportBadTypechild Set inner=child
+XMLImportBadType Quit $$Error^%apiOBJ(6277,class,$select(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))#16)=0:@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9)),1:@(tree)@("d",($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)))_$$XMLImportLocation(inner))
+XMLImportErrnode Set inner=node Goto XMLImportErr
+XMLImportErrchild Set inner=child
+XMLImportErr
+ Set data=##class(%XML.ImportHandler).GetNextChild(tree,inner,"")
+ If (data'="") {
+   If ($zlascii(@(tree)@($piece(data,",",1)),$piece(data,",",2))#16)'=0 {
+     Quit $$Error^%apiOBJ(6232,@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9))_$$XMLImportLocation(inner),$extract(@(tree)@("d",($zlascii(@(tree)@($piece(data,",",1)),$piece(data,",",2))\16)),1,200))
+   } Else {
+     Quit $$Error^%apiOBJ(6253,@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9))_$$XMLImportLocation(inner),@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(data,",",1)),$piece(data,",",2))\16)),9)))
+   }
+ } Else {
+   Quit $$Error^%apiOBJ(6252,@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9))_$$XMLImportLocation(inner))
+ }
+XMLImportIdErr Set sc=$$Error^%apiOBJ(6236,id,@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9))_$$XMLImportLocation(inner)) Quit sc
+XMLImportMalformed Set sc=$$Error^%apiOBJ(6233,$select(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))#16)=0:@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9)),1:@(tree)@("d",($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)))_$$XMLImportLocation(inner)) Quit sc
+XMLImportMalformedNoTag Set node=$select($piece(inner,",",1)<=0:0,1:$zlascii(@(tree)@($piece(inner,",",1)),1)_","_$zlascii(@(tree)@($piece(inner,",",1)),5)),sc=$$Error^%apiOBJ(6254,$select(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))#16)=0:@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9)),1:@(tree)@("d",($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16))),$select(($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))#16)=0:@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))\16)),9)),1:@(tree)@("d",($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))\16)))_$$XMLImportLocation(node)) Quit sc
+XMLImportNSchild Set inner=child
+XMLImportNS Set sc=$$Error^%apiOBJ(6235,@(tree)@("d",$zlascii(@(tree)@(($zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2))\16)),9))_$$XMLImportLocation(inner)) Quit sc
+XMLImportLocation(node) new msg,loc
+ Set loc=$lb($zlascii(@(tree)@(($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))\16)),21),$zlascii(@(tree)@(($zlascii(@(tree)@($piece(node,",",1)),$piece(node,",",2))\16)),25))
+ If loc="" Quit ""
+ Set msg=$get(^%qMsg("%ObjectErrors",$s(""'="":$zcvt("","L"),1:$s($mvv(58)="":"en",1:$mvv(58))),"XMLImportLocation")," (%1,%2)")
+ Quit $$FormatText^%occMessages(msg,$listget(loc,1),$listget(loc,2))
+XMLImportInternalTrap Set $ztrap=""
+ Set loc=$select($ZE["<CLASS DOES NOT EXIST>":" for element "_tag_$$XMLImportLocation(child),1:"")
+ Quit $$Error^%apiOBJ(5002,$ZE_loc)
+XMLImportIdChild() Set inner=child,innerlist=childlist,tmp=$$XMLImportId(),child=inner,childlist=innerlist Quit tmp
+XMLImportId() ;
+ Do XMLImportAttrinner()
+ If $data(attributeList("href")) {
+   Set id=$case($data(@(tree)@("d",$zlascii(attributeList("href"),13))),1:@(tree)@("d",$zlascii(attributeList("href"),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList("href")))
+   If $extract(id)="#" {
+     Set tmp=$select($get(@(tree)@("i",$extract(id,2,*)))="":"",1:$piece(@(tree)@("i",$extract(id,2,*)),",",1)_","_$piece(@(tree)@("i",$extract(id,2,*)),",",2)) If tmp="" Goto XMLImportIdErr
+     Set inner=tmp
+     Set descriptor=$zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2)) Set innerlist=@(tree)@((descriptor\16))
+   }
+ } ElseIf $data(attributeList("ref")),($get(@(tree)@("n",$zwascii(attributeList("ref"),9)))="http://www.w3.org/2003/05/soap-encoding") {
+   Set id=$case($data(@(tree)@("d",$zlascii(attributeList("ref"),13))),1:@(tree)@("d",$zlascii(attributeList("ref"),13)),0:"",:##class(%XML.ImportHandler).GetAttribute(tree,attributeList("ref")))
+   Set tmp=$select($get(@(tree)@("i",id))="":"",1:$piece(@(tree)@("i",id),",",1)_","_$piece(@(tree)@("i",id),",",2)) If tmp="" Goto XMLImportIdErr
+   Set inner=tmp
+   Set descriptor=$zlascii(@(tree)@($piece(inner,",",1)),$piece(inner,",",2)) Set innerlist=@(tree)@((descriptor\16))
+ } ElseIf '$data(attributeList("id")) {
+   Quit 0
+ }
+ Quit $data(idlist(inner))
+XMLImportAttrnode()
+ If $get(attributeList)=node Quit
+ Kill attributeList
+ Set attributeList=node
+ Set offset=29 While offset<$zwascii(nodelist,17) { Set attribute=$extract(nodelist,offset,offset+15)
+    Set attrname=@(tree)@("d",$zlascii(attribute,1))
+    Set attributeList(attrname)=attribute
+ Set offset=offset+16 }
+ Quit
+XMLImportAttrchild()
+ If $get(attributeList)=child Quit
+ Kill attributeList
+ Set attributeList=child
+ Set offset=29 While offset<$zwascii(childlist,17) { Set attribute=$extract(childlist,offset,offset+15)
+    Set attrname=@(tree)@("d",$zlascii(attribute,1))
+    Set attributeList(attrname)=attribute
+ Set offset=offset+16 }
+ Quit
+XMLImportAttrinner()
+ If $get(attributeList)=inner Quit
+ Kill attributeList
+ Set attributeList=inner
+ Set offset=29 While offset<$zwascii(innerlist,17) { Set attribute=$extract(innerlist,offset,offset+15)
+    Set attrname=@(tree)@("d",$zlascii(attribute,1))
+    Set attributeList(attrname)=attribute
+ Set offset=offset+16 }
+ Quit
+zXMLIsObjectEmpty(ignoreNull)
+ If ..Code'="" Quit 0
+ If ..Name'="" Quit 0
+ If ..ShortName'="" Quit 0
+ If ..Description'="" Quit 0
+ If ..UnitPrice'="" Quit 0
+ If ..Weight'="" Quit 0
+ If ..ImageFile'="" Quit 0
+ Quit 1
+zXMLNew(document,node,containerOref="")
+	Quit (##class(TRU.Product).%New())
+zXMLSchema(top="",format="",namespacePrefix="",input=0,refOnly=0,schema)
+ Quit ##class(%XML.Implementation).XMLSchema("TRU.Product",top,format,namespacePrefix,input,refOnly,.schema)
+zCodeGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),6),1:"") }
+zCodeNormalize(%val) public {
+	Q $e(%val,1,12) }
+zDescriptionGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),5),1:"") }
+zDescriptionNormalize(%val) public {
+	Q $e(%val,1,100) }
+zImageFileGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),2),1:"") }
+zImageFileNormalize(%val) public {
+	Q $e(%val,1,100) }
+zNameGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),3),1:"") }
+zNameNormalize(%val) public {
+	Q $e(%val,1,100) }
+zShortNameGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),8),1:"") }
+zShortNameNormalize(%val) public {
+	Q $e(%val,1,30) }
+zUnitPriceDisplayToLogical(%val) public {
+	Quit $select(%val="":"",$zu(115,13)&&(%val=$c(0)):"",1:$s($in(%val,"","")'="":+$in(%val,"",%val),1:%val)) }
+zUnitPriceGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),4),1:"") }
+zUnitPriceIsValid(%val) public {
+	Quit $select($zu(115,13)&&(%val=$c(0)):1,$isvalidnum(%val,2,0,):1,'$isvalidnum(%val):$$Error^%apiOBJ(7207,%val),1:$$Error^%apiOBJ(7204,%val,0)) }
+zUnitPriceLogicalToDisplay(%val) public {
+	Quit $s(%val="":"",1:$fn(%val,"",2)) }
+zUnitPriceNormalize(%val) public {
+	Quit $select($zu(115,13)&&(%val=$c(0)):"",1:$normalize($decimal(%val),2)) }
+zUnitPriceXSDToLogical(%val) public {
+	Quit $inumber(%val,"LO","") }
+zWeightDisplayToLogical(%val) public {
+	Quit $select(%val="":"",$zu(115,13)&&(%val=$c(0)):"",1:$s($in(%val,"","")'="":+$in(%val,"",%val),1:%val)) }
+zWeightGetStored(id) public {
+	Quit $Select(id'="":$listget($g(^TRU.ProductD(id)),7),1:"") }
+zWeightIsValid(%val) public {
+	Quit $select($zu(115,13)&&(%val=$c(0)):1,$isvalidnum(%val,2,0,):1,'$isvalidnum(%val):$$Error^%apiOBJ(7207,%val),1:$$Error^%apiOBJ(7204,%val,0)) }
+zWeightLogicalToDisplay(%val) public {
+	Quit $s(%val="":"",1:$fn(%val,"",2)) }
+zWeightNormalize(%val) public {
+	Quit $select($zu(115,13)&&(%val=$c(0)):"",1:$normalize($decimal(%val),2)) }
+zWeightXSDToLogical(%val) public {
+	Quit $inumber(%val,"LO","") }
+zEnumerateClose(%qHandle) [ SQLCODE ] public {
+	New SQLCODE
+	Do:$isobject($get(%qHandle)) %qHandle.%Destruct() Kill %qHandle
+	If $get(SQLCODE) { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%Message=$g(%msg) Set sc=$$Error^%apiOBJ(5540,SQLCODE,$get(%msg)) } Else { Set sc=1 }
+	RETURN sc }
+zEnumerateExecute(%qHandle) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	 ;---&sql(DECLARE Q1 CURSOR FOR
+ 	 ;---			SELECT %ID,Name
+ 	 ;---			FROM Product
+ 	 ;---		 	ORDER BY Name
+ 	 ;---			/*
+ 	 ;---			SELECT %ID,Name,Code,UnitPrice,ImageFile,Description
+ 	 ;---			FROM Product
+ 	 ;---		 	ORDER BY Name
+ 	 ;---		 	*/
+ 	 ;---		)
+ 	 ;--- ** SQL PUBLIC Variables: SQLCODE
+	 
+	 ;---&sql(OPEN Q1)
+	try { if $g(%qHandle)'="" { s SQLCODE=-101 } else { s %qHandle=$classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEwfAeKnVxZlrvzHxLWYNiukBw4d","%New") if '$isobject(%qHandle) { s %qHandle=$$%0dsqlH() } } } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEwfAeKnVxZlrvzHxLWYNiukBw4d")||($ze["<ZSQLU>") { s %qHandle=$$%0dsqlH() } else { throw } }
+	If SQLCODE { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%Message=$g(%msg) Set sc=$$Error^%apiOBJ(5821,"SQLCODE = "_SQLCODE) } Else { Set sc=1 }
+	Quit sc }
+zEnumerateFetch(%qHandle,Row,AtEnd=0) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	kill Row Set Row="",AtEnd=0
+	 ;---&sql(FETCH Q1 INTO :Row(0,1),:Row(0,2))
+ 	 ;--- ** SQL PUBLIC Variables: %ROWCOUNT, %ROWID, %msg, SQLCODE
+	if $isobject($g(%qHandle))'=1 { s SQLCODE=-102 } else { do %qHandle.FET() if SQLCODE=0 { s Row(0,1)=%qHandle.sqlcol1,Row(0,2)=%qHandle.sqlcol2 } }
+	If 'SQLCODE { Set sc=1,Row=$lb(Row(0,1),Row(0,2)) }
+	ElseIf SQLCODE=100 { Set AtEnd=1,sc=1 Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%ROWCOUNT=$g(%ROWCOUNT) }
+	Else { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.Message=$g(%msg) Set AtEnd=1,sc=$$Error^%apiOBJ(5540,SQLCODE,$get(%msg)) }
+	QUIT sc }
+zEnumerateFetchRows(%qHandle,FetchCount=0,RowSet,ReturnCount,AtEnd) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	Set RowSet="",ReturnCount=0,AtEnd=0
+	For {
+		Set sc=..EnumerateFetch(.%qHandle,.Row,.AtEnd)
+		If (''sc) { Set RowSet=RowSet_Row,ReturnCount=ReturnCount+1 Quit:(ReturnCount=FetchCount)||(($l(RowSet)+($l(RowSet)\ReturnCount))>30000)||(AtEnd) } Else { Set AtEnd=1 Quit }
+	}
+	Quit sc }
+zEnumerateSendODBC(%qHandle,array,qacn,%qrc,piece,ColumnCount) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	set %qrc=0,piece=0
+	for {
+		 ;---&sql(fetch Q1 into :d1,:d2 )
+ 		 ;--- ** SQL PUBLIC Variables: %ROWCOUNT, %ROWID, %msg, SQLCODE
+		if $isobject($g(%qHandle))'=1 { s SQLCODE=-102 } else { do %qHandle.FET() if SQLCODE=0 { s d1=%qHandle.sqlcol1,d2=%qHandle.sqlcol2 } }
+		if SQLCODE<0 { set %qrc=SQLCODE set:$isobject($g(%sqlcontext)) %sqlcontext.SQLCode=SQLCODE,%sqlcontext.Message=$g(%msg) do Logerr^%SYS.SQLSRV(%qrc,"","SP",.%msg) RETURN  }
+		if SQLCODE { set %qrc=100 set:$isobject($get(%sqlcontext)) %sqlcontext.SQLCode=100 RETURN  }
+		RETURN:$zobjexport($lb(d1,d2),60)
+	}
+	RETURN }
+ q
+%0dsqlH()	n %xxsql
+	s %xxsql("S",1)="DECLARE Q1 CURSOR FOR SELECT %ID , Name "
+	s %xxsql("S",2)="INTO  :i%sqlcol1, :i%sqlcol2"
+	s %xxsql("S",3)="FROM Product ORDER BY Name"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	return $$BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Runtime","","","TRU",0,"",),",2,Q1,","TRU.Product.CLS",1)
+zEnumerateFunc() public {
+	try {
+		set tSchemaPath = ##class(%SQL.Statement).%ClassPath($classname())
+			set tStatement = ##class(%SQL.Statement).%New(,tSchemaPath)
+			do tStatement.prepare(" SELECT %ID , Name FROM Product ORDER BY Name")
+		set tResult = tStatement.%Execute()
+	}
+	catch tException { if '$Isobject($Get(tResult)) { set tResult = ##class(%SQL.StatementResult).%New() } set tResult.%SQLCODE=tException.AsSQLCODE(),tResult.%Message=tException.AsSQLMessage() }
+	Quit tResult }
+zEnumerateGetInfo(colinfo,parminfo,idinfo,%qHandle,extoption=0,extinfo) public {
+	Set colinfo=$lb($lb("ID",18,"ID"),$lb("Name",10,"Name"))
+	Set parminfo=""
+	Set idinfo=$lb(1,"TRU.Product")
+	If extoption {
+		Set extinfo=$lb(1,$lb($lb("TRU.Product","%%ID"),$lb("TRU.Product","Name")))
+	}
+	Quit 1 }
+zEnumerateGetODBCInfo(colinfo,parminfo,qHandle) public {
+	Set metadata=$lb(1,2,"ID",-5,19,0,0,"ID","Product","TRU","",$c(1,1,0,1,0,1,1,0,0,1,1,1,0),"Name",12,100,0,1,"Name","Product","TRU","",$c(0,0,0,0,0,0,1,0,0,0,0,0,0),0)
+	Set colcount=$li(metadata,2),cmdlen=colcount*10,parmcount=$li(metadata,3+cmdlen),pmdlen=parmcount*6,parminfo=$li(metadata,cmdlen+3,cmdlen+pmdlen+3)
+	Set colinfo=$li(metadata,2,2+cmdlen)
+	Quit 1 }
+zEnumeratePrepare(qHandle,statement,containid=0,optional) public {
+	Quit 1 }
+zExtentClose(%qHandle) [ SQLCODE ] public {
+	New SQLCODE Set SQLCODE=0
+	Do:$isobject($get(%qHandle)) %qHandle.%Destruct() Kill %qHandle
+	If SQLCODE { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%Message=$g(%msg) Set sc=$$Error^%apiOBJ(5540,SQLCODE,$get(%msg)) } Else { Set sc=1 }
+	Quit sc }
+zExtentExecute(%qHandle) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	Set sc=1
+	 ;---&sql(DECLARE QExtent CURSOR FOR
+ 	 ;---		 SELECT ID FROM TRU.Product)
+ 	 ;--- ** SQL PUBLIC Variables: SQLCODE
+	 
+	 ;---&sql(OPEN QExtent)
+	try { if $g(%qHandle)'="" { s SQLCODE=-101 } else { s %qHandle=$classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEgQzTftqzxiHaBfN6wW6mrBkflo","%New") if '$isobject(%qHandle) { s %qHandle=$$%0dsqlL() } } } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEgQzTftqzxiHaBfN6wW6mrBkflo")||($ze["<ZSQLU>") { s %qHandle=$$%0dsqlL() } else { throw } }
+	If SQLCODE { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%Message=$g(%msg) Set sc=$$Error^%apiOBJ(5821,"SQLCODE = "_SQLCODE) } Else { Set sc=1 }
+	Quit sc }
+zExtentFetch(%qHandle,Row,AtEnd=0) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	Set Row="",AtEnd=0
+	 ;---&sql(FETCH QExtent INTO :c1)
+ 	 ;--- ** SQL PUBLIC Variables: %ROWCOUNT, %ROWID, %msg, SQLCODE
+	if $isobject($g(%qHandle))'=1 { s SQLCODE=-102 } else { do %qHandle.FET() if SQLCODE=0 { s c1=%qHandle.sqlcol1 } }
+	If 'SQLCODE { Set Row=$lb(c1) Set sc=1 }
+	ElseIf SQLCODE=100 { Set AtEnd=1,sc=1 Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%ROWCOUNT=$g(%ROWCOUNT) }
+	Else { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.Message=$g(%msg) Set AtEnd=1,sc=$$Error^%apiOBJ(5540,SQLCODE,$get(%msg)) }
+	QUIT sc }
+zExtentFetchRows(%qHandle,FetchCount=0,RowSet,ReturnCount,AtEnd) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	Set RowSet="",ReturnCount=0,AtEnd=0
+	For {
+		 ;---&sql(FETCH QExtent INTO :c1)
+ 		 ;--- ** SQL PUBLIC Variables: %ROWCOUNT, %ROWID, %msg, SQLCODE
+		if $isobject($g(%qHandle))'=1 { s SQLCODE=-102 } else { do %qHandle.FET() if SQLCODE=0 { s c1=%qHandle.sqlcol1 } }
+		If 'SQLCODE { Set RowSet=RowSet_$lb(c1),ReturnCount=ReturnCount+1 Quit:(ReturnCount=FetchCount)||(($l(RowSet)+($l(RowSet)\ReturnCount))>30000) } Else { Set AtEnd=1 Quit }
+	}
+	If 'SQLCODE { Set sc=1 } ElseIf SQLCODE=100 { Set sc=1 Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.%ROWCOUNT=$g(%ROWCOUNT) } Else { Set:$isobject($g(%sqlcontext)) %sqlcontext.%SQLCODE=SQLCODE,%sqlcontext.Message=$g(%msg) Set sc=$$Error^%apiOBJ(5540,SQLCODE,$get(%msg)) }
+	Quit sc }
+zExtentSendODBC(%qHandle,array,qacn,%qrc,piece,ColumnCount) [ SQLCODE ] public { New %ROWCOUNT,%ROWID,%msg,SQLCODE 
+	set %qrc=0,piece=0
+	for {
+		set rc=..ExtentFetch(.%qHandle,.row,.atend)
+		if ('rc) { set %qrc=-400 set:$isobject($get(%sqlcontext)) %sqlcontext.SQLCode=-400,%sqlcontext.Message=$g(%msg) do ProcessError^%ourProcedure(rc,$get(%sqlcontext),.%qrc,.%msg),Logerr^%SYS.SQLSRV(%qrc,"","SP",.%msg) RETURN  }
+		if row="" { set %qrc=100 set:$isobject($get(%sqlcontext)) %sqlcontext.SQLCode=100 RETURN  }
+		RETURN:$zobjexport(row,60)
+	}
+	RETURN }
+ q
+%0dsqlL()	n %xxsql
+	s %xxsql("S",1)="DECLARE QExtent CURSOR FOR SELECT ID "
+	s %xxsql("S",2)="INTO  :i%sqlcol1"
+	s %xxsql("S",3)="FROM TRU . Product"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	return $$BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Runtime","","","TRU",0,"",),",1,QExtent,","TRU.Product.CLS",1)
+zExtentFunc() public {
+	try {
+		set tSchemaPath = ##class(%SQL.Statement).%ClassPath($classname())
+			set tStatement = ##class(%SQL.Statement).%New(,tSchemaPath)
+			do tStatement.prepare(" SELECT ID FROM TRU . Product")
+		set tResult = tStatement.%Execute()
+	}
+	catch tException { if '$Isobject($Get(tResult)) { set tResult = ##class(%SQL.StatementResult).%New() } set tResult.%SQLCODE=tException.AsSQLCODE(),tResult.%Message=tException.AsSQLMessage() }
+	Quit tResult }
+zExtentGetInfo(colinfo,parminfo,idinfo,%qHandle,extoption=0,extinfo) public {
+ s parminfo=""
+	s:'($d(^oddCOM($classname(),"q","Extent",21),clientinfo)#2)&&'$s($d(^(2),clientinfo)#2&&(clientinfo'=$classname()):$d(^oddCOM(clientinfo,"q","Extent",21),clientinfo)#2||($d(^oddDEF(clientinfo,"q","Extent",21),clientinfo)#2),1:$d(^oddDEF($classname(),"q","Extent",21),clientinfo)#2) clientinfo=""
+	Set:extoption extinfo=$s($d(^oddCOM($classname(),"q","Extent",38))#2:^(38),$d(^oddCOM($g(^(2),$classname()),"q","Extent",38))#2:^(38),1:$s($d(^oddDEF($g(^oddCOM($classname(),"q","Extent",2),$classname()),"q","Extent",38))#2:^(38),1:""))
+	If clientinfo'="" Set colinfo=$listget(clientinfo,1),parminfo=$listget(clientinfo,2),idinfo=$listget(clientinfo,3) Quit 1
+	Set colinfo="",parminfo="",idinfo=$listbuild(0)
+	Set sc=$$externaltype^%apiOLE("%Library.Integer",.exttypes,"0")
+	Quit:('sc) sc
+	s:'($d(^oddCOM($classname(),"q","Extent",23),names)#2)&&'$s($d(^(2),names)#2&&(names'=$classname()):$d(^oddCOM(names,"q","Extent",23),names)#2||($d(^oddDEF(names,"q","Extent",23),names)#2),1:$d(^oddDEF($classname(),"q","Extent",23),names)#2) names=""
+	s:'($d(^oddCOM($classname(),"q","Extent",22),captions)#2)&&'$s($d(^(2),captions)#2&&(captions'=$classname()):$d(^oddCOM(captions,"q","Extent",22),captions)#2||($d(^oddDEF(captions,"q","Extent",22),captions)#2),1:$d(^oddDEF($classname(),"q","Extent",22),captions)#2) captions=""
+	For i=1:1:1 Set colinfo=colinfo_$listbuild($listbuild($listget(names,i),$piece(exttypes,",",i),$listget(captions,i)))
+	Set idinfo=$listbuild(1,$classname())
+	s ^oddCOM($classname(),"q","Extent",21)=$listbuild(colinfo,parminfo,idinfo)
+	Quit 1 }
+zExtentGetODBCInfo(colinfo,parminfo,qHandle) public {
+	Set metadata=$lb(1,1,"ID",4,10,0,2,"ID","Product","TRU","",$c(0,0,0,0,0,0,0,0,0,0,0,1,0),0)
+	Set colcount=$li(metadata,2),cmdlen=colcount*10,parmcount=$li(metadata,3+cmdlen),pmdlen=parmcount*6,parminfo=$li(metadata,cmdlen+3,cmdlen+pmdlen+3)
+	Set colinfo=$li(metadata,2,2+cmdlen)
+	Quit 1 }
+zCodeCheckUnique(id="",pValue...) [ SQLCODE,id,pValue ] public { New SQLCODE 
+	if $Get(pValue(1))'="" {
+		 ;---&sql(SELECT 1 as _PassFail FROM TRU.Product WHERE Code = :pValue(1) AND %ID <> :id)
+ 		 ;--- ** SQL PUBLIC Variables: SQLCODE, id, pValue
+		try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEAzEdz0gVzoEaUaiQOAMv8X933O","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEAzEdz0gVzoEaUaiQOAMv8X933O")||($ze["<ZSQLU>") { d %0dsqlP } else { throw } }
+		Quit SQLCODE=100
+	} else { quit 1 } }
+ q
+%0dsqlP	n %xxsql
+	s %xxsql("S",1)="SELECT 1 AS _PassFail FROM TRU . Product WHERE Code = :pValue(1) AND %ID <> :id"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zShortNameCheckUnique(id="",pValue...) [ SQLCODE,id,pValue ] public { New SQLCODE 
+	if $Get(pValue(1))'="" {
+		 ;---&sql(SELECT 1 as _PassFail FROM TRU.Product WHERE ShortName = :pValue(1) AND %ID <> :id)
+ 		 ;--- ** SQL PUBLIC Variables: SQLCODE, id, pValue
+		try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEJRoUETD7SFc82AORaNO9Hp0Hgi","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEJRoUETD7SFc82AORaNO9Hp0Hgi")||($ze["<ZSQLU>") { d %0dsqlR } else { throw } }
+		Quit SQLCODE=100
+	} else { quit 1 } }
+ q
+%0dsqlR	n %xxsql
+	s %xxsql("S",1)="SELECT 1 AS _PassFail FROM TRU . Product WHERE ShortName = :pValue(1) AND %ID <> :id"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zCodeCheck(K1,lockonly=0,concurrency=-1) public {
+	s exists=..CodeExists(K1,.id) q:'exists $s('lockonly:$$Error^%apiOBJ(5797,$classname(),"Code",K1),1:1) s:concurrency=-1 concurrency=$select(..#DEFAULTCONCURRENCY="$zu(115,10)":$zu(115,10),1:$xecute("q "_..#DEFAULTCONCURRENCY)) if concurrency { s status=..%LockId(id,1) q:('status) status } if 'lockonly { s exists=..CodeExists(K1,.idcheck) d:concurrency ..%UnlockId(id,1,0) quit $s(('exists)||(id'=idcheck):$$Error^%apiOBJ(5797,$classname(),"Code",K1),1:1) } else { d:concurrency ..%UnlockId(id,1,0) q 1 }
+}
+zCodeDelete(K1,concurrency=-1) public {
+	i ..CodeExists(K1,.id){ s sc=..%DeleteId(id,concurrency) } Else { s sc=$$Error^%apiOBJ(5771,"Code",K1) }
+	QUIT sc }
+zCodeExists(K1,id="") [ K1,SQLCODE,id ] public { New SQLCODE 
+	 ;---&sql(SELECT %ID INTO :id FROM TRU.Product WHERE (:K1 is not null and Code = :K1) OR (:K1 IS NULL AND Code IS NULL))
+ 	 ;--- ** SQL PUBLIC Variables: K1, SQLCODE, id
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEBmieJV4e2lrXu1kSn5YmXv1p1a","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEBmieJV4e2lrXu1kSn5YmXv1p1a")||($ze["<ZSQLU>") { d %0dsqlT } else { throw } }
+	Quit $select('SQLCODE:1,1:0) }
+ q
+%0dsqlT	n %xxsql
+	s %xxsql("S",1)="SELECT %ID INTO :id FROM TRU . Product WHERE ( :K1 IS NOT NULL AND Code = :K1 ) OR ( :K1 IS NULL AND Code IS NULL )"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zCodeOpen(K1,concurrency=-1,sc) public { s:'($d(sc)#2) sc=1
+ i ..CodeExists(K1,.id){ s return=..%OpenId(id,concurrency,.sc) } Else { s sc=$$Error^%apiOBJ(5770,"Code",K1),return="" }
+ QUIT return }
+zCodeSQLCheckUnique(pFromOrig=0,%pID,%pVals...)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::CodeSQLCheckUnique")
+zCodeSQLExists(pLockOnly=0,pUnlockRef,%pVal...)
+	// SQL Foreign Key validation entry point for Key Code.  Called by FKeys that reference this Key to see if the row is defined
+	if pLockOnly>=0 { new id set id=..CodeSQLFindRowIDByConstraint($lb(%pVal(1)),1) QUIT:SQLCODE $s('pLockOnly:0,1:1) }
+	if pLockOnly>=0 { if '..%SQLGetLock(id,1,.pUnlockRef) { set sqlcode=-114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler39",,"TRU"_"."_"Product"_":"_"Code") QUIT 0 } }
+	if pLockOnly<1 {
+		new qv set qv=$d(^TRU.ProductI("Code",$zu(28,%pVal(1),7))) QUIT:pLockOnly=-1 qv
+		do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) quit qv
+	}
+	else { do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) QUIT 1 }
+	Return
+zCodeSQLFindPKeyByConstraint(%con)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::CodeSQLFindPKeyByConstraint")
+zCodeSQLFindRowIDByConstraint(%con,pInternal=0)
+	// Get ROWID value for UNIQUE Key Code value given in %con
+	new %d,id,rtm set rtm=$zu(115,5,$s(pInternal:0,1:1)) set %d(2)=$lg(%con,1)
+	set %ROWCOUNT=0 set:'pInternal %qrc=0
+	 ;---&sql(SELECT %ID INTO :id FROM TRU.Product WHERE Code = :%d(2))
+ 	 ;--- ** SQL PUBLIC Variables: %d, SQLCODE, id
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEEYNafZH0YMulr24ait6lX1FAYJ","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEEYNafZH0YMulr24ait6lX1FAYJ")||($ze["<ZSQLU>") { d %0dsqlV } else { throw } }
+	do $zu(115,5,rtm)
+	if pInternal { QUIT:'SQLCODE $g(id) RETURN "" }
+	if SQLCODE { set:SQLCODE<0 %qrc=-SQLCODE set:'%ROWCOUNT&&(SQLCODE=100) id="",%qrc=0 } set d=$zobjexport(id,18) QUIT
+	Return
+ q
+%0dsqlV	n %xxsql
+	s %xxsql("S",1)="SELECT %ID INTO :id FROM TRU . Product WHERE Code = :%d(2)"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Runtime","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zIDKEYCheck(K1,lockonly=0,concurrency=-1) public {
+	s id=K1,exists=..%ExistsId(id) q:'exists $s('lockonly:$$Error^%apiOBJ(5797,$classname(),"IDKEY",id),1:1) s:concurrency=-1 concurrency=$select(..#DEFAULTCONCURRENCY="$zu(115,10)":$zu(115,10),1:$xecute("q "_..#DEFAULTCONCURRENCY)) if concurrency { s status=..%LockId(id,1) q:('status) status } if 'lockonly { s exists=..%ExistsId(id) d:concurrency ..%UnlockId(id,1,0) quit $s('exists:$$Error^%apiOBJ(5797,$classname(),"IDKEY",id),1:1) } else { d:concurrency ..%UnlockId(id,1,0) q 1 }
+}
+zIDKEYDelete(K1,concurrency=-1) public {
+	Quit ..%DeleteId(.K1,concurrency) }
+zIDKEYExists(K1,id="") public {
+	s id=K1 q ..%ExistsId(K1) }
+zIDKEYOpen(K1,concurrency=-1,sc) public { s:'($d(sc)#2) sc=1
+	Quit ..%OpenId(.K1,concurrency,.sc) }
+zIDKEYSQLCheckUnique(pFromOrig=0,%pID,%pVals...)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::IDKEYSQLCheckUnique")
+zIDKEYSQLExists(pLockOnly=0,pUnlockRef,%pVal...)
+	// SQL Foreign Key validation entry point for Key IDKEY.  Called by FKeys that reference this Key to see if the row is defined
+	if pLockOnly>=0 { new id set id=%pVal(1) }
+	if pLockOnly>=0 { if '..%SQLGetLock(id,1,.pUnlockRef) { set sqlcode=-114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler39",,"TRU"_"."_"Product"_":"_"IDKEY") QUIT 0 } }
+	if pLockOnly<1 {
+		new qv set qv=$d(^TRU.ProductD(%pVal(1))) QUIT:pLockOnly=-1 qv
+		do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) quit qv
+	}
+	else { do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) QUIT 1 }
+	Return
+zIDKEYSQLFindPKeyByConstraint(%con)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::IDKEYSQLFindPKeyByConstraint")
+zIDKEYSQLFindRowIDByConstraint(%con,pInternal=0)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::IDKEYSQLFindRowIDByConstraint")
+zShortNameCheck(K1,lockonly=0,concurrency=-1) public {
+	s exists=..ShortNameExists(K1,.id) q:'exists $s('lockonly:$$Error^%apiOBJ(5797,$classname(),"ShortName",K1),1:1) s:concurrency=-1 concurrency=$select(..#DEFAULTCONCURRENCY="$zu(115,10)":$zu(115,10),1:$xecute("q "_..#DEFAULTCONCURRENCY)) if concurrency { s status=..%LockId(id,1) q:('status) status } if 'lockonly { s exists=..ShortNameExists(K1,.idcheck) d:concurrency ..%UnlockId(id,1,0) quit $s(('exists)||(id'=idcheck):$$Error^%apiOBJ(5797,$classname(),"ShortName",K1),1:1) } else { d:concurrency ..%UnlockId(id,1,0) q 1 }
+}
+zShortNameDelete(K1,concurrency=-1) public {
+	i ..ShortNameExists(K1,.id){ s sc=..%DeleteId(id,concurrency) } Else { s sc=$$Error^%apiOBJ(5771,"ShortName",K1) }
+	QUIT sc }
+zShortNameExists(K1,id="") [ K1,SQLCODE,id ] public { New SQLCODE 
+	 ;---&sql(SELECT %ID INTO :id FROM TRU.Product WHERE (:K1 is not null and ShortName = :K1) OR (:K1 IS NULL AND ShortName IS NULL))
+ 	 ;--- ** SQL PUBLIC Variables: K1, SQLCODE, id
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEbHXCkN6KX0ZpYiz3ZSb6TRJBsq","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEbHXCkN6KX0ZpYiz3ZSb6TRJBsq")||($ze["<ZSQLU>") { d %0dsqlX } else { throw } }
+	Quit $select('SQLCODE:1,1:0) }
+ q
+%0dsqlX	n %xxsql
+	s %xxsql("S",1)="SELECT %ID INTO :id FROM TRU . Product WHERE ( :K1 IS NOT NULL AND ShortName = :K1 ) OR ( :K1 IS NULL AND ShortName IS NULL )"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Logical","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+zShortNameOpen(K1,concurrency=-1,sc) public { s:'($d(sc)#2) sc=1
+ i ..ShortNameExists(K1,.id){ s return=..%OpenId(id,concurrency,.sc) } Else { s sc=$$Error^%apiOBJ(5770,"ShortName",K1),return="" }
+ QUIT return }
+zShortNameSQLCheckUnique(pFromOrig=0,%pID,%pVals...)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::ShortNameSQLCheckUnique")
+zShortNameSQLExists(pLockOnly=0,pUnlockRef,%pVal...)
+	// SQL Foreign Key validation entry point for Key ShortName.  Called by FKeys that reference this Key to see if the row is defined
+	if pLockOnly>=0 { new id set id=..ShortNameSQLFindRowIDByConstraint($lb(%pVal(1)),1) QUIT:SQLCODE $s('pLockOnly:0,1:1) }
+	if pLockOnly>=0 { if '..%SQLGetLock(id,1,.pUnlockRef) { set sqlcode=-114,%msg=$$FormatMessage^%occMessages(,"%SQL.Filer","SQLFiler39",,"TRU"_"."_"Product"_":"_"ShortName") QUIT 0 } }
+	if pLockOnly<1 {
+		new qv set qv=$d(^TRU.ProductI("ShortName",$zu(28,%pVal(1),7))) QUIT:pLockOnly=-1 qv
+		do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) quit qv
+	}
+	else { do:'$g(pUnlockRef) ..%SQLReleaseLock(id,1) QUIT 1 }
+	Return
+zShortNameSQLFindPKeyByConstrai(%con)
+ QUIT $$Error^%apiOBJ(5758,"%Persistent::ShortNameSQLFindPKeyByConstraint")
+zShortNameSQLFindRowIDByConstra(%con,pInternal=0)
+	// Get ROWID value for UNIQUE Key ShortName value given in %con
+	new %d,id,rtm set rtm=$zu(115,5,$s(pInternal:0,1:1)) set %d(6)=$lg(%con,1)
+	set %ROWCOUNT=0 set:'pInternal %qrc=0
+	 ;---&sql(SELECT %ID INTO :id FROM TRU.Product WHERE ShortName = :%d(6))
+ 	 ;--- ** SQL PUBLIC Variables: %d, SQLCODE, id
+	try { d $classmethod("%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEHeYroslKp7BZE3hQi8GZel18Ue","%New") } catch { if $ze["<CLASS DOES NOT EXIST>"&&($ze["%sqlcq."_$tr($namespace,"%_-$@:/\[]^ ","pudsssssssss")_".xEHeYroslKp7BZE3hQi8GZel18Ue")||($ze["<ZSQLU>") { d %0dsqlZ } else { throw } }
+	do $zu(115,5,rtm)
+	if pInternal { QUIT:'SQLCODE $g(id) RETURN "" }
+	if SQLCODE { set:SQLCODE<0 %qrc=-SQLCODE set:'%ROWCOUNT&&(SQLCODE=100) id="",%qrc=0 } set d=$zobjexport(id,18) QUIT
+	Return
+ q
+%0dsqlZ	n %xxsql
+	s %xxsql("S",1)="SELECT %ID INTO :id FROM TRU . Product WHERE ShortName = :%d(6)"
+	s %xxsql("M","%occSqlfuncinc")=$c(1),%xxsql("M","SOAP12ENCns")="0"_$c(1,1)_"0"_$c(1)_"""http://www.w3.org/2003/05/soap-encoding"""
+	s %xxsql("I","%callout")="",%xxsql("I","%occSqlfunc")="",%xxsql("I","%systemInclude")="",%xxsql("I","%xmlMap")="",%xxsql("NS")="IRISDEMO",%xxsql("PToolsCTI")=$LB(,"-1:0:0::0:1")
+	d BuildQuery^%SYS.SQLSRV(.%xxsql,$lb("Runtime","","","TRU",0,"",),,"TRU.Product.CLS")
+	q
+%sqllistUCQ(t) public	{
+	s t("%0dsqlA")="",t("%0dsqlC")="",t("%0dsqlF")="",t("%0dsqlH")="",t("%0dsqlL")="",t("%0dsqlP")="",t("%0dsqlR")="",t("%0dsqlT")=""
+	s t("%0dsqlV")="",t("%0dsqlX")="",t("%0dsqlZ")=""
+}
