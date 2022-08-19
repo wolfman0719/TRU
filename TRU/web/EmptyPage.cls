@@ -37,7 +37,7 @@ Method DrawWelcomeMessage(pSeed As %String) As %Status
 	&html<<div id="WelcomeMessage" align="center">
 			<br><br><br>
 			<br>複合アプリケーション構築アカデミーへようこそ<p>
-			<p><img border="1" src="/csp/user/devcon2008.gif">
+			<p><img border="1" src="/csp/user/merrychristmas.gif">
 		</div>>
 	
 	Quit $$$OK
