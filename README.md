@@ -37,14 +37,14 @@ urlに指定するポート番号は、デフォルト52782になっています
 
 ブラウザで以下のurlを指定します。
 
-http://localhost:52782/csp/user/TRU.web.TRUApp.cls?$NAMESPACE=USER&IRISUsername=_system&IRISPassword=SYS
+http://localhost:52773/csp/user/TRU.web.TRUApp.cls?$NAMESPACE=USER&IRISUsername=_system&IRISPassword=SYS
 
 左のメニューから注文するを選択し、右の画面で注文入力する
 
 
 ### 管理ポータル
 
-[localhost:52782/csp/sys/%25CSP.Portal.Home.zen?IRISUsername=_system&IRISPassword=SYS](http://localhost:52782/csp/sys/%25CSP.Portal.Home.zen?IRISUsername=_system&IRISPassword=SYS)
+[localhost:52773/csp/sys/%25CSP.Portal.Home.zen?IRISUsername=_system&IRISPassword=SYS](http://localhost:52773/csp/sys/%25CSP.Portal.Home.zen?IRISUsername=_system&IRISPassword=SYS)
 
 ### BAMデモ
 
