@@ -54,7 +54,7 @@ Method TotalPriceGet() As %Numeric
 
 Method SubTotalGet() As %Numeric
 {
-	Quit (..UnitPrice * ..Quantity) * (1 - (..Discount/100))
+  Quit (..UnitPrice * ..Quantity) * (1 - (..Discount/100))
 }
 
 Storage Default
