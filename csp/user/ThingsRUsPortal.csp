@@ -10,8 +10,7 @@ body {
 	font-family: Arial;
 	font-size: 1.6em;
 	width: 100%;
-	filter:
-		progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF');
+	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF');
 }
 
 div.title {
@@ -25,8 +24,7 @@ span.titleText {
 	font-size: 1.6em;
 	color: white;
 	width: 100%;
-	filter:
-		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
+	filter: progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
 }
 
 div.description {
@@ -66,26 +64,26 @@ select {
 <script language="javascript">
 function selectProduct(select)
 {
-	var btnOrder = self.document.getElementById('btnOrder');
-	var img = self.document.getElementById('image');
-	var imgdiv = self.document.getElementById('imageDiv');
-	var idx = select.selectedIndex;
-	var descdiv = self.document.getElementById('description');
-	var price = self.document.getElementById('price');
+  var btnOrder = self.document.getElementById('btnOrder');
+  var img = self.document.getElementById('image');
+  var imgdiv = self.document.getElementById('imageDiv');
+  var idx = select.selectedIndex;
+  var descdiv = self.document.getElementById('description');
+  var price = self.document.getElementById('price');
 	
-	if (idx < 0) {
-		imgdiv.style.display = 'none';
-		btnOrder.disabled = true;
-	}
-	else {
-		btnOrder.disabled = false;
-		imgdiv.style.display = '';
-		var ovalue = select.options[select.selectedIndex].value;
-		var splitv = ovalue.split("^");
-		img.src = 'images/' + splitv[3];
-		descdiv.innerText = splitv[2];
-		price.value = '$' + splitv[1];
-	}
+  if (idx < 0) {
+    imgdiv.style.display = 'none';
+    btnOrder.disabled = true;
+  }
+  else {
+    btnOrder.disabled = false;
+    imgdiv.style.display = '';
+    var ovalue = select.options[select.selectedIndex].value;
+    var splitv = ovalue.split("^");
+    img.src = 'images/' + splitv[3];
+    descdiv.innerText = splitv[2];
+    price.value = '$' + splitv[1];
+  }
 }
 </script>
 
