@@ -13,8 +13,8 @@ XData KPI [ XMLNamespace = "http://www.intersystems.com/deepsee/kpi" ]
 /// This callback, if implemented, lets a subclass provide an SQL statement to fetch data for this KPI. 
 Method %OnGetSQL(ByRef pSQL As %String) As %Status
 {
-    Set pSQL = "call TRU_Service.CustomResult()"
-    Quit $$$OK
+  Set pSQL = "call TRU_Service.CustomResult()"
+  Quit $$$OK
 }
 
 }
