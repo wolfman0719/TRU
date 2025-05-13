@@ -26,11 +26,11 @@ Property ShipBy As %String(TRUNCATE = 1) [ InitialExpression = "ground" ];
 /// Pick up corresponding product whenever we set Code
 Method CodeSet(%val) As %Status
 {
-	Set i%Code = %val
+  Set i%Code = %val
 
-	// lookup product using code
-	Set ..Product = ##class(TRU.Product).FindByCode(%val)
-	Quit $$$OK
+  // lookup product using code
+  Set ..Product = ##class(TRU.Product).FindByCode(%val)
+  Quit $$$OK
 }
 
 Storage Default
