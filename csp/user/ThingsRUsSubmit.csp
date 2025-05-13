@@ -10,8 +10,7 @@ body {
 	font-family: Comic Sans MS;
 	font-size: 1.6em;
 	width: 100%;
-	filter:
-		progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0FFA0', EndColorStr='#E0E0FF');
+	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0FFA0', EndColorStr='#E0E0FF');
 }
 
 div.title {
@@ -19,16 +18,14 @@ div.title {
 	font-size: 1.6em;
 	border: 1px black solid;
 	width: 100%;
-	filter:
-		progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF')
+	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#A0A0FF', EndColorStr='#E0FFFF')
 		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
 }
 
 span.titleText {
 	color: blue;
 	width: 100%;
-	filter:
-		progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
+	filter: progid:DXImageTransform.Microsoft.dropShadow(color=#404040, OffX=2, OffY=2, Positive=2);
 }
 
 div.description {
@@ -99,60 +96,66 @@ select {
 <div class="title"><span class="titleText">Thank you for ordering Things-R-Us<super>&trade;</super> Products!</span></div>
 
 <script language="cache" runat="server">
-	// process the submit for this page
-	Set tSC=$$$OK
-	Do {
-		Set tSC = ##class(Ens.Director).CreateBusinessService("Order via Web Portal",.tService)
-		If ($$$ISERR(tSC)) Quit
+  // process the submit for this page
+  Set tSC=$$$OK
+  Do {
+    Set tSC = ##class(Ens.Director).CreateBusinessService("Order via Web Portal",.tService)
+    If ($$$ISERR(tSC)) Quit
 
-		Set tSC = tService.ProcessInput(%request,.confirmation)
-		If ($$$ISERR(tSC)) Quit
-		If $IsObject($G(confirmation)) {
-			// draw details of con
-			&html<
-			<div align="center">
-			<div>#(confirmation.Message)#</div>
-			<br>
-			>
+    Set tSC = tService.ProcessInput(%request,.confirmation)
+    If ($$$ISERR(tSC)) Quit
+    If $IsObject($G(confirmation)) {
+      // draw details of con
+      &html<
+      <div align="center">
+      <div>#(confirmation.Message)#</div>
+      <br>
+      >
 			
-			If (confirmation.Ordered) {
-				&html<<div>Details</div>>
-				&html<
-				<table class="AutoFormTable" border="0" cellspacing="0">
-<tr><td class="label">OrderNumber</td>		<td>#(confirmation.OrderNumber)#</td></tr>
-<tr><td class="label">Name</td>		<td>#(confirmation.Name)#</td></tr>
-<tr><td class="label">City</td>		<td>#(confirmation.City)#</td></tr>
-<tr><td class="label">Product</td>	<td>#(confirmation.Product)#</td></tr>
-<tr><td class="label">Shipping Method</td><td>#(confirmation.ShippingMethod)#</td></tr>
-<tr><td class="label">Shipping Method</td><td>#(confirmation.ShippingCompany)#</td></tr>
-<tr><td class="label">Tracking Number</td><td>#(confirmation.TrackingNumber)#</td></tr>
-<tr><td class="label">Quantity</td>	<td align="right">#(confirmation.Quantity)#&nbsp;</td></tr>
-<tr><td class="label">Unit Price</td>	<td align="right">$#($FN(confirmation.UnitPrice,",",2))#&nbsp;</td></tr>
-<tr><td class="label">Discount</td>	<td align="right">#($FN(confirmation.Discount,",",2))#%</td></tr>
+      If (confirmation.Ordered) {
+        &html<<div>Details</div>>
+	&html<
+	<table class="AutoFormTable" border="0" cellspacing="0">
+        <tr><td class="label">OrderNumber</td>		
+        <td>#(confirmation.OrderNumber)#</td></tr>
+        <tr><td class="label">Name</td>		
+        <td>#(confirmation.Name)#</td></tr>
+        <tr><td class="label">City</td>		
+        <td>#(confirmation.City)#</td></tr>
+        <tr><td class="label">Product</td>	
+        <td>#(confirmation.Product)#</td></tr>
+        <tr><td class="label">Shipping Method</td><td>#(confirmation.ShippingMethod)#</td></tr>
+        <tr><td class="label">Shipping Method</td><td>#(confirmation.ShippingCompany)#</td></tr>
+        <tr><td class="label">Tracking Number</td><td>#(confirmation.TrackingNumber)#</td></tr>
+        <tr><td class="label">Quantity</td>	
+        <td align="right">#(confirmation.Quantity)#&nbsp;</td></tr>
+        <tr><td class="label">Unit Price</td>	
+        <td align="right">$#($FN(confirmation.UnitPrice,",",2))#&nbsp;</td></tr>
+        <tr><td class="label">Discount</td>	
+        <td align="right">#($FN(confirmation.Discount,",",2))#%</td></tr>
+        <tr><td class="label">Subtotal</td>
+        <td align="right">$#($FN(confirmation.SubTotal,",",2))#&nbsp;</td></tr>
+        <tr><td class="label">Shipping Charge</td><td align="right">$#($FN(confirmation.Shipping,",",2))#&nbsp;</td></tr>
+        <tr><td class="label"><b>Total</b></td>	
+        <td align="right"><b>$#($FN(confirmation.TotalPrice,",",2))#&nbsp;</b></td></tr>
+        </table>
+	>
+	//	Do confirmation.DrawHTMLTable(confirmation)
+	&html<</div>>
+      }
+    }
+  } While (0)
 
-<tr><td class="label">Subtotal</td>		<td align="right">$#($FN(confirmation.SubTotal,",",2))#&nbsp;</td></tr>
-<tr><td class="label">Shipping Charge</td><td align="right">$#($FN(confirmation.Shipping,",",2))#&nbsp;</td></tr>
-<tr><td class="label"><b>Total</b></td>	<td align="right"><b>$#($FN(confirmation.TotalPrice,",",2))#&nbsp;</b></td></tr>
-
-				</table>
-				>
-				//	Do confirmation.DrawHTMLTable(confirmation)
-				&html<</div>>
-			}
-		}
-	} While (0)
-
-	If ($$$ISERR(tSC)) {
-		// Error: assume system is not running
-		Write "The Things-R-Us Portal is currently not accepting requests.<br>",!
-		Write "Please try again later.",!
+  If ($$$ISERR(tSC)) {
+    // Error: assume system is not running
+    Write "The Things-R-Us Portal is currently not accepting requests.<br>",!
+    Write "Please try again later.",!
 		
-		Write "<br><br><pre>"
-		Do $system.Status.DisplayError(tSC)
-		Write "</pre>"
-	}	
-</script>
-
+    Write "<br><br><pre>"
+    Do $system.Status.DisplayError(tSC)
+    Write "</pre>"
+  }	
+  </script>
 <hr>
 <div align="center"><a href="ThingsRUsPortal.csp">back</a></div>
 </body>
