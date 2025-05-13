@@ -14,12 +14,12 @@ XData KPI [ XMLNamespace = "http://www.intersystems.com/deepsee/kpi" ]
 
 Method %OnExecute() As %Status
 {
-    Set ..%seriesCount=$order($$$EnsMetrics("CEO Metrics2",1,"TotalSales",""),-1)
-    for i=1:1:..%seriesCount {
-      Set ..%seriesNames(i)=""
-      Set ..%data(i,"TotalSales")=$$$EnsMetrics("CEO Metrics2",1,"TotalSales",i)
-    }
-    Quit $$$OK
+  Set ..%seriesCount=$order($$$EnsMetrics("CEO Metrics2",1,"TotalSales",""),-1)
+  for i=1:1:..%seriesCount {
+    Set ..%seriesNames(i)=""
+    Set ..%data(i,"TotalSales")=$$$EnsMetrics("CEO Metrics2",1,"TotalSales",i)
+  }
+  Quit $$$OK
 }
 
 }
