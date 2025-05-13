@@ -7,21 +7,21 @@ Ensemble: Message Details Viewer for Message Tracer
 <AutoPage domain="Ensemble" pagename="Message Details"  parentpage="UtilEnsMessages.csp" useframes="1">
 
 <Pane name="Title" type="%CSP.Util.TitlePane">
-	<Text>Message Details</Text>
+<Text>Message Details</Text>
 </Pane>
 
 <Pane name="Info" type="CSPX.EnsMsgPane">
-	<!--
-	<Commands>
-		<Action href="UtilEnsHome.csp">
-			<Caption>Home</Caption>
-		</Action>
+<!--
+<Commands>
+<Action href="UtilEnsHome.csp">
+<Caption>Home</Caption>
+</Action>
 
-		<Action href="UtilEnsMsgTrace.csp?$FRAME=Info" targetFrame="Info">
-			<Caption>Filter Messages</Caption>
-		</Action>
-	</Commands>
-	-->
+<Action href="UtilEnsMsgTrace.csp?$FRAME=Info" targetFrame="Info">
+<Caption>Filter Messages</Caption>
+</Action>
+</Commands>
+-->
 </Pane>
 
 </AutoPage>
