@@ -124,12 +124,12 @@ Press <b>Order Now</b> when you are ready.<br>
 <td>
 <select name="Code" onchange="selectProduct(this);" size="5">
 <script language="cache" runat="server">
-	Set tRS = ##class(%ResultSet).%New("TRU.Product:Enumerate")
-	Set tSC = tRS.Execute()
-	While (tRS.Next()) {
-		&html<<option value="#($G(tRS.Data("Code"))_"^"_$G(tRS.Data("UnitPrice"))_"^"_$G(tRS.Data("Description"))_"^"_$G(tRS.Data("ImageFile")))#" 
-				>#($G(tRS.Data("Name")))#</option>>
-	}
+  Set tRS = ##class(%ResultSet).%New("TRU.Product:Enumerate")
+  Set tSC = tRS.Execute()
+  While (tRS.Next()) {
+    &html<<option value="#($G(tRS.Data("Code"))_"^"_$G(tRS.Data("UnitPrice"))_"^"_$G(tRS.Data("Description"))_"^"_$G(tRS.Data("ImageFile")))#" 
+    >#($G(tRS.Data("Name")))#</option>>
+  }
 </script>
 </select>
 </td>
